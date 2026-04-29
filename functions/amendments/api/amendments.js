@@ -129,6 +129,6 @@ export async function onRequest(context) {
 
   } catch (error) {
     console.error("Error fetching amendments:", error);
-    return jsonResponse({ error: "Failed to fetch amendments" }, 500);
+    return jsonResponse({ error: "Failed to fetch amendments", detail: error?.message || String(error) }, 500);
   }
 }
