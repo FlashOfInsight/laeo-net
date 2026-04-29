@@ -40,14 +40,6 @@ async function fetchBillDetails(bill, apiKey) {
   }
 }
 
-async function fetchCosponsors(bill, apiKey) {
-  const url = `${BASE_URL}/bill/${CONGRESS}/${bill.type.toLowerCase()}/${bill.number}/cosponsors?api_key=${apiKey}`;
-  const response = await fetch(url);
-  if (!response.ok) return 0;
-  const data = await response.json();
-  return data.pagination?.count || data.cosponsors?.length || 0;
-}
-
 async function processBatch(items, fn, batchSize = 5) {
   const results = [];
   for (let i = 0; i < items.length; i += batchSize) {
@@ -86,14 +78,12 @@ export async function onRequest(context) {
     const amendments = await processBatch(
       amendmentBills,
       async (bill) => {
-        const [details, cosponsorsCount] = await Promise.all([
-          fetchBillDetails(bill, apiKey),
-          fetchCosponsors(bill, apiKey),
-        ]);
+        const details = await fetchBillDetails(bill, apiKey);
 
         if (!details) return null;
 
         const sponsor = details.sponsors?.[0] || {};
+        const cosponsorsCount = details.cosponsors?.count ?? 0;
 
         return {
           number: `${bill.type} ${bill.number}`,
