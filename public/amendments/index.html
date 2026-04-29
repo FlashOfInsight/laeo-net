@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constitutional Amendment Tracker — 119th Congress</title>
+  <link rel="stylesheet" href="/amendments/styles.css">
+</head>
+<body>
+  <div class="site-nav">
+    <a href="/">← laeo.net</a>
+  </div>
+  <div class="container">
+    <header>
+      <h1>Constitutional Amendment Tracker</h1>
+      <p class="subtitle">119th Congress (2025–2027)</p>
+    </header>
+
+    <section class="explainer">
+      <p>
+        Amending the U.S. Constitution requires a two-thirds vote in both the House and Senate,
+        followed by ratification by three-fourths of the states (38 of 50).
+        <a href="https://www.senate.gov/about/origins-foundations/senate-and-constitution/constitution.htm#a5" target="_blank">Learn more about Article V</a>.
+      </p>
+    </section>
+
+    <section class="summary">
+      <p><span id="count">--</span> proposed amendments</p>
+      <p class="last-updated">Last updated: <span id="lastUpdated">--</span></p>
+    </section>
+
+    <section id="amendments" class="amendments-list">
+      <div class="loading">Loading amendments...</div>
+    </section>
+  </div>
+
+  <script>
+    async function loadAmendments() {
+      const container = document.getElementById('amendments');
+      const countEl = document.getElementById('count');
+      const lastUpdatedEl = document.getElementById('lastUpdated');
+
+      try {
+        const response = await fetch('/amendments/api/amendments');
+        const data = await response.json();
+
+        countEl.textContent = data.count;
+        lastUpdatedEl.textContent = new Date(data.lastUpdated).toLocaleDateString('en-US', {
+          month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit'
+        });
+
+        if (data.amendments.length === 0) {
+          container.innerHTML = '<p class="no-results">No proposed amendments found.</p>';
+          return;
+        }
+
+        container.innerHTML = data.amendments.map(a => `
+          <article class="amendment">
+            <div class="amendment-header">
+              <span class="amendment-number">${a.number}</span>
+              <span class="amendment-date">${formatDate(a.introducedDate)}</span>
+            </div>
+            <h2 class="amendment-title">${a.title}</h2>
+            <div class="amendment-meta">
+              <span class="sponsor">
+                <strong>${a.sponsor.name}</strong>
+                (${a.sponsor.party}-${a.sponsor.state}${a.sponsor.district ? '-' + a.sponsor.district : ''})
+              </span>
+              <span class="cosponsors">${a.cosponsorsCount} cosponsor${a.cosponsorsCount !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="amendment-status">
+              <span class="status-label">Status:</span> ${a.status}
+            </div>
+            <a href="${a.congressUrl}" target="_blank" class="amendment-link">View on Congress.gov</a>
+          </article>
+        `).join('');
+
+      } catch (error) {
+        container.innerHTML = '<p class="error">Failed to load amendments. Please try again later.</p>';
+        console.error('Error:', error);
+      }
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+    }
+
+    loadAmendments();
+  </script>
+</body>
+</html>
