@@ -4,35 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Constitutional Amendment Tracker — 119th Congress</title>
+  <meta name="description" content="Every proposed constitutional amendment introduced in the 119th Congress, tracked in one place.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="/amendments/styles.css">
 </head>
 <body>
-  <div class="site-nav">
-    <a href="/">← laeo.net</a>
-  </div>
-  <div class="container">
-    <header>
-      <h1>Constitutional Amendment Tracker</h1>
-      <p class="subtitle">119th Congress (2025–2027)</p>
-    </header>
+
+  <header>
+    <div class="header-inner">
+      <span class="site-name">CONSTITUTIONAL AMENDMENT TRACKER</span>
+      <nav>
+        <a href="/">laeo.net</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
 
     <section class="explainer">
+      <div class="section-label">ABOUT</div>
       <p>
         Amending the U.S. Constitution requires a two-thirds vote in both the House and Senate,
         followed by ratification by three-fourths of the states (38 of 50).
-        <a href="https://www.senate.gov/about/origins-foundations/senate-and-constitution/constitution.htm#a5" target="_blank">Learn more about Article V</a>.
+        <a href="https://www.senate.gov/about/origins-foundations/senate-and-constitution/constitution.htm#a5" target="_blank" rel="noopener">Learn more about Article V</a>.
       </p>
     </section>
 
     <section class="summary">
-      <p><span id="count">--</span> proposed amendments</p>
+      <div class="section-label">119TH CONGRESS · 2025–2027</div>
+      <p class="count-line"><span id="count">--</span> proposed amendments</p>
       <p class="last-updated">Last updated: <span id="lastUpdated">--</span></p>
     </section>
 
-    <section id="amendments" class="amendments-list">
-      <div class="loading">Loading amendments...</div>
+    <section class="amendments-section">
+      <div class="section-label">AMENDMENTS</div>
+      <div id="amendments" class="amendments-list">
+        <div class="loading">Loading amendments...</div>
+      </div>
     </section>
-  </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Laeo Crnkovic-Rubsamen</span>
+      <span class="footer-coords">40.7128° N, 74.0060° W</span>
+    </div>
+  </footer>
 
   <script>
     async function loadAmendments() {
@@ -69,9 +92,9 @@
               <span class="cosponsors">${a.cosponsorsCount} cosponsor${a.cosponsorsCount !== 1 ? 's' : ''}</span>
             </div>
             <div class="amendment-status">
-              <span class="status-label">Status:</span> ${a.status}
+              <span class="status-label">Status</span> ${a.status}
             </div>
-            <a href="${a.congressUrl}" target="_blank" class="amendment-link">View on Congress.gov</a>
+            <a href="${a.congressUrl}" target="_blank" rel="noopener" class="amendment-link">View on Congress.gov →</a>
           </article>
         `).join('');
 
