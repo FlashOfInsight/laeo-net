@@ -1,0 +1,63 @@
+/* ── Data page additions ─────────────────────────────────── */
+
+.header-slash {
+  color: var(--ink-light);
+  margin: 0 0.2em;
+}
+
+/* ── Status badge ───────────────────────────────────────── */
+.project-status {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--border-light);
+  padding: 2px 6px;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.status-active {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.status-in-progress {
+  color: var(--ink-mid);
+}
+
+.status-archived {
+  color: var(--ink-light);
+}
+
+/* ── Project footer row (date + link) ────────────────────── */
+.project-footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: var(--space-xs);
+}
+
+.project-updated {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-light);
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.data-empty {
+  border: 1px dashed var(--border-light);
+  padding: var(--space-xl) var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.data-empty span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-light);
+  text-transform: uppercase;
+}
