@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYCHA Evictions: PACT vs. Public Management — laeo.net</title>
+  <meta name="description" content="Marshal eviction execution rates at NYCHA PACT-converted developments vs. publicly managed NYCHA sites, 2022–2026.">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+</head>
+<body>
+
+<!-- ── Site header ──────────────────────────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <span class="site-name">
+      <a href="/">LAEO CRNKOVIC-RUBSAMEN</a>
+      <span class="header-slash"> / </span>
+      <a href="/data/">DATA</a>
+      <span class="header-slash"> / </span>NYCHA EVICTIONS
+    </span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/data/">Data</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── Page-level tab nav ───────────────────────────────────────────────────── -->
+<div class="page-nav-wrap">
+  <nav class="page-nav" role="tablist">
+    <button class="page-nav-tab active" data-tab="analysis" role="tab">Analysis</button>
+    <button class="page-nav-tab" data-tab="sources" role="tab">Data Sources</button>
+    <button class="page-nav-tab" data-tab="methodology" role="tab">Methodology</button>
+  </nav>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- TAB: ANALYSIS                                                             -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-analysis" class="tab-pane active">
+
+  <section class="intro">
+    <div class="section-label">NYC HOUSING · PACT PROGRAM · 2022–2026</div>
+    <h1>Eviction Rates at NYCHA Developments: PACT vs. Public Management</h1>
+    <p>
+      Since 2016, NYCHA has transferred hundreds of public housing developments to private
+      management through the federal RAD program, branded locally as PACT (Permanent
+      Affordability Commitment Together). This analysis tracks marshal-executed evictions
+      at PACT-converted sites and compares them to traditionally managed NYCHA developments,
+      2022 through early 2026.
+    </p>
+    <p>
+      Construction Complete PACT developments show execution rates roughly <strong>9–10× higher</strong>
+      than non-PACT NYCHA in 2024–2025, with rates rising each year. Under Construction sites
+      run below the NYCHA average — pre-conversion executions are attributed to the control group.
+    </p>
+  </section>
+
+  <div class="key-stats">
+    <div class="stat-item">
+      <span class="stat-value" id="stat-pact-rate">—</span>
+      <span class="stat-label">PACT Complete exec rate / 1k units (2025)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-ctrl-rate">—</span>
+      <span class="stat-label">Non-PACT exec rate / 1k units (2025)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-ratio">—</span>
+      <span class="stat-label">Complete-to-non-PACT ratio (2025)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">29</span>
+      <span class="stat-label">Active PACT developments</span>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <section class="map-section">
+    <div class="map-header">
+      <div class="section-label">MAP — ALL NYCHA DEVELOPMENTS</div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot pact-complete"></div><span>PACT — Construction Complete</span></div>
+        <div class="legend-item"><div class="legend-dot pact-uc"></div><span>PACT — Under Construction</span></div>
+        <div class="legend-item"><div class="legend-dot non-pact"></div><span>Non-PACT NYCHA</span></div>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <div id="map-container"></div>
+      <!-- Hover tooltip -->
+      <div class="map-tooltip" id="tooltip">
+        <div class="tooltip-name" id="tt-name"></div>
+        <div class="tooltip-row"><span>Units</span><span id="tt-units"></span></div>
+        <div class="tooltip-row" id="tt-rate-row"><span id="tt-rate-label">Exec rate (2025)</span><span id="tt-rate"></span></div>
+        <div class="tooltip-row" id="tt-manager-row"><span>Manager</span><span id="tt-manager"></span></div>
+        <div class="tooltip-hint" id="tt-hint"></div>
+      </div>
+      <!-- Side detail panel (slides in on PACT dot click) -->
+      <div class="detail-panel" id="detail-panel">
+        <button class="panel-close" id="panel-close">← Back</button>
+        <div id="panel-content"></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Charts -->
+  <section class="charts-section">
+    <div class="section-label">EVICTION TRENDS · 2017–2026</div>
+    <div class="charts-grid">
+      <div class="chart-card chart-card-clickable" data-chart="rate">
+        <div class="chart-card-header">
+          <div class="chart-title">EXECUTION RATE PER 1,000 UNITS</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">Marshal-executed evictions / residential units × 1,000</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-rate"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT Construction Complete</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
+        </div>
+      </div>
+      <div class="chart-card chart-card-clickable" data-chart="count">
+        <div class="chart-card-header">
+          <div class="chart-title">TOTAL EXECUTIONS</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">Raw count of marshal-executed evictions by year</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-count"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT Construction Complete</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Full-screen chart overlay (opened from chart card clicks) -->
+  <div class="chart-full-overlay" id="chart-full-overlay">
+    <div class="cfo-header">
+      <div class="cfo-title-block">
+        <div class="cfo-title" id="cfo-title"></div>
+        <div class="cfo-subtitle" id="cfo-subtitle"></div>
+      </div>
+      <select class="cfo-resolution" id="cfo-resolution">
+        <option value="yearly">Yearly</option>
+        <option value="6mo">Every 6 months</option>
+        <option value="3mo">Every 3 months</option>
+        <option value="monthly">Monthly</option>
+      </select>
+      <button class="cfo-close" id="cfo-close">✕</button>
+    </div>
+    <div class="cfo-chart-wrap">
+      <canvas id="cfo-canvas"></canvas>
+    </div>
+    <div class="cfo-legend" id="cfo-legend"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Table -->
+  <section class="table-section">
+    <div class="table-header">
+      <div class="section-label">PACT DEVELOPMENTS — EXECUTION RATES BY YEAR</div>
+      <div class="table-note">Click any column header to sort · 2026 figures are YTD · rate per 1,000 units</div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="pact-table">
+        <thead>
+          <tr>
+            <th data-col="development_name">Development</th>
+            <th data-col="status">Status</th>
+            <th data-col="total_units" class="num">Units</th>
+            <th data-col="r2022" class="num">2022</th>
+            <th data-col="r2023" class="num">2023</th>
+            <th data-col="r2024" class="num">2024</th>
+            <th data-col="r2025" class="num">2025</th>
+            <th data-col="r2026" class="num">2026 <span class="ytd-badge">YTD</span></th>
+          </tr>
+        </thead>
+        <tbody id="pact-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div><!-- /tab-analysis -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- TAB: DATA SOURCES                                                         -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-sources" class="tab-pane">
+
+  <section class="intro">
+    <div class="section-label">DATA SOURCES</div>
+    <h1>Source Data</h1>
+    <p>This analysis draws on seven public datasets. All are freely accessible with no
+    API key required except where noted. Sources are labeled S1–S7 and referenced
+    throughout the methodology.</p>
+  </section>
+
+  <div class="sources-list">
+
+    <div class="source-card">
+      <div class="source-id">S1</div>
+      <div class="source-body">
+        <div class="source-title">NYCHA PACT Dataset PDF</div>
+        <div class="source-publisher">NYC Housing Authority · Updated April 2026</div>
+        <p class="source-desc">
+          One row per PACT development with project name, status (Construction Complete,
+          Under Construction, Planning and Engagement), conversion date, total units,
+          developers, general contractor, and property manager. Used as the master list
+          of active PACT developments and the source of unit counts and manager attribution.
+        </p>
+        <a class="source-link" href="https://www.nyc.gov/assets/nycha/downloads/pdf/PACT_Dataset.pdf" target="_blank" rel="noopener">
+          nyc.gov — PACT_Dataset.pdf →
+        </a>
+      </div>
+    </div>
+
+    <div class="source-card">
+      <div class="source-id">S2</div>
+      <div class="source-body">
+        <div class="source-title">NYCHA Residential Address Dataset</div>
+        <div class="source-publisher">NYC Housing Authority via NYC Open Data · Socrata resource 3ub5-4ph8</div>
+        <p class="source-desc">
+          Building-level records for NYCHA-managed properties including address,
+          borough-block-lot (BBL), and a <code>privately_managed</code> flag.
+          Used initially for BBL lookup, but PACT buildings are removed from this
+          dataset after transfer to private management. Superseded by PLUTO for
+          the control group BBL set.
+        </p>
+        <a class="source-link" href="https://data.cityofnewyork.us/Housing-Development/NYCHA-Residential-Addresses/3ub5-4ph8" target="_blank" rel="noopener">
+          NYC Open Data — NYCHA Residential Addresses →
+        </a>
+      </div>
+    </div>
+
+    <div class="source-card">
+      <div class="source-id">S3</div>
+      <div class="source-body">
+        <div class="source-title">NYCHA Development Data Book</div>
+        <div class="source-publisher">NYC Housing Authority via NYC Open Data · Socrata resource evjd-dqpz</div>
+        <p class="source-desc">
+          One row per NYCHA development with unit counts, borough, cross-street
+          locations, and critically, <code>rad_transferred_date</code> — the date
+          each development was transferred under RAD/PACT. This date is the basis
+          for each year's changing PACT/non-PACT denominator. Also used for
+          geocoding development locations via cross-street intersections.
+        </p>
+        <a class="source-link" href="https://data.cityofnewyork.us/Housing-Development/NYCHA-Development-Data-Book/evjd-dqpz" target="_blank" rel="noopener">
+          NYC Open Data — NYCHA Development Data Book →
+        </a>
+      </div>
+    </div>
+
+    <div class="source-card">
+      <div class="source-id">S4</div>
+      <div class="source-body">
+        <div class="source-title">NYC MapPLUTO</div>
+        <div class="source-publisher">NYC Department of City Planning via NYC Open Data · Socrata resource 64uk-42ks</div>
+        <p class="source-desc">
+          Tax lot–level property data for all of NYC with owner name, residential
+          unit count, address, and coordinates. Used in two ways: (1) resolving
+          BBLs for PACT developments by searching for the PACT entity's owner name
+          (e.g., "NYC PACT PRESERVATION PARTNERS LLC"); (2) identifying all non-PACT
+          NYCHA buildings as lots where <code>ownername</code> contains
+          "NYC HOUSING AUTHORITY." The PLUTO owner-name split cleanly separates
+          PACT from non-PACT because ownership transfers when a development converts.
+        </p>
+        <a class="source-link" href="https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks" target="_blank" rel="noopener">
+          NYC Open Data — MapPLUTO →
+        </a>
+      </div>
+    </div>
+
+    <div class="source-card">
+      <div class="source-id">S5</div>
+      <div class="source-body">
+        <div class="source-title">NYC Planning Geosearch API</div>
+        <div class="source-publisher">NYC Department of City Planning · Free, no API key required</div>
+        <p class="source-desc">
+          Free geocoding API that converts address strings and intersections to
+          coordinates. Used as a fallback to geocode cross-street intersections
+          from S3 for developments where PLUTO owner-name search failed, enabling
+          spatial bounding-box queries on PLUTO.
+        </p>
+        <a class="source-link" href="https://geosearch.planninglabs.nyc" target="_blank" rel="noopener">
+          geosearch.planninglabs.nyc →
+        </a>
+      </div>
+    </div>
+
+    <div class="source-card">
+      <div class="source-id">S6</div>
+      <div class="source-body">
+        <div class="source-title">NYC Marshal Evictions</div>
+        <div class="source-publisher">NYC Department of Investigation via NYC Open Data · Socrata resource 6z8x-wfk4 · Updated daily</div>
+        <p class="source-desc">
+          One record per marshal-executed eviction, with BBL, marshal docket number,
+          court index number, address, execution date, and residential/commercial
+          indicator. This is the <strong>primary numerator</strong> for the eviction
+          rate calculation — filtered to residential units from January 2022 onward.
+          The BBL field enables direct joins to PLUTO-derived PACT and non-PACT lot
+          sets. The docket number enables a join to OCA court case records (S7).
+        </p>
+        <a class="source-link" href="https://data.cityofnewyork.us/City-Government/Evictions/6z8x-wfk4" target="_blank" rel="noopener">
+          NYC Open Data — Evictions →
+        </a>
+      </div>
+    </div>
+
+    <div class="source-card">
+      <div class="source-id">S7</div>
+      <div class="source-body">
+        <div class="source-title">OCA Housing Court Data</div>
+        <div class="source-publisher">
+          NYS Office of Court Administration, processed by the
+          <a href="https://www.housingdatanyc.org/" target="_blank" rel="noopener">OCA Data Collective</a>
+          (Housing Data Coalition, Right to Counsel Coalition, JustFix, ANHD, BetaNYC, UNHP)
+          · Last updated 2026-04-26
+        </div>
+        <p class="source-desc">
+          Pre-parsed CSV tables derived from the raw OCA XML feed received via SFTP
+          from the NYS court system. Three tables used here:
+          <code>oca_warrants</code> (contains the marshal docket number as
+          <code>enforcementofficerdocketnumber</code>, enabling the join to S6);
+          <code>oca_index</code> (case-level classification: Non-Payment, Holdover,
+          and disposition method); <code>oca_causes</code> (cause of action type).
+          Joined to marshal data via docket number to add case type to each execution.
+          Note: the HDC tables contain respondent mailing ZIP codes but no
+          street-level property addresses, so building-level filing rate analysis
+          is not possible through this pipeline.
+        </p>
+        <div class="source-links-row">
+          <a class="source-link" href="https://oca-2-dev.s3.amazonaws.com/public/" target="_blank" rel="noopener">
+            S3 public CSV files →
+          </a>
+          <a class="source-link" href="https://github.com/housing-data-coalition/oca" target="_blank" rel="noopener">
+            HDC pipeline on GitHub →
+          </a>
+          <a class="source-link" href="https://ww2.nycourts.gov/landlord-tenant-data-34621" target="_blank" rel="noopener">
+            OCA source page →
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sources-list -->
+</div><!-- /tab-sources -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<!-- TAB: METHODOLOGY                                                          -->
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-methodology" class="tab-pane">
+  <section class="intro">
+    <div class="section-label">METHODOLOGY</div>
+    <h1>Step-by-Step Pipeline</h1>
+    <p>Every decision in the pipeline is documented below in enough detail to
+    reproduce or audit each step independently. Source labels (S1–S7) correspond
+    to the <button class="inline-tab-link" data-tab="sources">Data Sources</button> tab.</p>
+  </section>
+  <div id="methodology-content" class="prose">
+    <p style="color:var(--ink-light);font-family:var(--font-mono);font-size:0.8rem;">Loading…</p>
+  </div>
+</div><!-- /tab-methodology -->
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Laeo Crnkovic-Rubsamen</span>
+    <span class="footer-right">
+      Data: NYC Open Data · NYS OCA · NYCHA ·
+      <a href="https://github.com/FlashOfInsight/laeo-net">Source</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+// ── Tab navigation ─────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.page-nav-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  history.replaceState(null, '', '#' + name);
+  if (name === 'methodology' && !document.getElementById('methodology-content').dataset.loaded) {
+    loadMethodology();
+  }
+  // Initialise map on first switch to analysis (it may not exist yet on load)
+  if (name === 'analysis' && !mapInitialised) initMap();
+}
+
+document.querySelectorAll('.page-nav-tab').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Inline links inside methodology prose that switch tabs
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('inline-tab-link')) {
+    switchTab(e.target.dataset.tab);
+  }
+});
+
+// Honour hash on load
+const initTab = (location.hash.slice(1) || 'analysis');
+if (initTab !== 'analysis') switchTab(initTab);
+
+
+// ── Data loading ───────────────────────────────────────────────────────────────
+let developments = [], aggregateRates = [], controlMonthly = {}, mapInitialised = false, chartsDone = false;
+
+async function loadData() {
+  const [geoRes, ratesRes, ctrlRes] = await Promise.all([
+    fetch('data/developments.geojson'),
+    fetch('data/aggregate_rates.json'),
+    fetch('data/control_monthly.json'),
+  ]);
+  developments   = (await geoRes.json()).features;
+  aggregateRates = await ratesRes.json();
+  controlMonthly = await ctrlRes.json();
+}
+
+// ── Key stats ─────────────────────────────────────────────────────────────────
+function populateStats() {
+  const y = aggregateRates.find(r => String(r.Year).startsWith('2025'));
+  if (!y) return;
+  document.getElementById('stat-pact-rate').textContent = Number(y['PACT Complete /1k units']).toFixed(2);
+  document.getElementById('stat-ctrl-rate').textContent = Number(y['Non-PACT /1k units']).toFixed(2);
+  document.getElementById('stat-ratio').textContent     = Number(y['Ratio (PACT:non-PACT)']).toFixed(1) + '×';
+}
+
+// ── Map ────────────────────────────────────────────────────────────────────────
+function initMap() {
+  if (mapInitialised) return;
+  mapInitialised = true;
+
+  const map = new maplibregl.Map({
+    container: 'map-container',
+    style: 'https://tiles.openfreemap.org/styles/positron',
+    center: [-73.935, 40.73],
+    zoom: 10.5,
+    attributionControl: false,
+  });
+
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+
+  map.on('load', () => {
+    const fc = (filter) => ({ type: 'FeatureCollection', features: developments.filter(filter) });
+    const isComplete = f => f.properties.type === 'pact' && (f.properties.status||'').includes('Complete');
+    const isUC       = f => f.properties.type === 'pact' && (f.properties.status||'').includes('Under Construction');
+
+    map.addSource('non-pact',    { type: 'geojson', data: fc(f => f.properties.type === 'non_pact') });
+    map.addSource('pact-uc',     { type: 'geojson', data: fc(isUC) });
+    map.addSource('pact-complete', { type: 'geojson', data: fc(isComplete) });
+
+    map.addLayer({ id: 'non-pact-layer', type: 'circle', source: 'non-pact',
+      paint: { 'circle-radius': 5, 'circle-color': '#BBBBAA', 'circle-stroke-width': 0.5, 'circle-stroke-color': '#999988', 'circle-opacity': 0.7 }});
+    map.addLayer({ id: 'pact-uc-layer', type: 'circle', source: 'pact-uc',
+      paint: { 'circle-radius': ['interpolate',['linear'],['zoom'],9,6,13,10], 'circle-color': '#888888', 'circle-stroke-width': 2, 'circle-stroke-color': '#F7F6F2' }});
+    map.addLayer({ id: 'pact-complete-layer', type: 'circle', source: 'pact-complete',
+      paint: { 'circle-radius': ['interpolate',['linear'],['zoom'],9,6,13,10], 'circle-color': '#111111', 'circle-stroke-width': 2, 'circle-stroke-color': '#F7F6F2' }});
+
+    const tooltip = document.getElementById('tooltip');
+
+    function showTT(e, f) {
+      const p = f.properties;
+      const by = typeof p.by_year === 'string' ? JSON.parse(p.by_year) : (p.by_year || {});
+      const r25 = by['2025'] ? by['2025'].rate_per_1k : null;
+      document.getElementById('tt-name').textContent  = p.development_name;
+      document.getElementById('tt-units').textContent = p.total_units ? p.total_units.toLocaleString() : '—';
+      const rRow = document.getElementById('tt-rate-row');
+      const mRow = document.getElementById('tt-manager-row');
+      if (p.type === 'pact') {
+        rRow.style.display = p.has_data ? '' : 'none';
+        if (p.has_data) {
+          document.getElementById('tt-rate-label').textContent = 'Exec rate (2025)';
+          document.getElementById('tt-rate').textContent = r25 != null ? r25.toFixed(1) + ' / 1k' : '—';
+        }
+        mRow.style.display = '';
+        document.getElementById('tt-manager').textContent = (p.property_manager||'').split(';')[0].split('\n')[0].trim().slice(0,30)||'—';
+        document.getElementById('tt-hint').textContent = 'Click to view timeseries →';
+      } else {
+        const aggRate2025 = aggregateRates.find(r => String(r.Year).startsWith('2025'));
+        rRow.style.display = '';
+        document.getElementById('tt-rate-label').textContent = 'Group exec rate (2025)';
+        document.getElementById('tt-rate').textContent = aggRate2025
+          ? Number(aggRate2025['Non-PACT /1k units']).toFixed(2) + ' / 1k' : '—';
+        mRow.style.display = 'none';
+        document.getElementById('tt-hint').textContent = 'Non-PACT NYCHA — group aggregate only';
+      }
+      const rect = map.getContainer().getBoundingClientRect();
+      let left = e.point.x + 12, top = e.point.y - 12;
+      if (left + 260 > rect.width)  left = e.point.x - 260;
+      if (top  + 160 > rect.height) top  = e.point.y - 160;
+      tooltip.style.left = left + 'px'; tooltip.style.top = top + 'px';
+      tooltip.classList.add('visible');
+    }
+
+    ['pact-complete-layer','pact-uc-layer','non-pact-layer'].forEach(layer => {
+      map.on('mouseenter', layer, e => { map.getCanvas().style.cursor = 'pointer'; showTT(e, e.features[0]); });
+      map.on('mousemove',  layer, e => showTT(e, e.features[0]));
+      map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = ''; tooltip.classList.remove('visible'); });
+      map.on('click',      layer, e => {
+        tooltip.classList.remove('visible');
+        openPanel(e.features[0].properties);
+      });
+    });
+  });
+}
+
+// ── Detail panel ───────────────────────────────────────────────────────────────
+let panelChart = null;
+
+function openPanel(props) {
+  const by      = typeof props.by_year === 'string' ? JSON.parse(props.by_year) : (props.by_year || {});
+  const monthly = typeof props.monthly_executions === 'string' ? JSON.parse(props.monthly_executions) : (props.monthly_executions || {});
+  const convDate = props.conversion_date
+    ? new Date(props.conversion_date + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : null;
+  const mgr = (props.property_manager||'').replace(/\n/g,' ').split(';').map(s=>s.trim()).filter(Boolean).join(', ');
+  const maxRate = Math.max(0, ...Object.values(by).map(v => v.rate_per_1k||0));
+
+  const yearRows = ['2022','2023','2024','2025','2026'].map(y => {
+    const d = by[y];
+    if (!d) return `<div class="year-row"><span class="year-label">${y}</span><div class="year-bar-wrap"><div class="year-bar" style="width:0"></div></div><span class="year-rate">—</span></div>`;
+    const pct = maxRate > 0 ? (d.rate_per_1k / maxRate * 100).toFixed(1) : 0;
+    const ytd = y === '2026' ? ' <span style="color:var(--ink-light);font-size:0.6rem">YTD</span>' : '';
+    return `<div class="year-row"><span class="year-label">${y}</span><div class="year-bar-wrap"><div class="year-bar" style="width:${pct}%"></div></div><span class="year-rate">${d.rate_per_1k != null ? d.rate_per_1k.toFixed(1) : '0.0'}${ytd}</span></div>`;
+  }).join('');
+
+  document.getElementById('panel-content').innerHTML = `
+    <div class="panel-dev-name">${props.development_name}</div>
+    <span class="panel-tag">${props.type === 'pact' ? 'PACT' : 'NON-PACT NYCHA'}</span>
+    <div class="panel-meta">
+      ${props.total_units ? `<div><strong>${props.total_units.toLocaleString()}</strong> residential units</div>` : ''}
+      ${convDate ? `<div>Converted: <strong>${convDate}</strong></div>` : ''}
+      ${mgr ? `<div>Manager: <strong>${mgr}</strong></div>` : ''}
+      ${props.status && props.status !== 'Non-PACT NYCHA' ? `<div>Status: <strong>${props.status}</strong></div>` : ''}
+    </div>
+    ${props.has_data ? `
+      <hr class="panel-divider">
+      <div class="panel-section-label">MONTHLY EXECUTIONS</div>
+      <div class="panel-chart-wrap"><canvas id="panel-monthly-chart"></canvas></div>
+      <hr class="panel-divider">
+      <div class="panel-section-label">ANNUAL RATE PER 1,000 UNITS</div>
+      <div class="year-rows">${yearRows}</div>
+      <hr class="panel-divider">
+      <div class="panel-section-label">CASE TYPE (ALL YEARS)</div>
+      <div class="panel-meta" style="margin-top:.25rem">
+        <div>Non-payment: <strong>${props.nonpayment_executions}</strong></div>
+        <div>Holdover: <strong>${props.holdover_executions}</strong></div>
+        <div>Total executions: <strong>${props.total_executions}</strong></div>
+      </div>
+    ` : `<hr class="panel-divider"><div class="panel-no-data">Individual eviction data<br>not yet available for<br>this development.</div>`}
+  `;
+
+  document.getElementById('detail-panel').classList.add('open');
+
+  if (props.has_data && Object.keys(monthly).length > 0) {
+    if (panelChart) { panelChart.destroy(); panelChart = null; }
+
+    // Build full monthly spine from Jan 2022 to latest month with data
+    const allMonths = Object.keys(monthly).sort();
+    const start = '2022-01', end = allMonths[allMonths.length - 1];
+    const labels = [], counts = [], bgColors = [];
+    let cur = new Date(start + '-01');
+    const endD = new Date(end + '-01');
+    const convD = props.conversion_date ? new Date(props.conversion_date + 'T00:00:00') : null;
+
+    while (cur <= endD) {
+      const key = cur.toISOString().slice(0,7);
+      labels.push(key);
+      counts.push(monthly[key] || 0);
+      // Bars after conversion date are darker
+      const isPost = convD ? cur >= convD : true;
+      bgColors.push(isPost ? '#111111' : '#BBBBBB');
+      cur.setMonth(cur.getMonth() + 1);
+    }
+
+    // Vertical line plugin for conversion date
+    const convLinePlugin = {
+      id: 'convLine',
+      afterDraw(chart) {
+        if (!convD) return;
+        const convKey = convD.toISOString().slice(0,7);
+        const idx = labels.indexOf(convKey);
+        if (idx < 0) return;
+        const { ctx, chartArea: { top, bottom } } = chart;
+        const x = chart.getDatasetMeta(0).data[idx]?.x;
+        if (x == null) return;
+        ctx.save();
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+        ctx.restore();
+      }
+    };
+
+    panelChart = new Chart(document.getElementById('panel-monthly-chart'), {
+      type: 'bar',
+      data: { labels, datasets: [{ data: counts, backgroundColor: bgColors, borderWidth: 0 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#F7F6F2', borderColor: '#111', borderWidth: 1,
+            titleColor: '#111', bodyColor: '#555',
+            titleFont: { family: "'IBM Plex Mono',monospace", size: 10 },
+            bodyFont:  { family: "'IBM Plex Mono',monospace", size: 10 },
+            callbacks: { title: t => t[0].label, label: t => ` ${t.parsed.y} execution${t.parsed.y !== 1 ? 's' : ''}` }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              font: { family: "'IBM Plex Mono',monospace", size: 8 }, color: '#999',
+              maxRotation: 0,
+              callback(val, i) {
+                const lbl = labels[i];
+                return lbl && lbl.endsWith('-01') ? lbl.slice(0,4) : '';
+              }
+            },
+            grid: { display: false }
+          },
+          y: {
+            beginAtZero: true, ticks: { stepSize: 1, precision: 0,
+              font: { family: "'IBM Plex Mono',monospace", size: 9 }, color: '#999' },
+            grid: { color: 'rgba(0,0,0,0.04)' }
+          }
+        }
+      },
+      plugins: [convLinePlugin]
+    });
+  }
+}
+
+document.getElementById('panel-close').addEventListener('click', () => {
+  document.getElementById('detail-panel').classList.remove('open');
+  if (panelChart) { panelChart.destroy(); panelChart = null; }
+});
+
+// ── Charts ─────────────────────────────────────────────────────────────────────
+const CHART_OPTS = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false }, tooltip: {
+    backgroundColor:'#F7F6F2', borderColor:'#111111', borderWidth:1,
+    titleColor:'#111111', bodyColor:'#555555',
+    titleFont:{family:"'IBM Plex Mono',monospace",size:11},
+    bodyFont:{family:"'IBM Plex Mono',monospace",size:11}, padding:10,
+  }},
+  scales: {
+    x: { grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{family:"'IBM Plex Mono',monospace",size:10},color:'#999'} },
+    y: { grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{family:"'IBM Plex Mono',monospace",size:10},color:'#999'}, beginAtZero:true },
+  }
+};
+const LINE = (color, dashed=false) => ({
+  borderColor:color, backgroundColor:color+'18', borderWidth:2,
+  borderDash: dashed ? [5,4] : [], pointBackgroundColor:color,
+  pointRadius:4, pointHoverRadius:6, tension:0.3, fill:false,
+});
+
+function buildCharts() {
+  if (chartsDone) return;
+  chartsDone = true;
+  const labels       = aggregateRates.map(r => String(r.Year));
+  const completeRates = aggregateRates.map(r => r['PACT Complete /1k units']);
+  const ctrlRates    = aggregateRates.map(r => r['Non-PACT /1k units']);
+  const pactCounts   = aggregateRates.map(r => r['PACT exec']);
+  const ctrlCounts   = aggregateRates.map(r => r['Non-PACT exec']);
+
+  new Chart(document.getElementById('chart-rate'), { type:'line', data:{labels,
+    datasets:[{label:'PACT Construction Complete',data:completeRates,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlRates,...LINE('#999999',true)}]},
+    options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
+      callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(2) : '—'} / 1k units`}}}}});
+
+  new Chart(document.getElementById('chart-count'), { type:'line', data:{labels,
+    datasets:[{label:'PACT Construction Complete',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
+    options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
+      callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} executions`}}}}});
+}
+
+// ── Full-screen chart overlay ───────────────────────────────────────────────────
+let expandedChart = null;
+let _currentChartType = null;
+
+function getCompleteMonthly() {
+  const complete = developments.filter(f =>
+    f.properties.type === 'pact' && (f.properties.status || '').includes('Complete')
+  );
+  const totalUnits = complete.reduce((s, f) => s + (f.properties.total_units || 0), 0);
+  const monthly = {};
+  for (const f of complete) {
+    const me = typeof f.properties.monthly_executions === 'string'
+      ? JSON.parse(f.properties.monthly_executions)
+      : (f.properties.monthly_executions || {});
+    for (const [k, v] of Object.entries(me)) { monthly[k] = (monthly[k] || 0) + v; }
+  }
+  return { monthly, totalUnits };
+}
+
+function buildMonthSpine(start, end) {
+  const spine = [];
+  let cur = new Date(start + '-01');
+  const endD = new Date(end + '-01');
+  while (cur <= endD) {
+    spine.push(cur.toISOString().slice(0, 7));
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  return spine;
+}
+
+function makeCovidPlugin(labels) {
+  return {
+    id: 'covidShade',
+    beforeDraw(chart) {
+      const i2020 = labels.indexOf('2020'), i2021 = labels.indexOf('2021');
+      if (i2020 < 0 || i2021 < 0) return;
+      const { ctx, chartArea: { top, bottom } } = chart;
+      const meta = chart.getDatasetMeta(0);
+      const x0 = meta.data[i2020]?.x, x1 = meta.data[i2021]?.x;
+      if (x0 == null || x1 == null) return;
+      const half = (meta.data[1]?.x - meta.data[0]?.x || 30) / 2;
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.04)';
+      ctx.fillRect(x0 - half, top, (x1 - x0) + half * 2, bottom - top);
+      ctx.font = "10px 'IBM Plex Mono',monospace";
+      ctx.fillStyle = '#BBBBBB';
+      ctx.fillText('COVID moratorium', x0 - half + 4, top + 14);
+      ctx.restore();
+    }
+  };
+}
+
+function renderExpandedChart(type, resolution) {
+  const mono = "'IBM Plex Mono',monospace";
+  if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+
+  let labels, datasets, tooltipCb, chartPlugins = [];
+  const isRate = type === 'rate';
+
+  if (resolution === 'yearly') {
+    labels = aggregateRates.map(r => String(r.Year));
+    const completeVals = aggregateRates.map(r => isRate ? r['PACT Complete /1k units'] : r['PACT exec']);
+    const ctrlVals     = aggregateRates.map(r => isRate ? r['Non-PACT /1k units']       : r['Non-PACT exec']);
+    datasets = [
+      { label:'PACT Construction Complete', data:completeVals, ...LINE('#111111') },
+      { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#999999', isRate) },
+    ];
+    tooltipCb = isRate
+      ? c => ` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(2) : '—'} / 1k / yr`
+      : c => ` ${c.dataset.label}: ${c.parsed.y} executions`;
+    chartPlugins = [makeCovidPlugin(labels)];
+  } else {
+    const periodMonths = resolution === 'monthly' ? 1 : resolution === '3mo' ? 3 : 6;
+    const { monthly: completeMo, totalUnits: completeUnits } = getCompleteMonthly();
+    const ctrlMonths = controlMonthly.monthly || {};
+    const ctrlUnits  = controlMonthly.units || 1;
+
+    const allKeys = [...Object.keys(completeMo), ...Object.keys(ctrlMonths)].sort();
+    if (!allKeys.length) return;
+    const spine = buildMonthSpine('2017-01', allKeys[allKeys.length - 1]);
+
+    const periodLabels = [], completeVals = [], ctrlVals = [];
+    const pStarts = [], pEnds = [];
+
+    for (let i = 0; i < spine.length; i += periodMonths) {
+      const keys = spine.slice(i, i + periodMonths);
+      if (!keys.length) continue;
+      pStarts.push(keys[0]);
+      pEnds.push(keys[keys.length - 1]);
+
+      const cExec = keys.reduce((s, k) => s + (completeMo[k] || 0), 0);
+      const nExec = keys.reduce((s, k) => s + ((ctrlMonths[k] || {}).executions || 0), 0);
+
+      if (isRate) {
+        const ann = 12 / periodMonths;
+        completeVals.push(completeUnits > 0 ? +((cExec / completeUnits * 1000 * ann).toFixed(2)) : null);
+        ctrlVals.push(+((nExec / ctrlUnits * 1000 * ann).toFixed(2)));
+      } else {
+        completeVals.push(cExec);
+        ctrlVals.push(nExec);
+      }
+
+      const d = new Date(keys[0] + '-01');
+      const mo = d.getMonth();
+      if (periodMonths === 1) {
+        periodLabels.push(mo === 0 ? String(d.getFullYear()) : '');
+      } else if (periodMonths === 3) {
+        const q = ['Q1','Q2','Q3','Q4'][Math.floor(mo / 3)];
+        periodLabels.push(mo === 0 ? `${d.getFullYear()} Q1` : q);
+      } else {
+        periodLabels.push(mo === 0 ? `${d.getFullYear()} H1` : 'H2');
+      }
+    }
+
+    labels = periodLabels;
+    datasets = [
+      { label:'PACT Construction Complete', data:completeVals, ...LINE('#111111') },
+      { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#999999', isRate) },
+    ];
+    const suffix = isRate ? '/ 1k / yr (ann.)' : 'executions';
+    tooltipCb = c => {
+      const v = c.parsed.y;
+      return ` ${c.dataset.label}: ${v != null ? (isRate ? v.toFixed(2) : v) : '—'} ${suffix}`;
+    };
+
+    const iS = pEnds.findIndex(k => k >= '2020-03');
+    let iE = -1;
+    for (let j = pStarts.length - 1; j >= 0; j--) {
+      if (pStarts[j] <= '2021-12') { iE = j; break; }
+    }
+    if (iS >= 0 && iE >= 0) {
+      chartPlugins = [{
+        id: 'covidShade',
+        beforeDraw(chart) {
+          const { ctx, chartArea: { top, bottom } } = chart;
+          const meta = chart.getDatasetMeta(0);
+          if (!meta.data[iS] || !meta.data[iE]) return;
+          const step = meta.data.length > 1
+            ? Math.abs((meta.data[1]?.x || 0) - (meta.data[0]?.x || 0)) / 2 : 10;
+          const x0 = meta.data[iS].x - step, x1 = meta.data[iE].x + step;
+          ctx.save();
+          ctx.fillStyle = 'rgba(0,0,0,0.04)';
+          ctx.fillRect(x0, top, x1 - x0, bottom - top);
+          ctx.font = "9px 'IBM Plex Mono',monospace";
+          ctx.fillStyle = '#BBBBBB';
+          ctx.fillText('COVID', x0 + 4, top + 12);
+          ctx.restore();
+        }
+      }];
+    }
+  }
+
+  expandedChart = new Chart(document.getElementById('cfo-canvas'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor:'#F7F6F2', borderColor:'#111111', borderWidth:1,
+          titleColor:'#111111', bodyColor:'#555555',
+          titleFont:{ family:mono, size:12 },
+          bodyFont:{ family:mono, size:12 }, padding:10,
+          callbacks: { label: tooltipCb }
+        }
+      },
+      scales: {
+        x: {
+          grid:  { color:'rgba(0,0,0,0.04)' },
+          ticks: {
+            font:{ family:mono, size:11 }, color:'#999',
+            maxRotation: 0,
+            callback(val, i) { return labels[i] !== undefined ? labels[i] : ''; }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grid:  { color:'rgba(0,0,0,0.04)' },
+          ticks: { font:{ family:mono, size:11 }, color:'#999' }
+        }
+      }
+    },
+    plugins: chartPlugins
+  });
+}
+
+function openChartOverlay(type) {
+  _currentChartType = type;
+  const isRate = type === 'rate';
+  document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';
+  document.getElementById('cfo-subtitle').textContent = isRate
+    ? 'Marshal-executed evictions / residential units × 1,000 · annual or annualized'
+    : 'Raw count of marshal-executed evictions';
+  document.getElementById('cfo-legend').innerHTML = isRate ? `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>` : `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999"></div>Non-PACT NYCHA</div>`;
+  document.getElementById('cfo-resolution').value = 'yearly';
+  renderExpandedChart(type, 'yearly');
+  document.getElementById('chart-full-overlay').classList.add('open');
+}
+
+document.getElementById('cfo-close').addEventListener('click', () => {
+  document.getElementById('chart-full-overlay').classList.remove('open');
+  if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+});
+
+document.getElementById('cfo-resolution').addEventListener('change', e => {
+  if (_currentChartType) renderExpandedChart(_currentChartType, e.target.value);
+});
+
+document.querySelectorAll('.chart-card-clickable').forEach(card => {
+  card.addEventListener('click', () => openChartOverlay(card.dataset.chart));
+});
+
+// ── Table ──────────────────────────────────────────────────────────────────────
+let sortState = { col:'r2025', dir:'desc' };
+let tableRows = [];
+
+function buildTable() {
+  tableRows = developments
+    .filter(f => f.properties.type === 'pact')
+    .map(f => {
+      const p = f.properties;
+      const by = typeof p.by_year === 'string' ? JSON.parse(p.by_year) : (p.by_year||{});
+      const g = y => by[y] ? by[y].rate_per_1k : null;
+      return { development_name:p.development_name,
+        property_manager:(p.property_manager||'').split(';')[0].split('\n')[0].trim(),
+        status:p.status, total_units:p.total_units, has_data:p.has_data,
+        r2022:g('2022'),r2023:g('2023'),r2024:g('2024'),r2025:g('2025'),r2026:g('2026') };
+    });
+  renderTable();
+
+  document.querySelectorAll('#pact-table th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      sortState.dir = sortState.col===th.dataset.col ? (sortState.dir==='asc'?'desc':'asc') : (th.dataset.col.startsWith('r')?'desc':'asc');
+      sortState.col = th.dataset.col;
+      renderTable();
+    });
+  });
+}
+
+function rClass(v) { return v==null?'':v>=15?'rate-high':v>=8?'rate-mid':'rate-low'; }
+function fmt(v)    { return v!=null ? `<span class="rate-cell ${rClass(v)}">${v.toFixed(1)}</span>` : '<span style="color:var(--ink-light)">—</span>'; }
+
+function renderTable() {
+  const {col,dir} = sortState;
+  tableRows.sort((a,b)=>{
+    const av=a[col]??(dir==='asc'?Infinity:-Infinity), bv=b[col]??(dir==='asc'?Infinity:-Infinity);
+    return typeof av==='string'?(dir==='asc'?av.localeCompare(bv):bv.localeCompare(av)):(dir==='asc'?av-bv:bv-av);
+  });
+  document.getElementById('pact-tbody').innerHTML = tableRows.map(r => {
+    const st = (r.status||'').replace('Construction Complete','Complete').replace('Under Construction','Const.');
+    return `<tr ${r.has_data?'':'style="opacity:0.5"'}>
+      <td><div class="dev-name">${r.development_name}</div><div class="manager-name">${r.property_manager||'—'}</div></td>
+      <td><span class="status-pill">${st}</span></td>
+      <td class="num">${r.total_units?r.total_units.toLocaleString():'—'}</td>
+      <td class="num">${fmt(r.r2022)}</td><td class="num">${fmt(r.r2023)}</td>
+      <td class="num">${fmt(r.r2024)}</td><td class="num">${fmt(r.r2025)}</td>
+      <td class="num">${fmt(r.r2026)}</td></tr>`;
+  }).join('');
+  document.querySelectorAll('#pact-table th').forEach(th=>{
+    th.classList.remove('sort-asc','sort-desc');
+    if(th.dataset.col===sortState.col) th.classList.add(sortState.dir==='asc'?'sort-asc':'sort-desc');
+  });
+}
+
+// ── Methodology markdown ───────────────────────────────────────────────────────
+async function loadMethodology() {
+  const el = document.getElementById('methodology-content');
+  el.dataset.loaded = '1';
+  try {
+    const md = await fetch('methodology.md').then(r => r.text());
+    // Strip the top-level H1 (already shown in intro) and front-matter lines
+    const body = md.replace(/^#[^#].*\n/, '').replace(/\*\*Produced:.*\n/,'').replace(/\*\*Analyst:.*\n/,'').replace(/\*\*Output file:.*\n/,'');
+    el.innerHTML = marked.parse(body);
+    // Make all links open in new tab
+    el.querySelectorAll('a').forEach(a => { a.target='_blank'; a.rel='noopener'; });
+    // Wire up inline tab links rendered from markdown (won't be in the DOM until now)
+    el.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  } catch (err) {
+    el.innerHTML = '<p style="color:var(--ink-light)">Failed to load methodology.</p>';
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+loadData().then(() => {
+  populateStats();
+  initMap();
+  buildCharts();
+  buildTable();
+}).catch(err => console.error('Data load failed:', err));
+</script>
+</body>
+</html>

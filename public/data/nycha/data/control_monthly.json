@@ -1,0 +1,457 @@
+{
+  "units": 166759,
+  "monthly": {
+    "2017-01": {
+      "executions": 63,
+      "rate_per_1k": 0.378
+    },
+    "2017-02": {
+      "executions": 51,
+      "rate_per_1k": 0.306
+    },
+    "2017-03": {
+      "executions": 75,
+      "rate_per_1k": 0.45
+    },
+    "2017-04": {
+      "executions": 77,
+      "rate_per_1k": 0.462
+    },
+    "2017-05": {
+      "executions": 72,
+      "rate_per_1k": 0.432
+    },
+    "2017-06": {
+      "executions": 64,
+      "rate_per_1k": 0.384
+    },
+    "2017-07": {
+      "executions": 39,
+      "rate_per_1k": 0.234
+    },
+    "2017-08": {
+      "executions": 61,
+      "rate_per_1k": 0.366
+    },
+    "2017-09": {
+      "executions": 33,
+      "rate_per_1k": 0.198
+    },
+    "2017-10": {
+      "executions": 74,
+      "rate_per_1k": 0.444
+    },
+    "2017-11": {
+      "executions": 50,
+      "rate_per_1k": 0.3
+    },
+    "2017-12": {
+      "executions": 45,
+      "rate_per_1k": 0.27
+    },
+    "2018-01": {
+      "executions": 55,
+      "rate_per_1k": 0.33
+    },
+    "2018-02": {
+      "executions": 60,
+      "rate_per_1k": 0.36
+    },
+    "2018-03": {
+      "executions": 79,
+      "rate_per_1k": 0.474
+    },
+    "2018-04": {
+      "executions": 62,
+      "rate_per_1k": 0.372
+    },
+    "2018-05": {
+      "executions": 73,
+      "rate_per_1k": 0.438
+    },
+    "2018-06": {
+      "executions": 63,
+      "rate_per_1k": 0.378
+    },
+    "2018-07": {
+      "executions": 85,
+      "rate_per_1k": 0.51
+    },
+    "2018-08": {
+      "executions": 67,
+      "rate_per_1k": 0.402
+    },
+    "2018-09": {
+      "executions": 48,
+      "rate_per_1k": 0.288
+    },
+    "2018-10": {
+      "executions": 71,
+      "rate_per_1k": 0.426
+    },
+    "2018-11": {
+      "executions": 44,
+      "rate_per_1k": 0.264
+    },
+    "2018-12": {
+      "executions": 29,
+      "rate_per_1k": 0.174
+    },
+    "2019-01": {
+      "executions": 56,
+      "rate_per_1k": 0.336
+    },
+    "2019-02": {
+      "executions": 72,
+      "rate_per_1k": 0.432
+    },
+    "2019-03": {
+      "executions": 71,
+      "rate_per_1k": 0.426
+    },
+    "2019-04": {
+      "executions": 51,
+      "rate_per_1k": 0.306
+    },
+    "2019-05": {
+      "executions": 83,
+      "rate_per_1k": 0.498
+    },
+    "2019-06": {
+      "executions": 60,
+      "rate_per_1k": 0.36
+    },
+    "2019-07": {
+      "executions": 61,
+      "rate_per_1k": 0.366
+    },
+    "2019-08": {
+      "executions": 49,
+      "rate_per_1k": 0.294
+    },
+    "2019-09": {
+      "executions": 49,
+      "rate_per_1k": 0.294
+    },
+    "2019-10": {
+      "executions": 74,
+      "rate_per_1k": 0.444
+    },
+    "2019-11": {
+      "executions": 70,
+      "rate_per_1k": 0.42
+    },
+    "2019-12": {
+      "executions": 27,
+      "rate_per_1k": 0.162
+    },
+    "2020-01": {
+      "executions": 66,
+      "rate_per_1k": 0.396
+    },
+    "2020-02": {
+      "executions": 55,
+      "rate_per_1k": 0.33
+    },
+    "2020-03": {
+      "executions": 21,
+      "rate_per_1k": 0.126
+    },
+    "2020-04": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-05": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-06": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-07": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-08": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-09": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-10": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-11": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2020-12": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-01": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-02": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-03": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-04": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-05": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-06": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-07": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-08": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-09": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-10": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-11": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2021-12": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-01": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-02": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-03": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-04": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-05": {
+      "executions": 1,
+      "rate_per_1k": 0.006
+    },
+    "2022-06": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-07": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-08": {
+      "executions": 1,
+      "rate_per_1k": 0.006
+    },
+    "2022-09": {
+      "executions": 1,
+      "rate_per_1k": 0.006
+    },
+    "2022-10": {
+      "executions": 0,
+      "rate_per_1k": 0.0
+    },
+    "2022-11": {
+      "executions": 1,
+      "rate_per_1k": 0.006
+    },
+    "2022-12": {
+      "executions": 1,
+      "rate_per_1k": 0.006
+    },
+    "2023-01": {
+      "executions": 2,
+      "rate_per_1k": 0.012
+    },
+    "2023-02": {
+      "executions": 2,
+      "rate_per_1k": 0.012
+    },
+    "2023-03": {
+      "executions": 2,
+      "rate_per_1k": 0.012
+    },
+    "2023-04": {
+      "executions": 2,
+      "rate_per_1k": 0.012
+    },
+    "2023-05": {
+      "executions": 3,
+      "rate_per_1k": 0.018
+    },
+    "2023-06": {
+      "executions": 5,
+      "rate_per_1k": 0.03
+    },
+    "2023-07": {
+      "executions": 5,
+      "rate_per_1k": 0.03
+    },
+    "2023-08": {
+      "executions": 5,
+      "rate_per_1k": 0.03
+    },
+    "2023-09": {
+      "executions": 10,
+      "rate_per_1k": 0.06
+    },
+    "2023-10": {
+      "executions": 8,
+      "rate_per_1k": 0.048
+    },
+    "2023-11": {
+      "executions": 10,
+      "rate_per_1k": 0.06
+    },
+    "2023-12": {
+      "executions": 14,
+      "rate_per_1k": 0.084
+    },
+    "2024-01": {
+      "executions": 20,
+      "rate_per_1k": 0.12
+    },
+    "2024-02": {
+      "executions": 34,
+      "rate_per_1k": 0.204
+    },
+    "2024-03": {
+      "executions": 13,
+      "rate_per_1k": 0.078
+    },
+    "2024-04": {
+      "executions": 30,
+      "rate_per_1k": 0.18
+    },
+    "2024-05": {
+      "executions": 26,
+      "rate_per_1k": 0.156
+    },
+    "2024-06": {
+      "executions": 20,
+      "rate_per_1k": 0.12
+    },
+    "2024-07": {
+      "executions": 24,
+      "rate_per_1k": 0.144
+    },
+    "2024-08": {
+      "executions": 15,
+      "rate_per_1k": 0.09
+    },
+    "2024-09": {
+      "executions": 6,
+      "rate_per_1k": 0.036
+    },
+    "2024-10": {
+      "executions": 25,
+      "rate_per_1k": 0.15
+    },
+    "2024-11": {
+      "executions": 13,
+      "rate_per_1k": 0.078
+    },
+    "2024-12": {
+      "executions": 26,
+      "rate_per_1k": 0.156
+    },
+    "2025-01": {
+      "executions": 17,
+      "rate_per_1k": 0.102
+    },
+    "2025-02": {
+      "executions": 23,
+      "rate_per_1k": 0.138
+    },
+    "2025-03": {
+      "executions": 22,
+      "rate_per_1k": 0.132
+    },
+    "2025-04": {
+      "executions": 25,
+      "rate_per_1k": 0.15
+    },
+    "2025-05": {
+      "executions": 15,
+      "rate_per_1k": 0.09
+    },
+    "2025-06": {
+      "executions": 15,
+      "rate_per_1k": 0.09
+    },
+    "2025-07": {
+      "executions": 52,
+      "rate_per_1k": 0.312
+    },
+    "2025-08": {
+      "executions": 23,
+      "rate_per_1k": 0.138
+    },
+    "2025-09": {
+      "executions": 41,
+      "rate_per_1k": 0.246
+    },
+    "2025-10": {
+      "executions": 35,
+      "rate_per_1k": 0.21
+    },
+    "2025-11": {
+      "executions": 21,
+      "rate_per_1k": 0.126
+    },
+    "2025-12": {
+      "executions": 22,
+      "rate_per_1k": 0.132
+    },
+    "2026-01": {
+      "executions": 21,
+      "rate_per_1k": 0.126
+    },
+    "2026-02": {
+      "executions": 22,
+      "rate_per_1k": 0.132
+    },
+    "2026-03": {
+      "executions": 46,
+      "rate_per_1k": 0.276
+    },
+    "2026-04": {
+      "executions": 39,
+      "rate_per_1k": 0.234
+    },
+    "2026-05": {
+      "executions": 18,
+      "rate_per_1k": 0.108
+    }
+  }
+}

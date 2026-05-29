@@ -1,0 +1,122 @@
+[
+  {
+    "Year": "2017",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 41,
+    "PACT /1k units": 2.5,
+    "PACT Complete /1k units": 6.52,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 627,
+    "Non-PACT /1k units": 3.76,
+    "Ratio (PACT:non-PACT)": 1.7
+  },
+  {
+    "Year": "2018",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 37,
+    "PACT /1k units": 2.26,
+    "PACT Complete /1k units": 5.88,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 672,
+    "Non-PACT /1k units": 4.03,
+    "Ratio (PACT:non-PACT)": 1.5
+  },
+  {
+    "Year": "2019",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 25,
+    "PACT /1k units": 1.53,
+    "PACT Complete /1k units": 3.97,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 643,
+    "Non-PACT /1k units": 3.86,
+    "Ratio (PACT:non-PACT)": 1.0
+  },
+  {
+    "Year": "2020",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 4,
+    "PACT /1k units": 0.24,
+    "PACT Complete /1k units": 0.64,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 132,
+    "Non-PACT /1k units": 0.79,
+    "Ratio (PACT:non-PACT)": 0.8
+  },
+  {
+    "Year": "2021",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 0,
+    "PACT /1k units": 0.0,
+    "PACT Complete /1k units": 0.0,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 0,
+    "Non-PACT /1k units": 0.0,
+    "Ratio (PACT:non-PACT)": null
+  },
+  {
+    "Year": "2022",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 10,
+    "PACT /1k units": 0.61,
+    "PACT Complete /1k units": 1.59,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 5,
+    "Non-PACT /1k units": 0.03,
+    "Ratio (PACT:non-PACT)": 53.0
+  },
+  {
+    "Year": "2023",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 50,
+    "PACT /1k units": 3.05,
+    "PACT Complete /1k units": 7.95,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 63,
+    "Non-PACT /1k units": 0.38,
+    "Ratio (PACT:non-PACT)": 20.9
+  },
+  {
+    "Year": "2024",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 96,
+    "PACT /1k units": 5.86,
+    "PACT Complete /1k units": 14.31,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 238,
+    "Non-PACT /1k units": 1.43,
+    "Ratio (PACT:non-PACT)": 10.0
+  },
+  {
+    "Year": "2025",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 122,
+    "PACT /1k units": 7.45,
+    "PACT Complete /1k units": 17.81,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 305,
+    "Non-PACT /1k units": 1.83,
+    "Ratio (PACT:non-PACT)": 9.7
+  },
+  {
+    "Year": "2026 (YTD)",
+    "PACT devs": 29,
+    "PACT units": "16,372",
+    "PACT exec": 66,
+    "PACT /1k units": 4.03,
+    "PACT Complete /1k units": 7.95,
+    "Non-PACT units": "166,759",
+    "Non-PACT exec": 146,
+    "Non-PACT /1k units": 0.88,
+    "Ratio (PACT:non-PACT)": 9.0
+  }
+]
