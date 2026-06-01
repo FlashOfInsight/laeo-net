@@ -140,6 +140,18 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA</div>
         </div>
       </div>
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="rodent">
+        <div class="chart-card-header">
+          <div class="chart-title">RODENT INSPECTION FAILURE RATE</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">% of DOHMH inspections failing for rat activity · annual</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-rodent"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT Construction Complete</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -416,17 +428,19 @@ if (initTab !== 'analysis') switchTab(initTab);
 
 
 // ── Data loading ───────────────────────────────────────────────────────────────
-let developments = [], aggregateRates = [], controlMonthly = {}, mapInitialised = false, chartsDone = false;
+let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], mapInitialised = false, chartsDone = false;
 
 async function loadData() {
-  const [geoRes, ratesRes, ctrlRes] = await Promise.all([
+  const [geoRes, ratesRes, ctrlRes, rodentRes] = await Promise.all([
     fetch('data/developments.geojson'),
     fetch('data/aggregate_rates.json'),
     fetch('data/control_monthly.json'),
+    fetch('data/rodent_aggregate.json'),
   ]);
-  developments   = (await geoRes.json()).features;
-  aggregateRates = await ratesRes.json();
-  controlMonthly = await ctrlRes.json();
+  developments    = (await geoRes.json()).features;
+  aggregateRates  = await ratesRes.json();
+  controlMonthly  = await ctrlRes.json();
+  rodentAggregate = await rodentRes.json();
 }
 
 // ── Key stats ─────────────────────────────────────────────────────────────────
@@ -524,6 +538,7 @@ let panelChart = null;
 function openPanel(props) {
   const by      = typeof props.by_year === 'string' ? JSON.parse(props.by_year) : (props.by_year || {});
   const monthly = typeof props.monthly_executions === 'string' ? JSON.parse(props.monthly_executions) : (props.monthly_executions || {});
+  const rodent  = typeof props.rodent_data === 'string' ? JSON.parse(props.rodent_data) : (props.rodent_data || null);
   const convDate = props.conversion_date
     ? new Date(props.conversion_date + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : null;
   const mgr = (props.property_manager||'').replace(/\n/g,' ').split(';').map(s=>s.trim()).filter(Boolean).join(', ');
@@ -560,6 +575,13 @@ function openPanel(props) {
         <div>Holdover: <strong>${props.holdover_executions}</strong></div>
         <div>Total executions: <strong>${props.total_executions}</strong></div>
       </div>
+      ${rodent ? `
+      <hr class="panel-divider">
+      <div class="panel-section-label">RODENT INSPECTIONS</div>
+      <div class="panel-meta" style="margin-top:.25rem">
+        <div>Total inspections: <strong>${rodent.total_inspections}</strong></div>
+        <div>Rat activity failures: <strong>${rodent.total_rat_fails}</strong> (${rodent.fail_rate_pct}%)</div>
+      </div>` : ''}
     ` : `<hr class="panel-divider"><div class="panel-no-data">Individual eviction data<br>not yet available for<br>this development.</div>`}
   `;
 
@@ -698,6 +720,16 @@ function buildCharts() {
     datasets:[{label:'PACT Construction Complete',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
       callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} executions`}}}}});
+
+  const rodentLabels   = rodentAggregate.map(r => String(r.year));
+  const rodentComplete = rodentAggregate.map(r => r.pact_complete.fail_rate_pct);
+  const rodentCtrl     = rodentAggregate.map(r => r.non_pact.fail_rate_pct);
+  new Chart(document.getElementById('chart-rodent'), { type:'line', data:{labels: rodentLabels,
+    datasets:[{label:'PACT Construction Complete',data:rodentComplete,...LINE('#111111')},{label:'Non-PACT NYCHA',data:rodentCtrl,...LINE('#999999',true)}]},
+    options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
+      callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(1)+'%' : '—'} fail rate`}}},
+      scales:{...CHART_OPTS.scales,y:{...CHART_OPTS.scales.y,
+        ticks:{...CHART_OPTS.scales.y.ticks,callback:v=>v+'%'}}}}});
 }
 
 // ── Full-screen chart overlay ───────────────────────────────────────────────────
@@ -759,7 +791,17 @@ function renderExpandedChart(type, resolution) {
   let labels, datasets, tooltipCb, chartPlugins = [];
   const isRate = type === 'rate';
 
-  if (resolution === 'yearly') {
+  if (type === 'rodent') {
+    labels = rodentAggregate.map(r => String(r.year));
+    const completeVals = rodentAggregate.map(r => r.pact_complete.fail_rate_pct);
+    const ctrlVals     = rodentAggregate.map(r => r.non_pact.fail_rate_pct);
+    datasets = [
+      { label:'PACT Construction Complete', data:completeVals, ...LINE('#111111') },
+      { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#999999', true) },
+    ];
+    tooltipCb = c => ` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(1)+'%' : '—'} fail rate`;
+    chartPlugins = [makeCovidPlugin(labels)];
+  } else if (resolution === 'yearly') {
     labels = aggregateRates.map(r => String(r.Year));
     const completeVals = isRate
       ? ytdAnnualize(aggregateRates.map(r => r['PACT Complete /1k units']))
@@ -894,18 +936,31 @@ function renderExpandedChart(type, resolution) {
 
 function openChartOverlay(type) {
   _currentChartType = type;
-  const isRate = type === 'rate';
-  document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';
-  document.getElementById('cfo-subtitle').textContent = isRate
-    ? 'Marshal-executed evictions / residential units × 1,000 · annual or annualized'
-    : 'Raw count of marshal-executed evictions';
-  document.getElementById('cfo-legend').innerHTML = isRate ? `
+  const resEl = document.getElementById('cfo-resolution');
+  resEl.style.display = type === 'rodent' ? 'none' : '';
+
+  const legendDashed = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>` : `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>`;
+  const legendSolid = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999"></div>Non-PACT NYCHA</div>`;
-  document.getElementById('cfo-resolution').value = 'yearly';
-  renderExpandedChart(type, 'yearly');
+
+  if (type === 'rodent') {
+    document.getElementById('cfo-title').textContent    = 'RODENT INSPECTION FAILURE RATE';
+    document.getElementById('cfo-subtitle').textContent = '% of DOHMH inspections failing for rat activity · annual';
+    document.getElementById('cfo-legend').innerHTML     = legendDashed;
+    renderExpandedChart('rodent', 'yearly');
+  } else {
+    const isRate = type === 'rate';
+    document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';
+    document.getElementById('cfo-subtitle').textContent = isRate
+      ? 'Marshal-executed evictions / residential units × 1,000 · annual or annualized'
+      : 'Raw count of marshal-executed evictions';
+    document.getElementById('cfo-legend').innerHTML     = isRate ? legendDashed : legendSolid;
+    resEl.value = 'yearly';
+    renderExpandedChart(type, 'yearly');
+  }
   document.getElementById('chart-full-overlay').classList.add('open');
 }
 

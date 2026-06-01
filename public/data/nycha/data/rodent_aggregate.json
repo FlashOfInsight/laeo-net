@@ -1,0 +1,223 @@
+[
+  {
+    "year": "2010",
+    "pact_complete": {
+      "inspections": 42,
+      "rat_fails": 13,
+      "fail_rate_pct": 31.0
+    },
+    "non_pact": {
+      "inspections": 474,
+      "rat_fails": 162,
+      "fail_rate_pct": 34.2
+    }
+  },
+  {
+    "year": "2011",
+    "pact_complete": {
+      "inspections": 34,
+      "rat_fails": 8,
+      "fail_rate_pct": 23.5
+    },
+    "non_pact": {
+      "inspections": 472,
+      "rat_fails": 161,
+      "fail_rate_pct": 34.1
+    }
+  },
+  {
+    "year": "2012",
+    "pact_complete": {
+      "inspections": 26,
+      "rat_fails": 4,
+      "fail_rate_pct": 15.4
+    },
+    "non_pact": {
+      "inspections": 479,
+      "rat_fails": 138,
+      "fail_rate_pct": 28.8
+    }
+  },
+  {
+    "year": "2013",
+    "pact_complete": {
+      "inspections": 17,
+      "rat_fails": 4,
+      "fail_rate_pct": 23.5
+    },
+    "non_pact": {
+      "inspections": 455,
+      "rat_fails": 145,
+      "fail_rate_pct": 31.9
+    }
+  },
+  {
+    "year": "2014",
+    "pact_complete": {
+      "inspections": 49,
+      "rat_fails": 13,
+      "fail_rate_pct": 26.5
+    },
+    "non_pact": {
+      "inspections": 444,
+      "rat_fails": 136,
+      "fail_rate_pct": 30.6
+    }
+  },
+  {
+    "year": "2015",
+    "pact_complete": {
+      "inspections": 40,
+      "rat_fails": 13,
+      "fail_rate_pct": 32.5
+    },
+    "non_pact": {
+      "inspections": 718,
+      "rat_fails": 200,
+      "fail_rate_pct": 27.9
+    }
+  },
+  {
+    "year": "2016",
+    "pact_complete": {
+      "inspections": 101,
+      "rat_fails": 33,
+      "fail_rate_pct": 32.7
+    },
+    "non_pact": {
+      "inspections": 884,
+      "rat_fails": 288,
+      "fail_rate_pct": 32.6
+    }
+  },
+  {
+    "year": "2017",
+    "pact_complete": {
+      "inspections": 106,
+      "rat_fails": 34,
+      "fail_rate_pct": 32.1
+    },
+    "non_pact": {
+      "inspections": 1125,
+      "rat_fails": 385,
+      "fail_rate_pct": 34.2
+    }
+  },
+  {
+    "year": "2018",
+    "pact_complete": {
+      "inspections": 99,
+      "rat_fails": 36,
+      "fail_rate_pct": 36.4
+    },
+    "non_pact": {
+      "inspections": 1659,
+      "rat_fails": 678,
+      "fail_rate_pct": 40.9
+    }
+  },
+  {
+    "year": "2019",
+    "pact_complete": {
+      "inspections": 58,
+      "rat_fails": 23,
+      "fail_rate_pct": 39.7
+    },
+    "non_pact": {
+      "inspections": 2047,
+      "rat_fails": 1108,
+      "fail_rate_pct": 54.1
+    }
+  },
+  {
+    "year": "2020",
+    "pact_complete": {
+      "inspections": 29,
+      "rat_fails": 11,
+      "fail_rate_pct": 37.9
+    },
+    "non_pact": {
+      "inspections": 1295,
+      "rat_fails": 768,
+      "fail_rate_pct": 59.3
+    }
+  },
+  {
+    "year": "2021",
+    "pact_complete": {
+      "inspections": 64,
+      "rat_fails": 21,
+      "fail_rate_pct": 32.8
+    },
+    "non_pact": {
+      "inspections": 2462,
+      "rat_fails": 1407,
+      "fail_rate_pct": 57.1
+    }
+  },
+  {
+    "year": "2022",
+    "pact_complete": {
+      "inspections": 62,
+      "rat_fails": 31,
+      "fail_rate_pct": 50.0
+    },
+    "non_pact": {
+      "inspections": 3249,
+      "rat_fails": 1905,
+      "fail_rate_pct": 58.6
+    }
+  },
+  {
+    "year": "2023",
+    "pact_complete": {
+      "inspections": 54,
+      "rat_fails": 23,
+      "fail_rate_pct": 42.6
+    },
+    "non_pact": {
+      "inspections": 3290,
+      "rat_fails": 1844,
+      "fail_rate_pct": 56.0
+    }
+  },
+  {
+    "year": "2024",
+    "pact_complete": {
+      "inspections": 65,
+      "rat_fails": 30,
+      "fail_rate_pct": 46.2
+    },
+    "non_pact": {
+      "inspections": 2328,
+      "rat_fails": 1246,
+      "fail_rate_pct": 53.5
+    }
+  },
+  {
+    "year": "2025",
+    "pact_complete": {
+      "inspections": 38,
+      "rat_fails": 22,
+      "fail_rate_pct": 57.9
+    },
+    "non_pact": {
+      "inspections": 1392,
+      "rat_fails": 742,
+      "fail_rate_pct": 53.3
+    }
+  },
+  {
+    "year": "2026 (YTD)",
+    "pact_complete": {
+      "inspections": 36,
+      "rat_fails": 11,
+      "fail_rate_pct": 30.6
+    },
+    "non_pact": {
+      "inspections": 618,
+      "rat_fails": 347,
+      "fail_rate_pct": 56.1
+    }
+  }
+]
