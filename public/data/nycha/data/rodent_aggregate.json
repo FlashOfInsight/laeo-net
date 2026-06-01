@@ -158,9 +158,9 @@
   {
     "year": "2022",
     "pact_complete": {
-      "inspections": 75,
-      "rat_fails": 39,
-      "fail_rate_pct": 52.0
+      "inspections": 62,
+      "rat_fails": 31,
+      "fail_rate_pct": 50.0
     },
     "non_pact": {
       "inspections": 3249,
@@ -171,9 +171,9 @@
   {
     "year": "2023",
     "pact_complete": {
-      "inspections": 83,
-      "rat_fails": 39,
-      "fail_rate_pct": 47.0
+      "inspections": 54,
+      "rat_fails": 23,
+      "fail_rate_pct": 42.6
     },
     "non_pact": {
       "inspections": 3290,
@@ -184,9 +184,9 @@
   {
     "year": "2024",
     "pact_complete": {
-      "inspections": 159,
-      "rat_fails": 42,
-      "fail_rate_pct": 26.4
+      "inspections": 65,
+      "rat_fails": 30,
+      "fail_rate_pct": 46.2
     },
     "non_pact": {
       "inspections": 2328,
@@ -197,9 +197,9 @@
   {
     "year": "2025",
     "pact_complete": {
-      "inspections": 191,
-      "rat_fails": 71,
-      "fail_rate_pct": 37.2
+      "inspections": 38,
+      "rat_fails": 22,
+      "fail_rate_pct": 57.9
     },
     "non_pact": {
       "inspections": 1392,
@@ -210,9 +210,9 @@
   {
     "year": "2026 (YTD)",
     "pact_complete": {
-      "inspections": 195,
-      "rat_fails": 62,
-      "fail_rate_pct": 31.8
+      "inspections": 36,
+      "rat_fails": 11,
+      "fail_rate_pct": 30.6
     },
     "non_pact": {
       "inspections": 618,
