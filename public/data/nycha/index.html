@@ -670,12 +670,22 @@ const LINE = (color, dashed=false) => ({
   pointRadius:4, pointHoverRadius:6, tension:0.3, fill:false,
 });
 
+function ytdAnnualize(rates) {
+  const last = aggregateRates[aggregateRates.length - 1];
+  if (!String(last.Year).includes('YTD')) return rates;
+  const year = String(last.Year).split(' ')[0];
+  const months = Object.keys(controlMonthly.monthly || {}).filter(k => k.startsWith(year + '-')).length;
+  if (!months) return rates;
+  const factor = 12 / months;
+  return rates.map((v, i) => i === rates.length - 1 && v != null ? +(v * factor).toFixed(2) : v);
+}
+
 function buildCharts() {
   if (chartsDone) return;
   chartsDone = true;
   const labels       = aggregateRates.map(r => String(r.Year));
-  const completeRates = aggregateRates.map(r => r['PACT Complete /1k units']);
-  const ctrlRates    = aggregateRates.map(r => r['Non-PACT /1k units']);
+  const completeRates = ytdAnnualize(aggregateRates.map(r => r['PACT Complete /1k units']));
+  const ctrlRates    = ytdAnnualize(aggregateRates.map(r => r['Non-PACT /1k units']));
   const pactCounts   = aggregateRates.map(r => r['PACT exec']);
   const ctrlCounts   = aggregateRates.map(r => r['Non-PACT exec']);
 
@@ -751,8 +761,12 @@ function renderExpandedChart(type, resolution) {
 
   if (resolution === 'yearly') {
     labels = aggregateRates.map(r => String(r.Year));
-    const completeVals = aggregateRates.map(r => isRate ? r['PACT Complete /1k units'] : r['PACT exec']);
-    const ctrlVals     = aggregateRates.map(r => isRate ? r['Non-PACT /1k units']       : r['Non-PACT exec']);
+    const completeVals = isRate
+      ? ytdAnnualize(aggregateRates.map(r => r['PACT Complete /1k units']))
+      : aggregateRates.map(r => r['PACT exec']);
+    const ctrlVals = isRate
+      ? ytdAnnualize(aggregateRates.map(r => r['Non-PACT /1k units']))
+      : aggregateRates.map(r => r['Non-PACT exec']);
     datasets = [
       { label:'PACT Construction Complete', data:completeVals, ...LINE('#111111') },
       { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#999999', isRate) },
