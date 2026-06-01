@@ -1,0 +1,50 @@
+{
+  "note": "NYCHA scores are PHA-level composites from HUD PHAS/NSPIRE. PACT scores are per-property REAC multifamily inspection scores, matched to PACT development names by property name in the HUD multifamily inspection file — address confirmation not available. PHAS and NSPIRE use different scoring methodologies; scores are not directly comparable across the 2024 system change.",
+  "systems": {
+    "PHAS": "Public Housing Assessment System, 0–100, retired 2023. Composite of physical (30pts), financial (25pts), management (25pts), capital fund (10pts).",
+    "NSPIRE": "National Standards for Physical Inspection of Real Estate, 0–100, introduced 2024. More stringent than PHAS; scores are not directly comparable.",
+    "REAC_MF": "REAC Multifamily physical inspection score, 0–100. Used for HUD-assisted multifamily housing including RAD/PACT-converted properties."
+  },
+  "nycha": [
+    {"year": 2015, "score": 84, "system": "PHAS", "source": "HUD PHAS file (NY005)"},
+    {"year": 2019, "score": 67, "system": "PHAS", "source": "HUD PHAS file (NY005)"},
+    {"year": 2020, "score": null, "system": "PHAS", "source": "COVID waiver — no inspection"},
+    {"year": 2021, "score": null, "system": "PHAS", "source": "COVID waiver — no inspection"},
+    {"year": 2022, "score": 35, "system": "NSPIRE", "source": "City Limits / NYCHA Now reporting (2022–23 average)"},
+    {"year": 2023, "score": 35, "system": "NSPIRE", "source": "City Limits / NYCHA Now reporting (2022–23 average)"},
+    {"year": 2024, "score": 63, "system": "NSPIRE", "source": "City Limits / NYCHA Now reporting (2024 annual)"}
+  ],
+  "pact_sites": [
+    {
+      "property_name": "WILLIAMSBURG APARTMENTS",
+      "city": "BROOKLYN",
+      "pact_match": "WILLIAMSBURG (approx.)",
+      "match_confidence": "name",
+      "scores": [
+        {"date": "2022-02-17", "score": 96, "score_raw": "96a", "system": "REAC_MF"},
+        {"date": "2025-05-06", "score": 95, "score_raw": "95", "system": "REAC_MF"}
+      ]
+    },
+    {
+      "property_name": "LINDEN BOULEVARD DEVELOPMENT",
+      "city": "BROOKLYN",
+      "pact_match": "LINDEN (approx.)",
+      "match_confidence": "name",
+      "scores": [
+        {"date": "2021-11-22", "score": 69, "score_raw": "69c*", "system": "REAC_MF"},
+        {"date": "2023-01-11", "score": 86, "score_raw": "86b", "system": "REAC_MF"}
+      ]
+    },
+    {
+      "property_name": "1041 BUSHWICK AVENUE APTS",
+      "city": "BROOKLYN",
+      "pact_match": "BUSHWICK II (approx.)",
+      "match_confidence": "name",
+      "scores": [
+        {"date": "2021-07-13", "score": 97, "score_raw": "97b", "system": "REAC_MF"},
+        {"date": "2025-04-30", "score": 86, "score_raw": "86", "system": "REAC_MF"}
+      ]
+    }
+  ],
+  "passing_threshold": 60
+}

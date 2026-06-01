@@ -164,6 +164,31 @@
         </div>
         <div class="chart-note">Source: NYC 311 (HPD agency only, 2020–present). Year 0 = conversion year; n in parentheses = developments contributing to each point.</div>
       </div>
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="permits">
+        <div class="chart-card-header">
+          <div class="chart-title">DECLARED RENOVATION COSTS AT PACT DEVELOPMENTS</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">DOB-declared construction costs per unit · by years since conversion · all PACT developments</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-permits"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT avg (all developments)</div>
+        </div>
+        <div class="chart-note">Source: NYC DOB Job Application Filings (w9ak-ipjd). Declared costs are owner-estimated construction value filed with DOB; actual expenditures may differ. Year 0 = conversion year; n = developments contributing.</div>
+      </div>
+      <div class="chart-card chart-card-clickable" data-chart="reac">
+        <div class="chart-card-header">
+          <div class="chart-title">HUD PHYSICAL INSPECTION SCORES</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">NYCHA public housing PHAS/NSPIRE composite score · 2015–2024</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-reac"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA (PHA score)</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="width:8px;height:8px;border-radius:50%;background:#111111;display:inline-block;margin-right:4px;"></div>PACT sites (REAC multifamily, approx.)</div>
+        </div>
+        <div class="chart-note">Source: HUD PHAS file (NY005) and HUD multifamily REAC inspection report. NSPIRE replaced PHAS in 2024 — scores not directly comparable across systems. PACT scores matched by property name (approximate). Dashed line = passing threshold (60).</div>
+      </div>
     </div>
   </section>
 
@@ -527,21 +552,25 @@ if (initTab !== 'analysis') switchTab(initTab);
 
 
 // ── Data loading ───────────────────────────────────────────────────────────────
-let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], mapInitialised = false, chartsDone = false;
+let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], reacData = {}, mapInitialised = false, chartsDone = false;
 
 async function loadData() {
-  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes] = await Promise.all([
+  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, reacRes] = await Promise.all([
     fetch('data/developments.geojson'),
     fetch('data/aggregate_rates.json'),
     fetch('data/control_monthly.json'),
     fetch('data/rodent_aggregate.json'),
     fetch('data/complaints_agg.json'),
+    fetch('data/permits_agg.json'),
+    fetch('data/reac_scores.json'),
   ]);
   developments    = (await geoRes.json()).features;
   aggregateRates  = await ratesRes.json();
   controlMonthly  = await ctrlRes.json();
   rodentAggregate = await rodentRes.json();
   complaintsAgg   = await compRes.json();
+  permitsAgg      = await permitsRes.json();
+  reacData        = await reacRes.json();
 }
 
 // ── Key stats ─────────────────────────────────────────────────────────────────
@@ -894,6 +923,8 @@ function buildCharts() {
         ticks:{...CHART_OPTS.scales.y.ticks,callback:v=>v+'%'}}}}});
 
   renderComplaintsAggChart(document.getElementById('chart-complaints'));
+  renderPermitsAggChart(document.getElementById('chart-permits'));
+  renderReacChart(document.getElementById('chart-reac'));
 }
 
 function renderComplaintsAggChart(canvas) {
@@ -917,6 +948,105 @@ function renderComplaintsAggChart(canvas) {
         ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
       }}
     }
+  });
+}
+
+function renderPermitsAggChart(canvas) {
+  if (!canvas || !permitsAgg.length) return;
+  const labels    = permitsAgg.map(d => `Year ${d.year_since_conv}`);
+  const vals      = permitsAgg.map(d => d.cost_per_unit);
+  const devCounts = permitsAgg.map(d => d.dev_count);
+  return new Chart(canvas, {
+    type: 'bar',
+    data: { labels, datasets: [{ label:'PACT avg', data: vals, backgroundColor: '#111111', borderWidth: 0 }] },
+    options: {
+      ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+        callbacks: {
+          title: t => labels[t[0].dataIndex],
+          label: t => ` $${(t.parsed.y/1000).toFixed(0)}k / unit`,
+          afterLabel: t => ` ${devCounts[t.dataIndex]} developments`,
+        }
+      }},
+      scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+        ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => '$' + (v/1000).toFixed(0) + 'k' }
+      }}
+    }
+  });
+}
+
+function renderReacChart(canvas) {
+  if (!canvas || !reacData.nycha) return;
+  const nycha = reacData.nycha.filter(d => d.score != null);
+  const nychaLabels = nycha.map(d => String(d.year));
+  const nychaScores = nycha.map(d => d.score);
+
+  // Build PACT scatter points
+  const pactPoints = [];
+  (reacData.pact_sites || []).forEach(site => {
+    (site.scores || []).forEach(s => {
+      pactPoints.push({ x: parseInt(s.date.slice(0,4)), y: s.score, label: site.pact_match });
+    });
+  });
+
+  // All years union for x axis
+  const allYears = [...new Set([...nychaLabels, ...pactPoints.map(p => String(p.x))])].sort();
+
+  const passingLinePlugin = {
+    id: 'passingLine',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      const y60 = scales.y.getPixelForValue(60);
+      ctx.save();
+      ctx.strokeStyle = '#BBBBBB'; ctx.lineWidth = 1; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(chartArea.left, y60); ctx.lineTo(chartArea.right, y60); ctx.stroke();
+      ctx.restore();
+    }
+  };
+
+  return new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: allYears,
+      datasets: [
+        {
+          label: 'Non-PACT NYCHA',
+          data: allYears.map(yr => {
+            const idx = nychaLabels.indexOf(yr);
+            return idx >= 0 ? nychaScores[idx] : null;
+          }),
+          ...LINE('#999999'), borderDash: [5,3], spanGaps: false
+        },
+        {
+          label: 'PACT sites (approx.)',
+          data: allYears.map(yr => {
+            const pts = pactPoints.filter(p => String(p.x) === yr);
+            return pts.length ? pts.reduce((s, p) => s + p.y, 0) / pts.length : null;
+          }),
+          type: 'scatter',
+          pointBackgroundColor: '#111111', pointRadius: 5, pointHoverRadius: 7,
+          showLine: false,
+        }
+      ]
+    },
+    options: {
+      ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+        callbacks: {
+          title: t => t[0].label,
+          label: t => {
+            const score = t.parsed.y;
+            const system = reacData.nycha.find(d => String(d.year) === t.label)?.system || 'REAC';
+            return ` Score: ${score} (${system})`;
+          }
+        }
+      }},
+      scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+        min: 0, max: 100,
+        ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v }
+      }}
+    },
+    plugins: [passingLinePlugin]
   });
 }
 
@@ -1125,7 +1255,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = (type === 'rodent' || type === 'complaints') ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'reac') ? 'none' : '';
 
   const legendDashed = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
@@ -1145,6 +1275,20 @@ function openChartOverlay(type) {
     document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderComplaintsAggChart(document.getElementById('cfo-canvas'));
+  } else if (type === 'permits') {
+    document.getElementById('cfo-title').textContent    = 'DECLARED RENOVATION COSTS AT PACT DEVELOPMENTS';
+    document.getElementById('cfo-subtitle').textContent = 'DOB-declared construction costs per unit · by years since conversion';
+    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
+  } else if (type === 'reac') {
+    document.getElementById('cfo-title').textContent    = 'HUD PHYSICAL INSPECTION SCORES';
+    document.getElementById('cfo-subtitle').textContent = 'NYCHA public housing PHAS/NSPIRE composite · and PACT site REAC multifamily scores (approx.)';
+    document.getElementById('cfo-legend').innerHTML     = `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA (PHA-level)</div>
+      <div class="cfo-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#111;margin-right:6px;vertical-align:middle;"></span>PACT sites (REAC multifamily, approx.)</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderReacChart(document.getElementById('cfo-canvas'));
   } else {
     const isRate = type === 'rate';
     document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';
