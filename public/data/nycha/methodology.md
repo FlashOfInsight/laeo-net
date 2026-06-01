@@ -1,4 +1,4 @@
-# Methodology: PACT vs. Non-PACT NYCHA — Evictions, Rodent Inspections, and 311 Complaints
+# Methodology: PACT vs. Non-PACT NYCHA — Evictions, Rodent Inspections, 311 Complaints, and DOB Permits
 
 **Produced:** 2026-05-03  
 **Analyst:** laeoc  
@@ -100,18 +100,32 @@ pool *at the end of that year*, as developments convert from NYCHA to PACT over 
 - **URL:** `https://data.cityofnewyork.us/resource/w9ak-ipjd.json`
 - **Publisher:** NYC Department of Buildings via NYC Open Data (Socrata)
 - **Contents:** One record per DOB job application. Key fields: `bbl`, `job_type`,
-  `job_status`, `pre_filing_date`, `initial_cost`, `work_type`
+  `filing_status`, `filing_date`, `initial_cost`, `general_construction_work_type_`.
+  Note: `initial_cost` is stored as text — Socrata's `sum()` aggregate rejects it;
+  costs must be summed client-side. Several intuitive column names do not exist in
+  this dataset: `job_status` (correct: `filing_status`), `work_type` (not a column;
+  the dataset uses per-discipline columns such as `general_construction_work_type_`,
+  `plumbing_work_type`, `sprinkler_work_type`, etc.).
 - **Used for:** Capital investment signal at PACT developments — alteration job
   filing counts and declared construction costs post-conversion.
 
-### S11 — HUD REAC Physical Inspection Scores (PHAS)
-- **URL:** `https://www.hud.gov/program_offices/public_indian_housing/reac/products/pass/scores`
+### S11 — HUD REAC Physical Inspection Scores (PHAS / NSPIRE / Multifamily)
+- **URLs:**
+  - PHAS/NSPIRE (PHA-level): `https://www.hud.gov/program_offices/public_indian_housing/reac/nass-phas`
+  - Multifamily REAC (per-property XLS): `https://www.hud.gov/sites/default/files/Housing/documents/MF-Inspection-Report.xls`
 - **Publisher:** U.S. Department of Housing and Urban Development
-- **Contents:** Annual physical inspection scores (0–100) for all public housing
-  authorities and RAD/PACT-converted properties, covering site, building exterior,
-  building systems, common areas, and individual units.
-- **Used for:** Direct apples-to-apples physical conditions comparison between PACT
-  and non-PACT NYCHA buildings, using HUD's standardized inspection protocol.
+- **Contents:** Two separate datasets under the REAC umbrella:
+  - **PHAS** (retired 2023): PHA-level composite score (0–100) combining physical
+    (30 pts), financial (25 pts), management (25 pts), and capital fund (10 pts)
+    components. One score per housing authority per inspection cycle. NYCHA = NY005.
+  - **NSPIRE** (introduced 2024): Physical-only inspection protocol, 0–100. More
+    stringent than PHAS; scores are not directly comparable across the transition.
+  - **REAC Multifamily**: Per-property physical inspection scores for HUD-assisted
+    multifamily housing including RAD/PACT-converted properties. Published as an
+    XLS file (~26,000 rows nationally). Columns: property name, city, state, REMS
+    ID, up to three inspection score/date pairs. No BBL or NYC address field.
+- **Investigated but not used in any chart.** See Step 12 for a full account of
+  why this data source was pursued and ultimately excluded from the analysis.
 
 ### S7 — OCA Housing Court Data (HDC S3 CSVs)
 - **URL base:** `https://oca-2-dev.s3.amazonaws.com/public/`
@@ -792,3 +806,101 @@ those addresses. As a result, 311 complaint volume at non-PACT NYCHA BBLs reflec
 near-zero data — not an absence of problems. The 311 pipeline is therefore PACT-only,
 and the "HPD 311 Complaints" chart shows a years-since-conversion trajectory rather
 than a PACT vs. non-PACT comparison.
+
+---
+
+## Step 12 — HUD REAC Investigation (Data Explored, Not Used)
+
+**Script:** none — fully manual; data stored in `data/reac_scores.json`  
+**Sources:** S11  
+**Outcome:** Investigated and rejected. No chart was published. Documented here
+for reproducibility and to explain why a seemingly ideal data source was not used.
+
+### 12.1 — Motivation
+
+HUD's REAC inspection program is the only standardized, government-administered
+physical conditions assessment that covers both public NYCHA buildings (via PHAS/NSPIRE)
+and PACT-converted properties (via REAC Multifamily). In theory it offers an
+apples-to-apples physical conditions comparison — the one metric not distorted by
+the enforcement-regime asymmetry that affects HPD violations and 311 complaints
+(see L9). This made it a high-priority data source to investigate.
+
+### 12.2 — What was found
+
+**NYCHA (non-PACT) scores — PHA-level only, via PHAS/NSPIRE:**
+
+HUD's PHAS score file for NY005 (NYCHA's PHA identifier) contains only five usable
+data points between 2015 and 2024:
+
+| Year | Score | System | Notes |
+|------|-------|--------|-------|
+| 2015 | 84 | PHAS | From HUD PHAS file (NY005) |
+| 2019 | 67 | PHAS | From HUD PHAS file (NY005) |
+| 2020 | — | PHAS | COVID inspection waiver |
+| 2021 | — | PHAS | COVID inspection waiver |
+| 2022–23 | 35 | NSPIRE | City Limits / NYCHA Now reporting |
+| 2024 | 63 | NSPIRE | City Limits / NYCHA Now reporting |
+
+PHAS is a composite score — only 30 of 100 points come from the physical inspection;
+the rest cover financial health, management operations, and capital fund spending.
+NSPIRE (the 2024 replacement) is physical-only and designed to be more stringent.
+The apparent drop from 67 (PHAS, 2019) to 35 (NSPIRE, 2022–23) reflects both
+genuine deterioration and a measurement change; the two scores cannot be placed on
+the same scale.
+
+**PACT-converted sites — REAC Multifamily, per-property:**
+
+The HUD multifamily inspection file (`MF-Inspection-Report.xls`, ~26,000 rows
+nationally) contains per-property REAC scores for all HUD-assisted multifamily
+housing. It has no BBL field and no structured NYC address. The only joinable
+fields are property name, city, and state.
+
+Searching the file for Brooklyn/Manhattan/Bronx/Queens properties with names
+resembling PACT developments, three approximate matches were found:
+
+| HUD property name | Approximate PACT match | Scores |
+|---|---|---|
+| WILLIAMSBURG APARTMENTS | Williamsburg | 96 (Feb 2022), 95 (May 2025) |
+| LINDEN BOULEVARD DEVELOPMENT | Linden | 69 (Nov 2021), 86 (Jan 2023) |
+| 1041 BUSHWICK AVENUE APTS | Bushwick II (Groups A & C) | 97 (Jul 2021), 86 (Apr 2025) |
+
+Addresses were not confirmed. Multiple attempts to resolve REMS IDs to addresses
+via HUD's EGIS API, services.hud.gov, and the HUD ARCGIS endpoint all returned
+404 or empty results.
+
+### 12.3 — Why the data was rejected
+
+Three compounding problems made charting the REAC data inadvisable:
+
+**1. Sparseness.** NYCHA has five data points across nine years. REAC inspections
+are not conducted annually for every PHA — NYCHA had documented scores only in 2015
+and 2019 before COVID waivers halted inspections for two years. The PACT multifamily
+data is even thinner: three properties, two inspections each, spread across 2021–2025.
+This is not enough data to draw a trend line for either group.
+
+**2. Metric incompatibility.** PHAS (used for NYCHA through 2023) and REAC Multifamily
+(used for PACT sites) are different instruments with different weights. PHAS includes
+financial and management components; REAC Multifamily is physical only. Even if scores
+from the same inspection cycle were plotted side by side, they measure different things.
+The system change to NSPIRE in 2024 adds a third incompatible scoring framework. No
+cross-walk between PHAS, NSPIRE, and REAC Multifamily is published by HUD.
+
+**3. Match quality.** The three PACT matches are name-only and unconfirmed. The REAC
+multifamily file has no address, BBL, or other joinable identifier. "WILLIAMSBURG
+APARTMENTS" is a common enough name that the match could be erroneous. Without address
+confirmation, the PACT scores cannot be attributed to specific PACT developments with
+any confidence.
+
+### 12.4 — Data preserved
+
+The handcrafted data file `data/reac_scores.json` is retained in the repository.
+It contains the NYCHA PHA score trajectory and the three approximate PACT matches,
+along with methodology notes. It is not fetched or rendered by the page but is
+available for future research or if the underlying data gaps are resolved (e.g.,
+if HUD publishes a version of the multifamily file with address fields, or if
+a future NSPIRE data release covers more PACT properties with enough years of
+history to draw a trend).
+
+---
+
+## Known Limitations and Caveats
