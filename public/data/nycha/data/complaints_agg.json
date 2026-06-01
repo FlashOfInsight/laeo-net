@@ -1,0 +1,65 @@
+[
+  {
+    "year_since_conv": 0,
+    "dev_count": 11,
+    "total_complaints": 1031,
+    "total_units": 9565,
+    "per_1k_units": 107.8
+  },
+  {
+    "year_since_conv": 1,
+    "dev_count": 18,
+    "total_complaints": 4933,
+    "total_units": 12496,
+    "per_1k_units": 394.8
+  },
+  {
+    "year_since_conv": 2,
+    "dev_count": 20,
+    "total_complaints": 3218,
+    "total_units": 12522,
+    "per_1k_units": 257.0
+  },
+  {
+    "year_since_conv": 3,
+    "dev_count": 14,
+    "total_complaints": 2464,
+    "total_units": 9115,
+    "per_1k_units": 270.3
+  },
+  {
+    "year_since_conv": 4,
+    "dev_count": 12,
+    "total_complaints": 2245,
+    "total_units": 7852,
+    "per_1k_units": 285.9
+  },
+  {
+    "year_since_conv": 5,
+    "dev_count": 11,
+    "total_complaints": 1822,
+    "total_units": 7275,
+    "per_1k_units": 250.4
+  },
+  {
+    "year_since_conv": 6,
+    "dev_count": 8,
+    "total_complaints": 760,
+    "total_units": 3660,
+    "per_1k_units": 207.7
+  },
+  {
+    "year_since_conv": 7,
+    "dev_count": 6,
+    "total_complaints": 615,
+    "total_units": 3394,
+    "per_1k_units": 181.2
+  },
+  {
+    "year_since_conv": 8,
+    "dev_count": 5,
+    "total_complaints": 619,
+    "total_units": 2518,
+    "per_1k_units": 245.8
+  }
+]

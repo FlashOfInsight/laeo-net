@@ -152,6 +152,18 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
         </div>
       </div>
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="complaints">
+        <div class="chart-card-header">
+          <div class="chart-title">HPD 311 COMPLAINTS SINCE PACT CONVERSION</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">HPD housing complaints per 1,000 units · by years since conversion · 23 developments</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-complaints"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT avg (all developments)</div>
+        </div>
+        <div class="chart-note">Source: NYC 311 (HPD agency only, 2020–present). Year 0 = conversion year; n in parentheses = developments contributing to each point.</div>
+      </div>
     </div>
   </section>
 
@@ -451,19 +463,21 @@ if (initTab !== 'analysis') switchTab(initTab);
 
 
 // ── Data loading ───────────────────────────────────────────────────────────────
-let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], mapInitialised = false, chartsDone = false;
+let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], mapInitialised = false, chartsDone = false;
 
 async function loadData() {
-  const [geoRes, ratesRes, ctrlRes, rodentRes] = await Promise.all([
+  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes] = await Promise.all([
     fetch('data/developments.geojson'),
     fetch('data/aggregate_rates.json'),
     fetch('data/control_monthly.json'),
     fetch('data/rodent_aggregate.json'),
+    fetch('data/complaints_agg.json'),
   ]);
   developments    = (await geoRes.json()).features;
   aggregateRates  = await ratesRes.json();
   controlMonthly  = await ctrlRes.json();
   rodentAggregate = await rodentRes.json();
+  complaintsAgg   = await compRes.json();
 }
 
 // ── Key stats ─────────────────────────────────────────────────────────────────
@@ -558,22 +572,127 @@ function initMap() {
 // ── Detail panel ───────────────────────────────────────────────────────────────
 let panelChart = null;
 
+let _panelProps = null;
+
+function buildMonthlyBarChart(canvasId, monthly, convDate, labelSuffix) {
+  const allMonths = Object.keys(monthly).sort();
+  if (!allMonths.length) return;
+  const start = allMonths[0] < '2020-01' ? '2020-01' : allMonths[0];
+  const end   = allMonths[allMonths.length - 1];
+  const labels = [], counts = [], bgColors = [];
+  let cur = new Date(start + '-01');
+  const endD = new Date(end + '-01');
+  const convD = convDate ? new Date(convDate + 'T00:00:00') : null;
+  while (cur <= endD) {
+    const key = cur.toISOString().slice(0, 7);
+    labels.push(key);
+    counts.push(monthly[key] || 0);
+    const isPost = convD ? cur >= convD : true;
+    bgColors.push(isPost ? '#111111' : '#BBBBBB');
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  const convLinePlugin = {
+    id: 'convLine',
+    afterDraw(chart) {
+      if (!convD) return;
+      const idx = labels.indexOf(convD.toISOString().slice(0, 7));
+      if (idx < 0) return;
+      const { ctx, chartArea: { top, bottom } } = chart;
+      const x = chart.getDatasetMeta(0).data[idx]?.x;
+      if (x == null) return;
+      ctx.save();
+      ctx.strokeStyle = '#111111'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+      ctx.restore();
+    }
+  };
+  panelChart = new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: counts, backgroundColor: bgColors, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#F7F6F2', borderColor: '#111', borderWidth: 1,
+          titleColor: '#111', bodyColor: '#555',
+          titleFont: { family: "'IBM Plex Mono',monospace", size: 10 },
+          bodyFont:  { family: "'IBM Plex Mono',monospace", size: 10 },
+          callbacks: { title: t => t[0].label, label: t => ` ${t.parsed.y} ${labelSuffix}` }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { family: "'IBM Plex Mono',monospace", size: 8 }, color: '#999',
+            maxRotation: 0,
+            callback(val, i) { const lbl = labels[i]; return lbl && lbl.endsWith('-01') ? lbl.slice(0,4) : ''; }
+          },
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: true, ticks: { stepSize: 1, precision: 0,
+            font: { family: "'IBM Plex Mono',monospace", size: 9 }, color: '#999' },
+          grid: { color: 'rgba(0,0,0,0.04)' }
+        }
+      }
+    },
+    plugins: [convLinePlugin]
+  });
+}
+
+function switchPanelTab(which) {
+  if (!_panelProps) return;
+  document.querySelectorAll('#panel-content .panel-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.panelTab === which)
+  );
+  document.getElementById('pane-evictions').style.display  = which === 'evictions'  ? '' : 'none';
+  document.getElementById('pane-complaints').style.display = which === 'complaints' ? '' : 'none';
+  if (panelChart) { panelChart.destroy(); panelChart = null; }
+  const conv = _panelProps.conversion_date || null;
+  if (which === 'evictions' && _panelProps.has_data) {
+    const monthly = typeof _panelProps.monthly_executions === 'string'
+      ? JSON.parse(_panelProps.monthly_executions) : (_panelProps.monthly_executions || {});
+    if (Object.keys(monthly).length) buildMonthlyBarChart('panel-monthly-chart', monthly, conv, 'execution(s)');
+  } else if (which === 'complaints') {
+    const cd = typeof _panelProps.complaint_data === 'string'
+      ? JSON.parse(_panelProps.complaint_data) : (_panelProps.complaint_data || null);
+    if (cd && Object.keys(cd.monthly || {}).length) buildMonthlyBarChart('panel-complaint-chart', cd.monthly, conv, 'complaint(s)');
+  }
+}
+
 function openPanel(props) {
+  _panelProps = props;
   const by      = typeof props.by_year === 'string' ? JSON.parse(props.by_year) : (props.by_year || {});
   const monthly = typeof props.monthly_executions === 'string' ? JSON.parse(props.monthly_executions) : (props.monthly_executions || {});
   const rodent  = typeof props.rodent_data === 'string' ? JSON.parse(props.rodent_data) : (props.rodent_data || null);
+  const cData   = typeof props.complaint_data === 'string' ? JSON.parse(props.complaint_data) : (props.complaint_data || null);
   const convDate = props.conversion_date
     ? new Date(props.conversion_date + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : null;
   const mgr = (props.property_manager||'').replace(/\n/g,' ').split(';').map(s=>s.trim()).filter(Boolean).join(', ');
   const maxRate = Math.max(0, ...Object.values(by).map(v => v.rate_per_1k||0));
 
-  const yearRows = ['2022','2023','2024','2025','2026'].map(y => {
+  const yearRows = (yrs) => yrs.map(y => {
     const d = by[y];
     if (!d) return `<div class="year-row"><span class="year-label">${y}</span><div class="year-bar-wrap"><div class="year-bar" style="width:0"></div></div><span class="year-rate">—</span></div>`;
     const pct = maxRate > 0 ? (d.rate_per_1k / maxRate * 100).toFixed(1) : 0;
     const ytd = y === '2026' ? ' <span style="color:var(--ink-light);font-size:0.6rem">YTD</span>' : '';
     return `<div class="year-row"><span class="year-label">${y}</span><div class="year-bar-wrap"><div class="year-bar" style="width:${pct}%"></div></div><span class="year-rate">${d.rate_per_1k != null ? d.rate_per_1k.toFixed(1) : '0.0'}${ytd}</span></div>`;
   }).join('');
+
+  const compYearRows = () => {
+    if (!cData || !cData.by_year) return '';
+    const maxComp = Math.max(0, ...Object.values(cData.by_year).map(v => v.per_1k || 0));
+    return Object.keys(cData.by_year).sort().map(y => {
+      const d = cData.by_year[y];
+      const pct = maxComp > 0 ? (d.per_1k / maxComp * 100).toFixed(1) : 0;
+      const ytd = y === '2026' ? ' <span style="color:var(--ink-light);font-size:0.6rem">YTD</span>' : '';
+      return `<div class="year-row"><span class="year-label">${y}</span><div class="year-bar-wrap"><div class="year-bar" style="width:${pct}%"></div></div><span class="year-rate">${d.per_1k != null ? d.per_1k.toFixed(0) : '—'}${ytd}</span></div>`;
+    }).join('');
+  };
+
+  const hasComp = cData && cData.total > 0;
+  const showTabs = (props.has_data || hasComp) && props.type === 'pact';
 
   document.getElementById('panel-content').innerHTML = `
     <div class="panel-dev-name">${props.development_name}</div>
@@ -584,111 +703,65 @@ function openPanel(props) {
       ${mgr ? `<div>Manager: <strong>${mgr}</strong></div>` : ''}
       ${props.status && props.status !== 'Non-PACT NYCHA' ? `<div>Status: <strong>${props.status}</strong></div>` : ''}
     </div>
-    ${props.has_data ? `
-      <hr class="panel-divider">
-      <div class="panel-section-label">MONTHLY EXECUTIONS</div>
-      <div class="panel-chart-wrap"><canvas id="panel-monthly-chart"></canvas></div>
-      <hr class="panel-divider">
-      <div class="panel-section-label">ANNUAL RATE PER 1,000 UNITS</div>
-      <div class="year-rows">${yearRows}</div>
-      <hr class="panel-divider">
-      <div class="panel-section-label">CASE TYPE (ALL YEARS)</div>
-      <div class="panel-meta" style="margin-top:.25rem">
-        <div>Non-payment: <strong>${props.nonpayment_executions}</strong></div>
-        <div>Holdover: <strong>${props.holdover_executions}</strong></div>
-        <div>Total executions: <strong>${props.total_executions}</strong></div>
+    ${showTabs ? `
+      <div class="panel-tab-bar">
+        <button class="panel-tab active" data-panel-tab="evictions">EVICTIONS</button>
+        ${hasComp ? '<button class="panel-tab" data-panel-tab="complaints">311 COMPLAINTS</button>' : ''}
       </div>
-      ${rodent ? `
-      <hr class="panel-divider">
-      <div class="panel-section-label">RODENT INSPECTIONS</div>
-      <div class="panel-meta" style="margin-top:.25rem">
-        <div>Total inspections: <strong>${rodent.total_inspections}</strong></div>
-        <div>Rat activity failures: <strong>${rodent.total_rat_fails}</strong> (${rodent.fail_rate_pct}%)</div>
+      <div id="pane-evictions">
+        ${props.has_data ? `
+          <hr class="panel-divider">
+          <div class="panel-section-label">MONTHLY EXECUTIONS</div>
+          <div class="panel-chart-wrap"><canvas id="panel-monthly-chart"></canvas></div>
+          <hr class="panel-divider">
+          <div class="panel-section-label">ANNUAL RATE PER 1,000 UNITS</div>
+          <div class="year-rows">${yearRows(['2022','2023','2024','2025','2026'])}</div>
+          <hr class="panel-divider">
+          <div class="panel-section-label">CASE TYPE (ALL YEARS)</div>
+          <div class="panel-meta" style="margin-top:.25rem">
+            <div>Non-payment: <strong>${props.nonpayment_executions}</strong></div>
+            <div>Holdover: <strong>${props.holdover_executions}</strong></div>
+            <div>Total executions: <strong>${props.total_executions}</strong></div>
+          </div>
+          ${rodent ? `
+          <hr class="panel-divider">
+          <div class="panel-section-label">RODENT INSPECTIONS</div>
+          <div class="panel-meta" style="margin-top:.25rem">
+            <div>Total inspections: <strong>${rodent.total_inspections}</strong></div>
+            <div>Rat activity failures: <strong>${rodent.total_rat_fails}</strong> (${rodent.fail_rate_pct}%)</div>
+          </div>` : ''}
+        ` : `<hr class="panel-divider"><div class="panel-no-data">Individual eviction data<br>not yet available for<br>this development.</div>`}
+      </div>
+      ${hasComp ? `
+      <div id="pane-complaints" style="display:none">
+        <hr class="panel-divider">
+        <div class="panel-section-label">MONTHLY HPD COMPLAINTS</div>
+        <div class="panel-chart-wrap"><canvas id="panel-complaint-chart"></canvas></div>
+        <hr class="panel-divider">
+        <div class="panel-section-label">ANNUAL COMPLAINTS PER 1,000 UNITS</div>
+        <div class="year-rows">${compYearRows()}</div>
+        <hr class="panel-divider">
+        <div class="panel-section-label">TOP COMPLAINT TYPES</div>
+        <div class="panel-meta" style="margin-top:.25rem">
+          ${(cData.top_types||[]).map(t=>`<div>${t.type}: <strong>${t.count}</strong></div>`).join('')}
+          <div style="margin-top:.25rem">Total: <strong>${cData.total}</strong> complaints</div>
+        </div>
       </div>` : ''}
-    ` : `<hr class="panel-divider"><div class="panel-no-data">Individual eviction data<br>not yet available for<br>this development.</div>`}
+    ` : `<hr class="panel-divider"><div class="panel-no-data">No data available<br>for this development.</div>`}
   `;
 
   document.getElementById('detail-panel').classList.add('open');
 
   if (props.has_data && Object.keys(monthly).length > 0) {
     if (panelChart) { panelChart.destroy(); panelChart = null; }
-
-    // Build full monthly spine from Jan 2022 to latest month with data
-    const allMonths = Object.keys(monthly).sort();
-    const start = '2022-01', end = allMonths[allMonths.length - 1];
-    const labels = [], counts = [], bgColors = [];
-    let cur = new Date(start + '-01');
-    const endD = new Date(end + '-01');
-    const convD = props.conversion_date ? new Date(props.conversion_date + 'T00:00:00') : null;
-
-    while (cur <= endD) {
-      const key = cur.toISOString().slice(0,7);
-      labels.push(key);
-      counts.push(monthly[key] || 0);
-      // Bars after conversion date are darker
-      const isPost = convD ? cur >= convD : true;
-      bgColors.push(isPost ? '#111111' : '#BBBBBB');
-      cur.setMonth(cur.getMonth() + 1);
-    }
-
-    // Vertical line plugin for conversion date
-    const convLinePlugin = {
-      id: 'convLine',
-      afterDraw(chart) {
-        if (!convD) return;
-        const convKey = convD.toISOString().slice(0,7);
-        const idx = labels.indexOf(convKey);
-        if (idx < 0) return;
-        const { ctx, chartArea: { top, bottom } } = chart;
-        const x = chart.getDatasetMeta(0).data[idx]?.x;
-        if (x == null) return;
-        ctx.save();
-        ctx.strokeStyle = '#111111';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 3]);
-        ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
-        ctx.restore();
-      }
-    };
-
-    panelChart = new Chart(document.getElementById('panel-monthly-chart'), {
-      type: 'bar',
-      data: { labels, datasets: [{ data: counts, backgroundColor: bgColors, borderWidth: 0 }] },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: '#F7F6F2', borderColor: '#111', borderWidth: 1,
-            titleColor: '#111', bodyColor: '#555',
-            titleFont: { family: "'IBM Plex Mono',monospace", size: 10 },
-            bodyFont:  { family: "'IBM Plex Mono',monospace", size: 10 },
-            callbacks: { title: t => t[0].label, label: t => ` ${t.parsed.y} execution${t.parsed.y !== 1 ? 's' : ''}` }
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              font: { family: "'IBM Plex Mono',monospace", size: 8 }, color: '#999',
-              maxRotation: 0,
-              callback(val, i) {
-                const lbl = labels[i];
-                return lbl && lbl.endsWith('-01') ? lbl.slice(0,4) : '';
-              }
-            },
-            grid: { display: false }
-          },
-          y: {
-            beginAtZero: true, ticks: { stepSize: 1, precision: 0,
-              font: { family: "'IBM Plex Mono',monospace", size: 9 }, color: '#999' },
-            grid: { color: 'rgba(0,0,0,0.04)' }
-          }
-        }
-      },
-      plugins: [convLinePlugin]
-    });
+    buildMonthlyBarChart('panel-monthly-chart', monthly, props.conversion_date, 'execution(s)');
   }
 }
+
+document.getElementById('panel-content').addEventListener('click', e => {
+  const tab = e.target.closest('[data-panel-tab]');
+  if (tab) switchPanelTab(tab.dataset.panelTab);
+});
 
 document.getElementById('panel-close').addEventListener('click', () => {
   document.getElementById('detail-panel').classList.remove('open');
@@ -753,6 +826,32 @@ function buildCharts() {
       callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(1)+'%' : '—'} fail rate`}}},
       scales:{...CHART_OPTS.scales,y:{...CHART_OPTS.scales.y,
         ticks:{...CHART_OPTS.scales.y.ticks,callback:v=>v+'%'}}}}});
+
+  renderComplaintsAggChart(document.getElementById('chart-complaints'));
+}
+
+function renderComplaintsAggChart(canvas) {
+  if (!canvas || !complaintsAgg.length) return;
+  const labels = complaintsAgg.map(d => `Year ${d.year_since_conv}`);
+  const vals   = complaintsAgg.map(d => d.per_1k_units);
+  const devCounts = complaintsAgg.map(d => d.dev_count);
+  return new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets: [{ label:'PACT avg', data: vals, ...LINE('#111111') }] },
+    options: {
+      ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+        callbacks: {
+          title: t => labels[t[0].dataIndex],
+          label: t => ` ${t.parsed.y.toFixed(0)} complaints / 1k units`,
+          afterLabel: t => ` ${devCounts[t.dataIndex]} developments`,
+        }
+      }},
+      scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+        ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
+      }}
+    }
+  });
 }
 
 // ── Full-screen chart overlay ───────────────────────────────────────────────────
@@ -960,7 +1059,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = type === 'rodent' ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints') ? 'none' : '';
 
   const legendDashed = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
@@ -974,6 +1073,12 @@ function openChartOverlay(type) {
     document.getElementById('cfo-subtitle').textContent = '% of DOHMH inspections failing for rat activity · annual';
     document.getElementById('cfo-legend').innerHTML     = legendDashed;
     renderExpandedChart('rodent', 'yearly');
+  } else if (type === 'complaints') {
+    document.getElementById('cfo-title').textContent    = 'HPD 311 COMPLAINTS SINCE PACT CONVERSION';
+    document.getElementById('cfo-subtitle').textContent = 'HPD housing complaints per 1,000 units · by years since conversion';
+    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderComplaintsAggChart(document.getElementById('cfo-canvas'));
   } else {
     const isRate = type === 'rate';
     document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';

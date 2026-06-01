@@ -607,6 +607,40 @@ button.inline-tab-link:hover { text-decoration-color: var(--ink); }
 }
 .chart-card-clickable:hover .chart-expand-hint { color: var(--ink); }
 .chart-card-wide { grid-column: 1 / -1; }
+.chart-note {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--ink-light);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+/* ── Panel tab bar ──────────────────────────────────────────────────────────── */
+.panel-tab-bar {
+  display: flex;
+  gap: 0;
+  margin: 0.75rem 0 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.panel-tab {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  color: var(--ink-light);
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.panel-tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+.panel-tab:hover:not(.active) { color: var(--ink-mid); }
 
 .chart-card-header {
   display: flex;
