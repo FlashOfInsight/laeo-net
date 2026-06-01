@@ -1,4 +1,4 @@
-# Methodology: PACT vs. Non-PACT NYCHA Eviction Execution Rates
+# Methodology: PACT vs. Non-PACT NYCHA — Evictions, Rodent Inspections, and 311 Complaints
 
 **Produced:** 2026-05-03  
 **Analyst:** laeoc  
@@ -8,8 +8,8 @@
 
 ## Overview
 
-This document describes every step taken to compute annual marshal eviction execution
-rates (per 1,000 residential units) for:
+This document describes every step taken to compute eviction rates, rodent inspection
+failure rates, and HPD 311 complaint volumes (per 1,000 residential units) for:
 
 - **PACT developments** — NYCHA buildings converted to private management under the
   Permanent Affordability Commitment Together (RAD/PACT) program, filtered to
@@ -77,6 +77,41 @@ pool *at the end of that year*, as developments convert from NYCHA to PACT over 
   `residential_commercial_ind`
 - **Used for:** Primary numerator — count of executed evictions at PACT and
   non-PACT NYCHA BBLs, 2022–present
+
+### S8 — DOHMH Rodent Inspection
+- **URL:** `https://data.cityofnewyork.us/resource/p937-wjvj.json`
+- **Publisher:** NYC Department of Health and Mental Hygiene via NYC Open Data (Socrata)
+- **Contents:** One row per DOHMH rodent inspection. Key fields: `bbl`, `inspection_date`,
+  `result`, `inspection_type`
+- **Used for:** Rodent inspection failure rate analysis — annual rate of inspections
+  failing specifically for rat activity at PACT vs. non-PACT NYCHA buildings
+
+### S9 — NYC 311 Service Requests
+- **URL:** `https://data.cityofnewyork.us/resource/erm2-nwe9.json`
+- **Publisher:** NYC Office of Technology and Innovation via NYC Open Data (Socrata)
+- **Contents:** One record per 311 service request city-wide. Key fields: `agency`,
+  `complaint_type`, `bbl`, `created_date`, `closed_date`, `address_type`
+- **Used for:** HPD housing complaint analysis at PACT developments — volume and type
+  of complaints (Heat/Hot Water, Plumbing, Elevator, etc.) by year since conversion.
+  Filtered to `agency = 'HPD'`; only post-conversion records attributed to PACT group.
+  Non-PACT NYCHA excluded because residents use the NYCHA MyNYCHA app, not 311.
+
+### S10 — DOB Job Application Filings
+- **URL:** `https://data.cityofnewyork.us/resource/w9ak-ipjd.json`
+- **Publisher:** NYC Department of Buildings via NYC Open Data (Socrata)
+- **Contents:** One record per DOB job application. Key fields: `bbl`, `job_type`,
+  `job_status`, `pre_filing_date`, `initial_cost`, `work_type`
+- **Used for:** Capital investment signal at PACT developments — alteration job
+  filing counts and declared construction costs post-conversion.
+
+### S11 — HUD REAC Physical Inspection Scores (PHAS)
+- **URL:** `https://www.hud.gov/program_offices/public_indian_housing/reac/products/pass/scores`
+- **Publisher:** U.S. Department of Housing and Urban Development
+- **Contents:** Annual physical inspection scores (0–100) for all public housing
+  authorities and RAD/PACT-converted properties, covering site, building exterior,
+  building systems, common areas, and individual units.
+- **Used for:** Direct apples-to-apples physical conditions comparison between PACT
+  and non-PACT NYCHA buildings, using HUD's standardized inspection protocol.
 
 ### S7 — OCA Housing Court Data (HDC S3 CSVs)
 - **URL base:** `https://oca-2-dev.s3.amazonaws.com/public/`
@@ -528,6 +563,164 @@ current to 2026-04-24.
 
 ---
 
+## Step 10 — Rodent Inspection Failure Rate Analysis
+
+**Script:** `pact_rodent.py`  
+**Source:** S8 (DOHMH Rodent Inspection)  
+**Outputs:** `pact_rodent.csv`, `ctrl_rodent.csv`, `data/rodent_aggregate.json`,
+`developments.geojson` (enriched with `rodent_data` per PACT feature)
+
+### 10.1 — Fetch PACT rodent inspections
+
+1. For each BBL in the PACT BBL master list, query S8:  
+   `$where=bbl in(bbl1,bbl2,...) AND inspection_date >= '2010-01-01'`  
+   Batch in groups of up to 50 BBLs to respect URL length limits.
+2. Normalize `bbl` to a 10-character zero-padded string.
+3. Join each record to its development name via the PACT BBL master.
+4. Apply **date-aware routing**: for each BBL, drop inspections that occurred
+   *before* that development's `rad_transferred_date` (the NYCHA → PACT
+   conversion date from S3). Only post-conversion inspections at PACT BBLs
+   enter the PACT aggregate; pre-conversion inspections at those same BBLs
+   are excluded entirely (they belong to a period when the building was still
+   NYCHA-managed and would double-count with the control group).
+5. Write `pact_rodent.csv` (5,258 records, all 29 PACT developments).
+
+### 10.2 — Fetch non-PACT rodent inspections
+
+1. For each BBL in `ctrl_bbls_pluto.csv` (771 NYCHA-owned lots), query S8 in
+   batches of 50 BBLs.
+2. Normalize `bbl`; drop records with no matching BBL.
+3. Write `ctrl_rodent.csv` (23,391 records).
+
+### 10.3 — Compute annual failure rates
+
+For each group G ∈ {PACT, non-PACT} and each year Y:
+
+```
+total_inspections(G, Y) = count of rows in the group's rodent CSV where
+                          inspection_date falls in year Y
+
+rat_fails(G, Y)         = count of rows where result contains "RAT ACTIVITY"
+                          (case-insensitive substring match)
+
+fail_rate_pct(G, Y)     = rat_fails / total_inspections × 100
+```
+
+**Minimum threshold:** if `total_inspections(G, Y) < 5`, the period is
+suppressed and recorded as `null` in `rodent_aggregate.json`. This avoids
+noisy single-inspection data points, particularly for the PACT group in early
+post-conversion years (2019–2021).
+
+**Result:** The PACT aggregate line is null for 2010–2018 (fewer than 5
+post-conversion inspections in those years combined across all converted
+developments) and begins in 2019 (31.2% failure rate, 16 inspections).
+
+### 10.4 — Per-development enrichment
+
+For each PACT development with at least one post-conversion rodent inspection,
+a `rodent_data` property is added to its feature in `developments.geojson`:
+
+```json
+{
+  "total_inspections": <int>,
+  "total_rat_fails": <int>,
+  "fail_rate_pct": <float>,
+  "by_year": {
+    "2022": { "inspections": <int>, "rat_fails": <int>, "fail_rate_pct": <float> },
+    ...
+  }
+}
+```
+
+**Audit check:** For any PACT development in `pact_rodent.csv`, filter to its
+rows, count total rows, count rows where `result` contains "RAT ACTIVITY", and
+confirm the ratio matches the `fail_rate_pct` in `developments.geojson`.
+
+---
+
+## Step 11 — HPD 311 Complaint Analysis (PACT Developments Only)
+
+**Script:** `pact_311.py`  
+**Source:** S9 (NYC 311 Service Requests, HPD agency filter)  
+**Outputs:** `pact_311.csv`, `data/complaints_agg.json`,
+`developments.geojson` (enriched with `complaint_data` per PACT feature)
+
+### 11.1 — Fetch conversion dates and BBL map
+
+1. Fetch `rad_transferred_date` for all PACT developments from S3 (same as Step 2).
+2. Load `pact_bbl_master.csv` to build a `{bbl → development_name}` lookup and
+   a `{development_name → conversion_date}` lookup.
+
+### 11.2 — Fetch HPD 311 complaints for all PACT BBLs
+
+For each development's BBL set:
+
+1. Query S9 with filter:  
+   `$where=bbl in(bbl1,...) AND agency='HPD'`  
+   Paginate until exhausted; timeout 45 seconds per request with 3 retries.
+2. Filter to records where `bbl` is non-null and `agency = 'HPD'`.
+3. Apply **date-aware routing**: drop any complaint whose `created_date` is
+   before the development's `rad_transferred_date`. Pre-conversion HPD complaints
+   (if any) are excluded from PACT attribution.
+4. Write `pact_311.csv` (18,295 records across 23 developments with matched BBLs
+   and conversion dates).
+
+**Note:** Non-PACT NYCHA is excluded from this pipeline entirely. Tenants at
+publicly managed NYCHA buildings report issues through the NYCHA MyNYCHA app and
+internal work-order system, not 311. HPD does not proactively inspect NYCHA-managed
+buildings — it only has jurisdiction over privately managed housing. This asymmetry
+makes a PACT vs. non-PACT 311 comparison invalid; see L9.
+
+### 11.3 — Build years-since-conversion aggregate
+
+For each PACT development D with a known `conversion_date`:
+
+1. Assign each complaint a `conv_year` offset: `year(created_date) − year(conversion_date)`.
+   Year 0 = the calendar year of conversion; Year 1 = first full year under private
+   management; etc.
+2. Pool all developments by `conv_year` offset. For each offset Y:
+   ```
+   total_complaints(Y) = sum of complaints across all devs at offset Y
+   total_units(Y)      = sum of units for those same devs
+   per_1k(Y)           = total_complaints / total_units × 1,000
+   dev_count(Y)        = number of developments contributing data at offset Y
+   ```
+3. **Minimum threshold:** suppress offsets with `dev_count < 3` to avoid
+   single-development noise.
+4. Write `data/complaints_agg.json` (9 year-offset buckets, Year 0–8).
+
+**Result:** Year 0 (conversion year) shows 107.8 complaints/1k units (11 devs).
+Year 1 spikes to 394.8/1k (18 devs — first full year under HPD jurisdiction).
+Years 2–8 settle in the 180–285/1k range.
+
+### 11.4 — Per-development enrichment
+
+For each development in `pact_311.csv`, a `complaint_data` property is added to its
+feature in `developments.geojson`:
+
+```json
+{
+  "total": <int>,
+  "conv_year": <int>,
+  "by_year": {
+    "2021": { "complaints": <int>, "per_1k": <float> },
+    ...
+  },
+  "monthly": { "2021-06": <int>, ... },
+  "top_types": [
+    { "type": "HEAT/HOT WATER", "count": <int> },
+    ...
+  ]
+}
+```
+
+**Audit check:** For any PACT development in the map panel, toggle to the
+"311 Complaints" tab. The monthly bar chart should start at the development's
+conversion date. The complaint count in the panel header should match the sum of
+all `monthly` values in `developments.geojson` for that development.
+
+---
+
 ## Known Limitations and Caveats
 
 ### L1 — Incomplete PACT BBL coverage
@@ -580,3 +773,22 @@ Actual unit counts in past years may differ slightly due to demolitions,
 new construction, or unreported changes not yet reflected in PLUTO. S3's
 `total_number_of_apartments` could be used as an alternative denominator source
 for non-PACT developments; the two sources agree within ~2%.
+
+### L8 — Rodent inspection frequency is not uniform across time or tenure type
+DOHMH expanded its proactive inspection program significantly after 2017.
+Non-PACT NYCHA received 474 inspections in 2010 versus 3,249 in 2022 — a 6×
+increase. Because failure rate (not raw count) is used as the metric, this
+expansion does not directly inflate reported rates, but differential inspection
+intensity at PACT vs. non-PACT sites, or at buildings that have recently changed
+management, may still introduce bias. The PACT aggregate line is based on fewer
+than 200 post-conversion inspections total in 2019–2021, which limits statistical
+confidence in those early years.
+
+### L9 — HPD 311 complaints are not available for non-PACT NYCHA
+NYC Housing Authority tenants report maintenance issues through the MyNYCHA app
+and NYCHA's internal work-order system. HPD does not have jurisdiction over
+publicly managed NYCHA buildings and does not receive or dispatch complaints for
+those addresses. As a result, 311 complaint volume at non-PACT NYCHA BBLs reflects
+near-zero data — not an absence of problems. The 311 pipeline is therefore PACT-only,
+and the "HPD 311 Complaints" chart shows a years-since-conversion trajectory rather
+than a PACT vs. non-PACT comparison.
