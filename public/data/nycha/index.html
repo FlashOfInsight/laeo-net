@@ -1085,12 +1085,18 @@ function renderNypdConvChart(canvas) {
   if (!canvas || !nypdConv.length) return;
   const rows   = nypdConv;
   const labels = rows.map(d => (d.bucket >= 0 ? '+' : '') + d.bucket);
-  const rates  = rows.map(d => d.rate ? (d.rate[_nypdType] ?? null) : null);
+  // Use annualized_rate for bucket 0 if available
+  const rates  = rows.map(d => {
+    if (d.bucket === 0 && d.annualized_rate) return d.annualized_rate[_nypdType] ?? null;
+    return d.rate ? (d.rate[_nypdType] ?? null) : null;
+  });
   const colors = rows.map(d => d.bucket < 0 ? 'rgba(160,160,160,0.7)' : 'rgba(30,30,30,0.85)');
 
-  // Poisson 95% CI: ±1.96 × sqrt(n) / units × 1000
+  // Poisson 95% CI: ±1.96 × sqrt(annualized_n) / units × 1000 for bucket 0
   const errors = rows.map(d => {
-    const n = d.n ? (d.n[_nypdType] || 0) : 0;
+    const n = (d.bucket === 0 && d.annualized_n)
+      ? (d.annualized_n[_nypdType] || 0)
+      : (d.n ? (d.n[_nypdType] || 0) : 0);
     return (n && d.units) ? 1.96 * Math.sqrt(n) / d.units * 1000 : null;
   });
 
@@ -1142,11 +1148,14 @@ function renderNypdConvChart(canvas) {
           },
           label: c => {
             const row = rows[c.dataIndex];
-            const n   = row.n ? row.n[_nypdType] : 0;
+            const isAnn = row.bucket === 0 && row.annualized_rate;
+            const n   = isAnn ? Math.round(row.annualized_n[_nypdType] || 0)
+                               : (row.n ? row.n[_nypdType] : 0);
             const eb  = errors[c.dataIndex];
             const r   = c.parsed.y != null ? c.parsed.y.toFixed(1) : '—';
             const pm  = eb != null ? ` ±${eb.toFixed(1)}` : '';
-            return ` ${r}${pm} / 1k units (${row.devs} devs, n=${n})`;
+            const ann = isAnn ? ` · annualized from ${row.avg_months_post_conv} mo avg` : '';
+            return ` ${r}${pm} / 1k units (${row.devs} devs, n≈${n})${ann}`;
           },
         }},
       },

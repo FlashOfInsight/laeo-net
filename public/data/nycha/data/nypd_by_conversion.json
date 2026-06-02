@@ -99,7 +99,20 @@
       "FELONY": 73.51,
       "MISDEMEANOR": 115.55,
       "VIOLATION": 50.77
-    }
+    },
+    "annualized_rate": {
+      "all": 717.41,
+      "FELONY": 220.77,
+      "MISDEMEANOR": 335.98,
+      "VIOLATION": 160.67
+    },
+    "annualized_n": {
+      "all": 9114.8,
+      "FELONY": 2804.8,
+      "MISDEMEANOR": 4268.6,
+      "VIOLATION": 2041.3
+    },
+    "avg_months_post_conv": 4.3
   },
   {
     "bucket": 1,
