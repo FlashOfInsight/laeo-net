@@ -1,1 +1,65 @@
-[]
+[
+  {
+    "year": "2018",
+    "dev_count": 2,
+    "total_cost_dollars": 174000.0,
+    "total_units": 621,
+    "cost_per_unit": 280.0
+  },
+  {
+    "year": "2019",
+    "dev_count": 4,
+    "total_cost_dollars": 371419.0,
+    "total_units": 2445,
+    "cost_per_unit": 152.0
+  },
+  {
+    "year": "2020",
+    "dev_count": 4,
+    "total_cost_dollars": 1436140.0,
+    "total_units": 2336,
+    "cost_per_unit": 615.0
+  },
+  {
+    "year": "2021",
+    "dev_count": 8,
+    "total_cost_dollars": 10248333.0,
+    "total_units": 3083,
+    "cost_per_unit": 3324.0
+  },
+  {
+    "year": "2022",
+    "dev_count": 9,
+    "total_cost_dollars": 138378590.0,
+    "total_units": 6370,
+    "cost_per_unit": 21723.0
+  },
+  {
+    "year": "2023",
+    "dev_count": 11,
+    "total_cost_dollars": 298936943.0,
+    "total_units": 7945,
+    "cost_per_unit": 37626.0
+  },
+  {
+    "year": "2024",
+    "dev_count": 17,
+    "total_cost_dollars": 374102715.0,
+    "total_units": 11602,
+    "cost_per_unit": 32245.0
+  },
+  {
+    "year": "2025",
+    "dev_count": 22,
+    "total_cost_dollars": 615480706.0,
+    "total_units": 13425,
+    "cost_per_unit": 45846.0
+  },
+  {
+    "year": "2026",
+    "dev_count": 20,
+    "total_cost_dollars": 293948992.0,
+    "total_units": 12785,
+    "cost_per_unit": 22992.0
+  }
+]

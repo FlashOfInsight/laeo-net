@@ -1397,17 +1397,13 @@ document.querySelectorAll('.chart-card-clickable').forEach(card => {
 });
 
 // ── NYPD type filter dropdown ──────────────────────────────────────────────────
-let _nypdSmallChart = null;
 document.getElementById('nypd-type-filter').addEventListener('change', e => {
   _nypdType = e.target.value;
-  // Re-render small card chart
+  // Re-render small card chart (destroy any existing instance first)
   const smallCanvas = document.getElementById('chart-nypd');
-  if (smallCanvas && smallCanvas._chartInstance) {
-    smallCanvas._chartInstance.destroy();
-    smallCanvas._chartInstance = null;
-  }
-  const ch = renderNypdChart(smallCanvas);
-  if (ch && smallCanvas) smallCanvas._chartInstance = ch;
+  const existing = Chart.getChart(smallCanvas);
+  if (existing) existing.destroy();
+  renderNypdChart(smallCanvas);
   // Re-render expanded overlay if open
   if (_currentChartType === 'nypd' && document.getElementById('chart-full-overlay').classList.contains('open')) {
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
