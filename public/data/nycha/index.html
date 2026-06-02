@@ -521,18 +521,20 @@
           covers the current calendar year. Analysis begins in 2015.
         </p>
         <p class="source-desc">
-          <strong>Non-PACT NYCHA</strong> complaints are fetched by filtering
-          <code>prem_typ_desc = 'RESIDENCE - PUBLIC HOUSING'</code> citywide, then spatially
-          joined to NYCHA development footprints. <strong>PACT</strong> complaints are
-          gathered with per-development <code>within_circle</code> queries filtered to residential
-          premise types (PUBLIC HOUSING, APT. HOUSE, PRIVATE HOUSE)
-          restricted to dates after each development's PACT conversion, because NYPD may
-          reclassify converted buildings from "PUBLIC HOUSING" to "APT. HOUSE" after
-          PACT conversion.
+          Both PACT and non-PACT groups use a <strong>uniform 150m-per-building circle</strong>
+          methodology. Non-PACT building locations come from the
+          <a href="https://data.cityofnewyork.us/resource/3ub5-4ph8.json" target="_blank" rel="noopener">NYCHA Residential Addresses dataset (3ub5-4ph8)</a>
+          (~2,955 buildings across 216 non-PACT developments). PACT building locations are
+          resolved from MapPLUTO by BBL. For each building, a <code>within_circle(field, lat, lon, 150)</code>
+          query is issued against both NYPD datasets; results are deduplicated by complaint number.
+          No <code>prem_typ_desc</code> filter is applied — the 150m geometry defines scope.
+          Scattered developments (LINDEN: 15 parcels; BUSHWICK II: 9 parcels) use one circle
+          per BBL location rather than a single centroid to avoid over-sweeping.
         </p>
         <p class="source-desc">
-          Rates are expressed per 1,000 residential units, using the same PACT and non-PACT
-          denominators as the eviction and rodent analyses.
+          PACT incident data covers 5 years pre-conversion and all post-conversion years,
+          enabling the before/after trajectory chart (click the card to expand). Rates are
+          per 1,000 residential units using the same denominators as the eviction analysis.
         </p>
       </div>
     </div>

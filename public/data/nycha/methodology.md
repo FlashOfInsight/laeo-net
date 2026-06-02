@@ -40,7 +40,9 @@ pool *at the end of that year*, as developments convert from NYCHA to PACT over 
   Key fields: `development`, `address`, `zip_code`, `borough_block_lot` (BBL),
   `borough`, `block`, `lot`, `privately_managed`
 - **Used for:** Initial attempt at PACT BBL lookup (abandoned — see §4.1);
-  control group BBL lookup (superseded — see §4.3); address-normalization reference
+  control group BBL lookup (superseded — see §4.3); address-normalization reference;
+  **NYPD Phase 0b**: per-building lat/lon for the non-PACT spatial index (uniform 150m
+  circles — see Step 13)
 
 ### S3 — NYCHA Development Data Book
 - **URL:** `https://data.cityofnewyork.us/resource/evjd-dqpz.json`
@@ -907,7 +909,7 @@ history to draw a trend).
 
 **Source**: S12 — NYPD Complaint Data (qgea-i56i historical, 5uac-w243 current YTD)  
 **Script**: `pact-eviction-analysis/pact_nypd.py`  
-**Output**: `data/nypd_aggregate.json`
+**Outputs**: `data/nypd_aggregate.json`, `data/nypd_by_conversion.json`
 
 ### 13.1 Motivation
 
@@ -928,60 +930,73 @@ Two Socrata datasets are combined to cover 2015–present:
 
 | Dataset ID | Coverage | Geospatial field |
 |---|---|---|
-| `qgea-i56i` | 2006–2025 (historical) | `lat_lon` |
+| `qgea-i56i` | 2006–(current year − 1) historical | `lat_lon` |
 | `5uac-w243` | current calendar year (YTD) | `geocoded_column` |
 
 The geospatial field name differs between datasets; this affects how `within_circle()`
-SoQL queries are structured.
+SoQL queries are structured. The year boundary is set dynamically using `date.today().year`
+so no annual manual update is required.
 
-### 13.3 Two-Phase Spatial Strategy
+### 13.3 Uniform Circle Methodology
 
-The central methodological challenge is that NYPD may reclassify the `prem_typ_desc`
-field for PACT-converted buildings from `'RESIDENCE - PUBLIC HOUSING'` to
-`'RESIDENCE - APT. HOUSE'` after conversion, because converted developments are now
-managed by private operators. A filter-only approach on `prem_typ_desc` would
-undercount PACT incidents post-conversion.
+Both PACT and non-PACT groups use the same spatial strategy: one **150m radius circle
+per building**, queried via `within_circle()` SoQL against both NYPD datasets. No
+`prem_typ_desc` filter is applied — the geometry defines scope. Incidents are
+deduplicated by `cmplnt_num` within each development to prevent double-counting near
+overlapping circles.
 
-Two phases are used:
+**Why no premise-type filter:** NYPD may reclassify converted buildings from
+`RESIDENCE - PUBLIC HOUSING` to `RESIDENCE - APT. HOUSE` after PACT transfer. A
+premise-type filter would make the PACT and non-PACT counts structurally incomparable
+(different field values map to the same physical buildings depending on management era).
+Uniform circle queries treat both groups identically; the 150m radius captures incidents
+at and immediately around each residential building including the sidewalk.
 
-**Phase A — Non-PACT control pool**  
-Fetch all citywide complaints where `prem_typ_desc = 'RESIDENCE - PUBLIC HOUSING'`,
-covering 2015 through the present year. This returns ~388k records (380k historical + ~8k
-YTD). Each complaint is spatially joined to NYCHA development footprints using the
-NYCHA Developments dataset (phvi-damg) to confirm it falls within a development boundary.
-Any complaints that fall within a PACT development *after* its conversion date are
-discarded from the control pool to avoid contamination.
+**Why 150m:** Smaller than a typical NYC block face (~200m); large enough to capture
+incidents reported at the building address or the curb. Insensitive to minor geocoding
+drift in the NYPD dataset.
 
-**Phase B — PACT incidents (post-conversion, circle query)**  
-For each PACT development, after its conversion date, issue `within_circle()` queries
-against both datasets using a computed centroid and radius. To remain comparable with
-Phase A, queries are filtered to residential premise types:
-`prem_typ_desc IN ('RESIDENCE - PUBLIC HOUSING', 'RESIDENCE - APT. HOUSE', 'RESIDENCE-PRIVATE HOUSE')`.
-This captures the original NYCHA label and the likely post-conversion reclassification,
-while excluding street, commercial, and other non-residential incidents that would inflate
-counts in dense urban neighborhoods.
+**Phase 0a — PACT spatial index:**  
+PACT building locations are resolved from PLUTO (S4) by BBL. Each development may have
+multiple BBLs; coordinates are fetched for all of them.
 
-### 13.4 PACT Development Spatial Index (Phase 0)
+For compact developments where all parcels are within 500m of each other, a single centroid
+circle is used with radius = max-parcel-spread + 100m buffer, floored at 150m. For
+scattered developments exceeding 500m spread, the script switches to **per-parcel mode**:
+one 150m circle per unique BBL location. Two developments triggered per-parcel mode:
+LINDEN (15 circles, 5,070m spread) and BUSHWICK II GROUPS A & C (9 circles, 1,801m spread).
 
-PACT development locations are resolved from PLUTO (dataset `64uk-42ks`) by BBL.
-Each development may have multiple BBLs; coordinates are fetched for all of them.
+PLUTO returns BBL values as float strings (e.g., `'4160010002.00000000'`); normalized
+before lookup: `str(int(float(bbl)))`.
 
-For compact developments (parcel spread ≤ 400m), a single centroid circle is used,
-with radius = max building spread + 100m buffer, floored at 150m.
+**Phase 0b — Non-PACT spatial index:**  
+Non-PACT building locations come from the NYCHA Residential Addresses dataset (S2,
+`3ub5-4ph8`), which has one row per building with `latitude`, `longitude`, and
+`development` name. All ~2,955 buildings are fetched; those whose `borough_block_lot`
+matches a PACT BBL are excluded. The remaining buildings are grouped by `development`
+(~216 non-PACT developments); each group gets one 150m circle per building using the
+same per-parcel logic as Phase 0a.
 
-For scattered developments where the centroid circle would exceed 500m radius, the
-script switches to **per-parcel mode**: one 150m circle per unique BBL location. Queries
-are issued for each circle separately, and results are deduplicated by `cmplnt_num` so
-complaints near overlapping circles are never double-counted. Two developments triggered
-per-parcel mode: LINDEN (15 circles, 5070m spread) and BUSHWICK II GROUPS A & C
-(9 circles, 1801m spread) — both large PACT conversions with scattered buildings across
-multiple non-contiguous sites.
+**Phase A — Non-PACT incidents:**  
+For each non-PACT development's circles, issue `within_circle()` queries against both
+NYPD datasets for 2015–present. Results are merged and deduplicated. Developments with
+any circles that overlap a PACT development's footprint (rare, for adjacent sites) are
+not excluded — the PACT BBL exclusion at Phase 0b already prevents double-attribution.
 
-For Phase A (control pool discard), the outer bounding radius of each development is
-used for a fast bbox pre-filter, then each parcel circle is checked individually.
+**Phase B — PACT incidents (pre + post conversion):**  
+For each PACT development, the same circles are used to query:
+- **Pre-conversion:** 5 full years before conversion (e.g., conv 2021 → query 2016–2020)
+- **Post-conversion:** conversion date through present
 
-PLUTO returns BBL values as float strings (e.g., `'4160010002.00000000'`). These are
-normalized before lookup: `str(int(float(bbl)))`.
+Pre- and post-conversion records are stored separately. The pre-conversion data enables
+the before/after trajectory chart; the post-conversion data feeds the annual rate chart.
+
+### 13.4 Incident Type Breakdown
+
+The `law_cat_cd` field in both NYPD datasets classifies each incident as `FELONY`,
+`MISDEMEANOR`, or `VIOLATION`. All three values are captured. Aggregate JSONs store
+counts and rates nested by type: `{"all": N, "FELONY": N, "MISDEMEANOR": N, "VIOLATION": N}`.
+The website chart includes a dropdown to filter by type.
 
 ### 13.5 Denominators
 
@@ -991,16 +1006,37 @@ Rates are expressed per 1,000 residential units per year.
 
 ### 13.6 Outputs
 
-- `nypd_pact.csv` — all post-conversion incidents matched to PACT developments
-- `nypd_control.csv` — all non-PACT public housing incidents (Phase A pool)
-- `data/nypd_aggregate.json` — annual PACT and non-PACT rates per 1,000 units,
-  with development counts, unit denominators, raw counts, and rates
+- `nypd_pact.csv` — post-conversion incidents at PACT developments (rows: cmplnt_num, date, year, type, development)
+- `nypd_pact_pre.csv` — pre-conversion incidents at PACT developments (same schema; 5-year window)
+- `nypd_control.csv` — incidents at non-PACT developments (all years)
+- `data/nypd_aggregate.json` — one row per calendar year with:
+  ```json
+  {"year": 2024, "pact_devs": 21, "pact_units": 12612,
+   "pact_n": {"all": 3730, "FELONY": ..., "MISDEMEANOR": ..., "VIOLATION": ...},
+   "pact_rate": {"all": 295.75, ...},
+   "ctrl_units": 180305,
+   "ctrl_n": {"all": ..., ...}, "ctrl_rate": {"all": 181.38, ...}}
+  ```
+- `data/nypd_by_conversion.json` — one row per year-relative-to-conversion bucket (−5 to +N):
+  ```json
+  {"bucket": -2, "devs": 26, "units": ...,
+   "n": {"all": 8779, "FELONY": ..., ...},
+   "rate": {"all": 667.81, ...}}
+  ```
 
 ### 13.7 Chart Presentation
 
-The chart shows PACT (solid black) vs. Non-PACT NYCHA (dashed gray) rates per 1,000 units,
-annual, 2015–present. PACT line is suppressed until at least 3 developments have converted
-(year must have `pact_devs >= 3`).
+The small card chart shows PACT (solid black) vs. Non-PACT NYCHA (dashed gray) annual
+rates per 1,000 units, 2015–present. The PACT line is suppressed until at least 3
+developments have converted (`pact_devs >= 3`).
+
+Clicking the card expands a bar chart showing the pre/post conversion trajectory pooled
+across all PACT developments (buckets −5 to +N). Each bar has a Poisson 95% confidence
+interval: `±1.96 × √n / units × 1000`. This allows visual assessment of statistical
+precision — later post-conversion years have fewer contributing developments and wider CI.
+Pre-conversion bars (negative buckets) are gray; post-conversion bars are black.
+
+A dropdown filters both charts by incident type (All / Felony / Misdemeanor / Violation).
 
 ---
 
