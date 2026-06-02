@@ -216,6 +216,12 @@
         <div class="cfo-title" id="cfo-title"></div>
         <div class="cfo-subtitle" id="cfo-subtitle"></div>
       </div>
+      <select class="cfo-resolution" id="cfo-nypd-type" style="display:none">
+        <option value="all">All incidents</option>
+        <option value="FELONY">Felony</option>
+        <option value="MISDEMEANOR">Misdemeanor</option>
+        <option value="VIOLATION">Violation</option>
+      </select>
       <select class="cfo-resolution" id="cfo-resolution">
         <option value="yearly">Yearly</option>
         <option value="6mo">Every 6 months</option>
@@ -1358,6 +1364,9 @@ function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
   resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort') ? 'none' : '';
+  const nypdTypeEl = document.getElementById('cfo-nypd-type');
+  nypdTypeEl.style.display = (type === 'nypd-conv' || type === 'nypd-cohort') ? '' : 'none';
+  nypdTypeEl.value = _nypdType;
 
   const legendDashed = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
@@ -1423,6 +1432,31 @@ document.getElementById('cfo-resolution').addEventListener('change', e => {
   if (_currentChartType) renderExpandedChart(_currentChartType, e.target.value);
 });
 
+document.getElementById('cfo-nypd-type').addEventListener('change', e => {
+  _nypdType = e.target.value;
+  // Sync card dropdown
+  document.getElementById('nypd-type-filter').value = _nypdType;
+  // Re-render overlay chart
+  if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+  const typeLabel = { all: 'All incidents', FELONY: 'Felony', MISDEMEANOR: 'Misdemeanor', VIOLATION: 'Violation' }[_nypdType] || 'All incidents';
+  if (_currentChartType === 'nypd-conv') {
+    document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · years relative to PACT transfer date`;
+    expandedChart = renderNypdConvChart(document.getElementById('cfo-canvas'));
+  } else {
+    document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · 150m radius per building · 2015–present`;
+    expandedChart = renderNypdCohortChart(document.getElementById('cfo-canvas'));
+  }
+  // Re-render card charts too
+  const convCanvas = document.getElementById('chart-nypd-conv');
+  const existingConv = Chart.getChart(convCanvas);
+  if (existingConv) existingConv.destroy();
+  renderNypdConvChart(convCanvas);
+  const cohortCanvas = document.getElementById('chart-nypd-cohort');
+  const existingCohort = Chart.getChart(cohortCanvas);
+  if (existingCohort) existingCohort.destroy();
+  renderNypdCohortChart(cohortCanvas);
+});
+
 document.querySelectorAll('.chart-card-clickable').forEach(card => {
   card.addEventListener('click', () => openChartOverlay(card.dataset.chart));
 });
@@ -1440,6 +1474,8 @@ document.getElementById('nypd-type-filter').addEventListener('change', e => {
   if (existingCohort) existingCohort.destroy();
   renderNypdCohortChart(cohortCanvas);
 
+  // Keep overlay dropdown in sync
+  document.getElementById('cfo-nypd-type').value = _nypdType;
   // Re-render expanded overlay if an NYPD chart is open
   const overlay = document.getElementById('chart-full-overlay');
   if (overlay.classList.contains('open') && (_currentChartType === 'nypd-conv' || _currentChartType === 'nypd-cohort')) {
