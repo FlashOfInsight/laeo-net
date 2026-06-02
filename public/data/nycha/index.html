@@ -171,15 +171,18 @@
         </div>
         <div class="chart-note">Source: NYC DOB Job Application Filings (w9ak-ipjd). Declared costs are owner-estimated construction value filed with DOB; actual expenditures may differ. Year 0 = conversion year; n = developments contributing.</div>
       </div>
-      <div class="chart-card chart-card-wide">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="nypd-conv">
         <div class="chart-card-header">
           <div class="chart-title">NYPD INCIDENTS — BEFORE AND AFTER CONVERSION</div>
-          <select id="nypd-type-filter" class="chart-select">
-            <option value="all">All incidents</option>
-            <option value="FELONY">Felony</option>
-            <option value="MISDEMEANOR">Misdemeanor</option>
-            <option value="VIOLATION">Violation</option>
-          </select>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <select id="nypd-type-filter" class="chart-select" onclick="event.stopPropagation()">
+              <option value="all">All incidents</option>
+              <option value="FELONY">Felony</option>
+              <option value="MISDEMEANOR">Misdemeanor</option>
+              <option value="VIOLATION">Violation</option>
+            </select>
+            <div class="chart-expand-hint">Click to expand →</div>
+          </div>
         </div>
         <div class="chart-subtitle">Pooled across PACT developments · per 1,000 units · years relative to PACT transfer date</div>
         <div class="chart-canvas-wrap"><canvas id="chart-nypd-conv"></canvas></div>
@@ -190,9 +193,10 @@
         <div class="chart-note">Error bars: Poisson 95% CI (±1.96√n / units × 1,000). Pre-conversion data covers 5 years before each development's PACT transfer date. Source: NYPD Complaint Data (qgea-i56i / 5uac-w243).</div>
       </div>
 
-      <div class="chart-card chart-card-wide">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="nypd-cohort">
         <div class="chart-card-header">
           <div class="chart-title">NYPD INCIDENTS — PACT COHORT VS. NON-PACT</div>
+          <div class="chart-expand-hint">Click to expand →</div>
         </div>
         <div class="chart-subtitle">All PACT-destined developments tracked from 2015 · pre- and post-conversion combined · per 1,000 units</div>
         <div class="chart-canvas-wrap"><canvas id="chart-nypd-cohort"></canvas></div>
@@ -1353,7 +1357,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits') ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort') ? 'none' : '';
 
   const legendDashed = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
@@ -1379,6 +1383,24 @@ function openChartOverlay(type) {
     document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
+  } else if (type === 'nypd-conv') {
+    const typeLabel = { all: 'All incidents', FELONY: 'Felony', MISDEMEANOR: 'Misdemeanor', VIOLATION: 'Violation' }[_nypdType] || 'All incidents';
+    document.getElementById('cfo-title').textContent    = 'NYPD INCIDENTS — BEFORE AND AFTER CONVERSION';
+    document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · years relative to PACT transfer date`;
+    document.getElementById('cfo-legend').innerHTML     = `
+      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(160,160,160,0.7);display:inline-block;margin-right:6px;border-radius:2px;"></div>Pre-conversion</div>
+      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(30,30,30,0.85);display:inline-block;margin-right:6px;border-radius:2px;"></div>Post-conversion</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderNypdConvChart(document.getElementById('cfo-canvas'));
+  } else if (type === 'nypd-cohort') {
+    const typeLabel = { all: 'All incidents', FELONY: 'Felony', MISDEMEANOR: 'Misdemeanor', VIOLATION: 'Violation' }[_nypdType] || 'All incidents';
+    document.getElementById('cfo-title').textContent    = 'NYPD INCIDENTS — PACT COHORT VS. NON-PACT';
+    document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · 150m radius per building · 2015–present`;
+    document.getElementById('cfo-legend').innerHTML     = `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT cohort (pre + post conversion)</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderNypdCohortChart(document.getElementById('cfo-canvas'));
   } else {
     const isRate = type === 'rate';
     document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';
@@ -1417,6 +1439,20 @@ document.getElementById('nypd-type-filter').addEventListener('change', e => {
   const existingCohort = Chart.getChart(cohortCanvas);
   if (existingCohort) existingCohort.destroy();
   renderNypdCohortChart(cohortCanvas);
+
+  // Re-render expanded overlay if an NYPD chart is open
+  const overlay = document.getElementById('chart-full-overlay');
+  if (overlay.classList.contains('open') && (_currentChartType === 'nypd-conv' || _currentChartType === 'nypd-cohort')) {
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    const typeLabel = { all: 'All incidents', FELONY: 'Felony', MISDEMEANOR: 'Misdemeanor', VIOLATION: 'Violation' }[_nypdType] || 'All incidents';
+    if (_currentChartType === 'nypd-conv') {
+      document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · years relative to PACT transfer date`;
+      expandedChart = renderNypdConvChart(document.getElementById('cfo-canvas'));
+    } else {
+      document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · 150m radius per building · 2015–present`;
+      expandedChart = renderNypdCohortChart(document.getElementById('cfo-canvas'));
+    }
+  }
 });
 
 // ── Table ──────────────────────────────────────────────────────────────────────
