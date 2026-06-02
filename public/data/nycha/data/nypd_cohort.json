@@ -1,0 +1,374 @@
+[
+  {
+    "year": 2015,
+    "pact_devs_in_scope": 8,
+    "pact_devs_converted": 0,
+    "pact_units": 3083,
+    "pact_n": {
+      "all": 2078,
+      "FELONY": 631,
+      "MISDEMEANOR": 1136,
+      "VIOLATION": 311
+    },
+    "pact_rate": {
+      "all": 674.02,
+      "FELONY": 204.67,
+      "MISDEMEANOR": 368.47,
+      "VIOLATION": 100.88
+    },
+    "ctrl_units": 192917,
+    "ctrl_n": {
+      "all": 71653,
+      "FELONY": 20344,
+      "MISDEMEANOR": 40697,
+      "VIOLATION": 10612
+    },
+    "ctrl_rate": {
+      "all": 371.42,
+      "FELONY": 105.45,
+      "MISDEMEANOR": 210.96,
+      "VIOLATION": 55.01
+    }
+  },
+  {
+    "year": 2016,
+    "pact_devs_in_scope": 11,
+    "pact_devs_converted": 1,
+    "pact_units": 6362,
+    "pact_n": {
+      "all": 3553,
+      "FELONY": 1122,
+      "MISDEMEANOR": 1829,
+      "VIOLATION": 602
+    },
+    "pact_rate": {
+      "all": 558.47,
+      "FELONY": 176.36,
+      "MISDEMEANOR": 287.49,
+      "VIOLATION": 94.62
+    },
+    "ctrl_units": 191522,
+    "ctrl_n": {
+      "all": 72491,
+      "FELONY": 20465,
+      "MISDEMEANOR": 40987,
+      "VIOLATION": 11039
+    },
+    "ctrl_rate": {
+      "all": 378.5,
+      "FELONY": 106.85,
+      "MISDEMEANOR": 214.01,
+      "VIOLATION": 57.64
+    }
+  },
+  {
+    "year": 2017,
+    "pact_devs_in_scope": 12,
+    "pact_devs_converted": 1,
+    "pact_units": 6939,
+    "pact_n": {
+      "all": 3901,
+      "FELONY": 1219,
+      "MISDEMEANOR": 2045,
+      "VIOLATION": 637
+    },
+    "pact_rate": {
+      "all": 562.18,
+      "FELONY": 175.67,
+      "MISDEMEANOR": 294.71,
+      "VIOLATION": 91.8
+    },
+    "ctrl_units": 191522,
+    "ctrl_n": {
+      "all": 70982,
+      "FELONY": 19278,
+      "MISDEMEANOR": 40232,
+      "VIOLATION": 11472
+    },
+    "ctrl_rate": {
+      "all": 370.62,
+      "FELONY": 100.66,
+      "MISDEMEANOR": 210.06,
+      "VIOLATION": 59.9
+    }
+  },
+  {
+    "year": 2018,
+    "pact_devs_in_scope": 16,
+    "pact_devs_converted": 5,
+    "pact_units": 9237,
+    "pact_n": {
+      "all": 4401,
+      "FELONY": 1334,
+      "MISDEMEANOR": 2297,
+      "VIOLATION": 770
+    },
+    "pact_rate": {
+      "all": 476.45,
+      "FELONY": 144.42,
+      "MISDEMEANOR": 248.67,
+      "VIOLATION": 83.36
+    },
+    "ctrl_units": 190400,
+    "ctrl_n": {
+      "all": 68639,
+      "FELONY": 19095,
+      "MISDEMEANOR": 37537,
+      "VIOLATION": 12007
+    },
+    "ctrl_rate": {
+      "all": 360.5,
+      "FELONY": 100.29,
+      "MISDEMEANOR": 197.15,
+      "VIOLATION": 63.06
+    }
+  },
+  {
+    "year": 2019,
+    "pact_devs_in_scope": 21,
+    "pact_devs_converted": 6,
+    "pact_units": 12612,
+    "pact_n": {
+      "all": 7165,
+      "FELONY": 2146,
+      "MISDEMEANOR": 3537,
+      "VIOLATION": 1482
+    },
+    "pact_rate": {
+      "all": 568.11,
+      "FELONY": 170.16,
+      "MISDEMEANOR": 280.45,
+      "VIOLATION": 117.51
+    },
+    "ctrl_units": 190100,
+    "ctrl_n": {
+      "all": 68388,
+      "FELONY": 19407,
+      "MISDEMEANOR": 36206,
+      "VIOLATION": 12775
+    },
+    "ctrl_rate": {
+      "all": 359.75,
+      "FELONY": 102.09,
+      "MISDEMEANOR": 190.46,
+      "VIOLATION": 67.2
+    }
+  },
+  {
+    "year": 2020,
+    "pact_devs_in_scope": 27,
+    "pact_devs_converted": 8,
+    "pact_units": 15927,
+    "pact_n": {
+      "all": 7757,
+      "FELONY": 2401,
+      "MISDEMEANOR": 3747,
+      "VIOLATION": 1609
+    },
+    "pact_rate": {
+      "all": 487.03,
+      "FELONY": 150.75,
+      "MISDEMEANOR": 235.26,
+      "VIOLATION": 101.02
+    },
+    "ctrl_units": 189834,
+    "ctrl_n": {
+      "all": 63447,
+      "FELONY": 19672,
+      "MISDEMEANOR": 31608,
+      "VIOLATION": 12167
+    },
+    "ctrl_rate": {
+      "all": 334.22,
+      "FELONY": 103.63,
+      "MISDEMEANOR": 166.5,
+      "VIOLATION": 64.09
+    }
+  },
+  {
+    "year": 2021,
+    "pact_devs_in_scope": 28,
+    "pact_devs_converted": 11,
+    "pact_units": 16151,
+    "pact_n": {
+      "all": 7096,
+      "FELONY": 2319,
+      "MISDEMEANOR": 3358,
+      "VIOLATION": 1419
+    },
+    "pact_rate": {
+      "all": 439.35,
+      "FELONY": 143.58,
+      "MISDEMEANOR": 207.91,
+      "VIOLATION": 87.86
+    },
+    "ctrl_units": 186555,
+    "ctrl_n": {
+      "all": 67047,
+      "FELONY": 20972,
+      "MISDEMEANOR": 32760,
+      "VIOLATION": 13315
+    },
+    "ctrl_rate": {
+      "all": 359.4,
+      "FELONY": 112.42,
+      "MISDEMEANOR": 175.61,
+      "VIOLATION": 71.37
+    }
+  },
+  {
+    "year": 2022,
+    "pact_devs_in_scope": 28,
+    "pact_devs_converted": 12,
+    "pact_units": 16151,
+    "pact_n": {
+      "all": 9172,
+      "FELONY": 2912,
+      "MISDEMEANOR": 4224,
+      "VIOLATION": 2036
+    },
+    "pact_rate": {
+      "all": 567.89,
+      "FELONY": 180.3,
+      "MISDEMEANOR": 261.53,
+      "VIOLATION": 126.06
+    },
+    "ctrl_units": 185978,
+    "ctrl_n": {
+      "all": 75780,
+      "FELONY": 23781,
+      "MISDEMEANOR": 37387,
+      "VIOLATION": 14612
+    },
+    "ctrl_rate": {
+      "all": 407.47,
+      "FELONY": 127.87,
+      "MISDEMEANOR": 201.03,
+      "VIOLATION": 78.57
+    }
+  },
+  {
+    "year": 2023,
+    "pact_devs_in_scope": 28,
+    "pact_devs_converted": 16,
+    "pact_units": 16151,
+    "pact_n": {
+      "all": 9141,
+      "FELONY": 3037,
+      "MISDEMEANOR": 4213,
+      "VIOLATION": 1891
+    },
+    "pact_rate": {
+      "all": 565.97,
+      "FELONY": 188.04,
+      "MISDEMEANOR": 260.85,
+      "VIOLATION": 117.08
+    },
+    "ctrl_units": 183680,
+    "ctrl_n": {
+      "all": 78838,
+      "FELONY": 24750,
+      "MISDEMEANOR": 38714,
+      "VIOLATION": 15374
+    },
+    "ctrl_rate": {
+      "all": 429.21,
+      "FELONY": 134.75,
+      "MISDEMEANOR": 210.77,
+      "VIOLATION": 83.7
+    }
+  },
+  {
+    "year": 2024,
+    "pact_devs_in_scope": 28,
+    "pact_devs_converted": 21,
+    "pact_units": 16151,
+    "pact_n": {
+      "all": 7880,
+      "FELONY": 2452,
+      "MISDEMEANOR": 3766,
+      "VIOLATION": 1662
+    },
+    "pact_rate": {
+      "all": 487.9,
+      "FELONY": 151.82,
+      "MISDEMEANOR": 233.17,
+      "VIOLATION": 102.9
+    },
+    "ctrl_units": 180305,
+    "ctrl_n": {
+      "all": 80432,
+      "FELONY": 25126,
+      "MISDEMEANOR": 39854,
+      "VIOLATION": 15452
+    },
+    "ctrl_rate": {
+      "all": 446.09,
+      "FELONY": 139.35,
+      "MISDEMEANOR": 221.04,
+      "VIOLATION": 85.7
+    }
+  },
+  {
+    "year": 2025,
+    "pact_devs_in_scope": 28,
+    "pact_devs_converted": 27,
+    "pact_units": 16151,
+    "pact_n": {
+      "all": 9780,
+      "FELONY": 2962,
+      "MISDEMEANOR": 4672,
+      "VIOLATION": 2146
+    },
+    "pact_rate": {
+      "all": 605.54,
+      "FELONY": 183.39,
+      "MISDEMEANOR": 289.27,
+      "VIOLATION": 132.87
+    },
+    "ctrl_units": 176990,
+    "ctrl_n": {
+      "all": 80094,
+      "FELONY": 24541,
+      "MISDEMEANOR": 40076,
+      "VIOLATION": 15477
+    },
+    "ctrl_rate": {
+      "all": 452.53,
+      "FELONY": 138.66,
+      "MISDEMEANOR": 226.43,
+      "VIOLATION": 87.45
+    }
+  },
+  {
+    "year": 2026,
+    "pact_devs_in_scope": 28,
+    "pact_devs_converted": 28,
+    "pact_units": 16151,
+    "pact_n": {
+      "all": 2361,
+      "FELONY": 708,
+      "MISDEMEANOR": 1149,
+      "VIOLATION": 504
+    },
+    "pact_rate": {
+      "all": 146.18,
+      "FELONY": 43.84,
+      "MISDEMEANOR": 71.14,
+      "VIOLATION": 31.21
+    },
+    "ctrl_units": 176766,
+    "ctrl_n": {
+      "all": 18323,
+      "FELONY": 5251,
+      "MISDEMEANOR": 9359,
+      "VIOLATION": 3713
+    },
+    "ctrl_rate": {
+      "all": 103.66,
+      "FELONY": 29.71,
+      "MISDEMEANOR": 52.95,
+      "VIOLATION": 21.01
+    }
+  }
+]
