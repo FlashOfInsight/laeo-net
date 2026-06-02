@@ -903,4 +903,105 @@ history to draw a trend).
 
 ---
 
+## Step 13 — NYPD Complaint Incident Analysis (PACT vs. Non-PACT)
+
+**Source**: S12 — NYPD Complaint Data (qgea-i56i historical, 5uac-w243 current YTD)  
+**Script**: `pact-eviction-analysis/pact_nypd.py`  
+**Output**: `data/nypd_aggregate.json`
+
+### 13.1 Motivation
+
+NYPD complaint incident data offers an independent proxy for public safety conditions in
+NYCHA developments. Unlike eviction rates (which measure legal process) or rodent
+inspections (which measure a single sanitary hazard), NYPD complaint data captures a
+broader range of quality-of-life and safety conditions as perceived by residents. The
+dataset records all complaint incidents — felony, misdemeanor, and violation — geocoded
+to street address.
+
+The research question: do PACT-converted developments see fewer NYPD complaint incidents
+per unit than comparable non-PACT public housing, and does this relationship change after
+conversion?
+
+### 13.2 Datasets
+
+Two Socrata datasets are combined to cover 2015–present:
+
+| Dataset ID | Coverage | Geospatial field |
+|---|---|---|
+| `qgea-i56i` | 2006–2025 (historical) | `lat_lon` |
+| `5uac-w243` | current calendar year (YTD) | `geocoded_column` |
+
+The geospatial field name differs between datasets; this affects how `within_circle()`
+SoQL queries are structured.
+
+### 13.3 Two-Phase Spatial Strategy
+
+The central methodological challenge is that NYPD may reclassify the `prem_typ_desc`
+field for PACT-converted buildings from `'RESIDENCE - PUBLIC HOUSING'` to
+`'RESIDENCE - APT. HOUSE'` after conversion, because converted developments are now
+managed by private operators. A filter-only approach on `prem_typ_desc` would
+undercount PACT incidents post-conversion.
+
+Two phases are used:
+
+**Phase A — Non-PACT control pool**  
+Fetch all citywide complaints where `prem_typ_desc = 'RESIDENCE - PUBLIC HOUSING'`,
+covering 2015 through the present year. This returns ~388k records (380k historical + ~8k
+YTD). Each complaint is spatially joined to NYCHA development footprints using the
+NYCHA Developments dataset (phvi-damg) to confirm it falls within a development boundary.
+Any complaints that fall within a PACT development *after* its conversion date are
+discarded from the control pool to avoid contamination.
+
+**Phase B — PACT incidents (post-conversion, circle query)**  
+For each PACT development, after its conversion date, issue `within_circle()` queries
+against both datasets using a computed centroid and radius. To remain comparable with
+Phase A, queries are filtered to residential premise types:
+`prem_typ_desc IN ('RESIDENCE - PUBLIC HOUSING', 'RESIDENCE - APT. HOUSE', 'RESIDENCE-PRIVATE HOUSE')`.
+This captures the original NYCHA label and the likely post-conversion reclassification,
+while excluding street, commercial, and other non-residential incidents that would inflate
+counts in dense urban neighborhoods.
+
+### 13.4 PACT Development Spatial Index (Phase 0)
+
+PACT development locations are resolved from PLUTO (dataset `64uk-42ks`) by BBL.
+Each development may have multiple BBLs; coordinates are fetched for all of them.
+
+For compact developments (parcel spread ≤ 400m), a single centroid circle is used,
+with radius = max building spread + 100m buffer, floored at 150m.
+
+For scattered developments where the centroid circle would exceed 500m radius, the
+script switches to **per-parcel mode**: one 150m circle per unique BBL location. Queries
+are issued for each circle separately, and results are deduplicated by `cmplnt_num` so
+complaints near overlapping circles are never double-counted. Two developments triggered
+per-parcel mode: LINDEN (15 circles, 5070m spread) and BUSHWICK II GROUPS A & C
+(9 circles, 1801m spread) — both large PACT conversions with scattered buildings across
+multiple non-contiguous sites.
+
+For Phase A (control pool discard), the outer bounding radius of each development is
+used for a fast bbox pre-filter, then each parcel circle is checked individually.
+
+PLUTO returns BBL values as float strings (e.g., `'4160010002.00000000'`). These are
+normalized before lookup: `str(int(float(bbl)))`.
+
+### 13.5 Denominators
+
+The same PACT/non-PACT unit denominators are reused from the eviction analysis (Step 8).
+PACT units accumulate as developments convert; non-PACT units decrease correspondingly.
+Rates are expressed per 1,000 residential units per year.
+
+### 13.6 Outputs
+
+- `nypd_pact.csv` — all post-conversion incidents matched to PACT developments
+- `nypd_control.csv` — all non-PACT public housing incidents (Phase A pool)
+- `data/nypd_aggregate.json` — annual PACT and non-PACT rates per 1,000 units,
+  with development counts, unit denominators, raw counts, and rates
+
+### 13.7 Chart Presentation
+
+The chart shows PACT (solid black) vs. Non-PACT NYCHA (dashed gray) rates per 1,000 units,
+annual, 2015–present. PACT line is suppressed until at least 3 developments have converted
+(year must have `pact_devs >= 3`).
+
+---
+
 ## Known Limitations and Caveats

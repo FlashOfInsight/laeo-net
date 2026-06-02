@@ -50,16 +50,11 @@
     <div class="section-label">NYC HOUSING · PACT PROGRAM · 2022–2026</div>
     <h1>NYCHA Developments: PACT vs. Public Management</h1>
     <p>
-      Since 2016, NYCHA has transferred hundreds of public housing developments to private
+      Since 2019, NYCHA has transferred dozens of public housing developments to private
       management through the federal RAD program, branded locally as PACT (Permanent
       Affordability Commitment Together). This page tracks evictions, rodent inspections,
       HPD 311 complaints, and other conditions at PACT-converted sites and compares them
       to traditionally managed NYCHA developments.
-    </p>
-    <p>
-      Construction Complete PACT developments show eviction execution rates roughly <strong>9–10× higher</strong>
-      than non-PACT NYCHA in 2024–2025, with rates rising each year. Under Construction sites
-      run below the NYCHA average — pre-conversion executions are attributed to the control group.
     </p>
   </section>
 
@@ -176,6 +171,27 @@
         </div>
         <div class="chart-note">Source: NYC DOB Job Application Filings (w9ak-ipjd). Declared costs are owner-estimated construction value filed with DOB; actual expenditures may differ. Year 0 = conversion year; n = developments contributing.</div>
       </div>
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="nypd">
+        <div class="chart-card-header">
+          <div class="chart-title">NYPD COMPLAINT INCIDENTS PER 1,000 UNITS</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <select id="nypd-type-filter" class="chart-select" onclick="event.stopPropagation()">
+              <option value="all">All incidents</option>
+              <option value="FELONY">Felony</option>
+              <option value="MISDEMEANOR">Misdemeanor</option>
+              <option value="VIOLATION">Violation</option>
+            </select>
+            <div class="chart-expand-hint">Click to expand →</div>
+          </div>
+        </div>
+        <div class="chart-subtitle">150m radius per building · annual · 2015–present</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-nypd"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT (post-conversion)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
+        </div>
+        <div class="chart-note">Source: NYPD Complaint Data (qgea-i56i / 5uac-w243). Uniform 150m circle per building for both groups; no premise-type filter. Incidents deduplicated by complaint number within each development.</div>
+      </div>
     </div>
   </section>
 
@@ -239,7 +255,7 @@
     <div class="section-label">DATA SOURCES</div>
     <h1>Source Data</h1>
     <p>This analysis draws on eleven public datasets. All are freely accessible with no
-    API key required except where noted. Sources are labeled S1–S11 and referenced
+    API key required except where noted. Sources are labeled S1–S12 and referenced
     throughout the methodology.</p>
     <p><a class="source-link" href="data/pact_bbl_export.csv" download>Download PACT BBL dataset (CSV) →</a></p>
   </section>
@@ -492,6 +508,35 @@
       </div>
     </div>
 
+    <div class="source-card">
+      <div class="source-id">S12</div>
+      <div class="source-body">
+        <div class="source-title">NYPD Complaint Data — Historical and Current YTD</div>
+        <div class="source-publisher">NYC Open Data · Socrata API · No key required</div>
+        <p class="source-desc">
+          Two datasets cover NYPD complaint incidents (felony, misdemeanor, violation):
+          <a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i" target="_blank" rel="noopener">Historical (qgea-i56i)</a>
+          covers 2006–2025 and
+          <a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243" target="_blank" rel="noopener">Current YTD (5uac-w243)</a>
+          covers the current calendar year. Analysis begins in 2015.
+        </p>
+        <p class="source-desc">
+          <strong>Non-PACT NYCHA</strong> complaints are fetched by filtering
+          <code>prem_typ_desc = 'RESIDENCE - PUBLIC HOUSING'</code> citywide, then spatially
+          joined to NYCHA development footprints. <strong>PACT</strong> complaints are
+          gathered with per-development <code>within_circle</code> queries filtered to residential
+          premise types (PUBLIC HOUSING, APT. HOUSE, PRIVATE HOUSE)
+          restricted to dates after each development's PACT conversion, because NYPD may
+          reclassify converted buildings from "PUBLIC HOUSING" to "APT. HOUSE" after
+          PACT conversion.
+        </p>
+        <p class="source-desc">
+          Rates are expressed per 1,000 residential units, using the same PACT and non-PACT
+          denominators as the eviction and rodent analyses.
+        </p>
+      </div>
+    </div>
+
   </div><!-- /sources-list -->
 </div><!-- /tab-sources -->
 
@@ -504,7 +549,7 @@
     <div class="section-label">METHODOLOGY</div>
     <h1>Step-by-Step Pipeline</h1>
     <p>Every decision in the pipeline is documented below in enough detail to
-    reproduce or audit each step independently. Source labels (S1–S11) correspond
+    reproduce or audit each step independently. Source labels (S1–S12) correspond
     to the <button class="inline-tab-link" data-tab="sources">Data Sources</button> tab.</p>
   </section>
   <div id="methodology-content" class="prose">
@@ -554,16 +599,18 @@ if (initTab !== 'analysis') switchTab(initTab);
 
 
 // ── Data loading ───────────────────────────────────────────────────────────────
-let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], mapInitialised = false, chartsDone = false;
+let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], nypdAgg = [], nypdConv = [], mapInitialised = false, chartsDone = false;
 
 async function loadData() {
-  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes] = await Promise.all([
+  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, nypdRes, nypdConvRes] = await Promise.all([
     fetch('data/developments.geojson'),
     fetch('data/aggregate_rates.json'),
     fetch('data/control_monthly.json'),
     fetch('data/rodent_aggregate.json'),
     fetch('data/complaints_agg.json'),
     fetch('data/permits_agg.json'),
+    fetch('data/nypd_aggregate.json'),
+    fetch('data/nypd_by_conversion.json'),
   ]);
   developments    = (await geoRes.json()).features;
   aggregateRates  = await ratesRes.json();
@@ -571,6 +618,8 @@ async function loadData() {
   rodentAggregate = await rodentRes.json();
   complaintsAgg   = await compRes.json();
   permitsAgg      = await permitsRes.json();
+  nypdAgg         = await nypdRes.json();
+  nypdConv        = await nypdConvRes.json();
 }
 
 // ── Key stats ─────────────────────────────────────────────────────────────────
@@ -924,6 +973,7 @@ function buildCharts() {
 
   renderComplaintsAggChart(document.getElementById('chart-complaints'));
   renderPermitsAggChart(document.getElementById('chart-permits'));
+  renderNypdChart(document.getElementById('chart-nypd'));
 }
 
 function renderComplaintsAggChart(canvas) {
@@ -971,6 +1021,110 @@ function renderPermitsAggChart(canvas) {
         ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => '$' + (v/1000).toFixed(0) + 'k' }
       }}
     }
+  });
+}
+
+let _nypdType = 'all';
+
+function _nypdRate(row, side) {
+  const r = row[`${side}_rate`];
+  return r && typeof r === 'object' ? r[_nypdType] : (side === 'pact' ? r : r);
+}
+
+function renderNypdChart(canvas) {
+  if (!canvas || !nypdAgg.length) return;
+  const rows      = nypdAgg.filter(d => d.year >= 2015);
+  const labels    = rows.map(d => String(d.year));
+  const pactRates = rows.map(d => d.pact_devs >= 3 ? _nypdRate(d, 'pact') : null);
+  const ctrlRates = rows.map(d => _nypdRate(d, 'ctrl'));
+  return new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets: [
+      { label: 'PACT',           data: pactRates, ...LINE('#111111'),       spanGaps: false },
+      { label: 'Non-PACT NYCHA', data: ctrlRates, ...LINE('#999999', true), spanGaps: false },
+    ]},
+    options: { ...CHART_OPTS, plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+      callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(1) : '—'} / 1k units` }
+    }}, scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+      ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
+    }}}
+  });
+}
+
+function renderNypdConvChart(canvas) {
+  if (!canvas || !nypdConv.length) return;
+  const rows   = nypdConv;
+  const labels = rows.map(d => (d.bucket >= 0 ? '+' : '') + d.bucket);
+  const rates  = rows.map(d => d.rate ? (d.rate[_nypdType] ?? null) : null);
+  const colors = rows.map(d => d.bucket < 0 ? 'rgba(160,160,160,0.7)' : 'rgba(30,30,30,0.85)');
+
+  // Poisson 95% CI: ±1.96 × sqrt(n) / units × 1000
+  const errors = rows.map(d => {
+    const n = d.n ? (d.n[_nypdType] || 0) : 0;
+    return (n && d.units) ? 1.96 * Math.sqrt(n) / d.units * 1000 : null;
+  });
+
+  const errorBarPlugin = {
+    id: 'errorBars',
+    afterDatasetsDraw(chart) {
+      const ctx = chart.ctx;
+      const yScale = chart.scales.y;
+      chart.data.datasets.forEach((dataset, i) => {
+        if (!dataset.errorBars) return;
+        chart.getDatasetMeta(i).data.forEach((bar, j) => {
+          const eb  = dataset.errorBars[j];
+          const val = dataset.data[j];
+          if (eb == null || val == null) return;
+          const x       = bar.x;
+          const yTop    = yScale.getPixelForValue(val + eb);
+          const yBottom = yScale.getPixelForValue(Math.max(0, val - eb));
+          const capW    = 5;
+          ctx.save();
+          ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+          ctx.lineWidth   = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(x, yTop);         ctx.lineTo(x, yBottom);
+          ctx.moveTo(x - capW, yTop);  ctx.lineTo(x + capW, yTop);
+          ctx.moveTo(x - capW, yBottom); ctx.lineTo(x + capW, yBottom);
+          ctx.stroke();
+          ctx.restore();
+        });
+      });
+    },
+  };
+
+  return new Chart(canvas, {
+    type: 'bar',
+    data: { labels, datasets: [{
+      label: 'Incidents / 1k units',
+      data: rates,
+      errorBars: errors,
+      backgroundColor: colors,
+      borderWidth: 0,
+    }]},
+    options: { ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins,
+        tooltip: { ...CHART_OPTS.plugins.tooltip, callbacks: {
+          title: items => {
+            const b = rows[items[0].dataIndex].bucket;
+            return b < 0 ? `${Math.abs(b)} yr${Math.abs(b) > 1 ? 's' : ''} before conversion`
+                         : b === 0 ? 'Year of conversion' : `${b} yr${b > 1 ? 's' : ''} after conversion`;
+          },
+          label: c => {
+            const row = rows[c.dataIndex];
+            const n   = row.n ? row.n[_nypdType] : 0;
+            const eb  = errors[c.dataIndex];
+            const r   = c.parsed.y != null ? c.parsed.y.toFixed(1) : '—';
+            const pm  = eb != null ? ` ±${eb.toFixed(1)}` : '';
+            return ` ${r}${pm} / 1k units (${row.devs} devs, n=${n})`;
+          },
+        }},
+      },
+      scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+        ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
+      }},
+    },
+    plugins: [errorBarPlugin],
   });
 }
 
@@ -1179,7 +1333,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits') ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd') ? 'none' : '';
 
   const legendDashed = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
@@ -1205,6 +1359,15 @@ function openChartOverlay(type) {
     document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
+  } else if (type === 'nypd') {
+    const typeLabel = { all: 'all incidents', FELONY: 'felony', MISDEMEANOR: 'misdemeanor', VIOLATION: 'violation' }[_nypdType] || 'all incidents';
+    document.getElementById('cfo-title').textContent    = 'NYPD INCIDENTS — YEARS SINCE PACT CONVERSION';
+    document.getElementById('cfo-subtitle').textContent = `${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} · incidents per 1,000 units · 150m radius per building`;
+    document.getElementById('cfo-legend').innerHTML     = `
+      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(160,160,160,0.7);display:inline-block;margin-right:6px;"></div>Pre-conversion</div>
+      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(30,30,30,0.85);display:inline-block;margin-right:6px;"></div>Post-conversion</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderNypdConvChart(document.getElementById('cfo-canvas'));
   } else {
     const isRate = type === 'rate';
     document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';
@@ -1229,6 +1392,27 @@ document.getElementById('cfo-resolution').addEventListener('change', e => {
 
 document.querySelectorAll('.chart-card-clickable').forEach(card => {
   card.addEventListener('click', () => openChartOverlay(card.dataset.chart));
+});
+
+// ── NYPD type filter dropdown ──────────────────────────────────────────────────
+let _nypdSmallChart = null;
+document.getElementById('nypd-type-filter').addEventListener('change', e => {
+  _nypdType = e.target.value;
+  // Re-render small card chart
+  const smallCanvas = document.getElementById('chart-nypd');
+  if (smallCanvas && smallCanvas._chartInstance) {
+    smallCanvas._chartInstance.destroy();
+    smallCanvas._chartInstance = null;
+  }
+  const ch = renderNypdChart(smallCanvas);
+  if (ch && smallCanvas) smallCanvas._chartInstance = ch;
+  // Re-render expanded overlay if open
+  if (_currentChartType === 'nypd' && document.getElementById('chart-full-overlay').classList.contains('open')) {
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderNypdConvChart(document.getElementById('cfo-canvas'));
+    const typeLabel = { all: 'all incidents', FELONY: 'felony', MISDEMEANOR: 'misdemeanor', VIOLATION: 'violation' }[_nypdType] || 'all incidents';
+    document.getElementById('cfo-subtitle').textContent = `${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} · incidents per 1,000 units · 150m radius per building`;
+  }
 });
 
 // ── Table ──────────────────────────────────────────────────────────────────────

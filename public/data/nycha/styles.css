@@ -728,6 +728,17 @@ button.inline-tab-link:hover { text-decoration-color: var(--ink); }
   align-self: center;
 }
 .cfo-resolution:hover { background: var(--hover-bg); }
+.chart-select {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+  outline: none;
+}
+.chart-select:hover { background: var(--hover-bg); }
 
 .cfo-chart-wrap {
   flex: 1;

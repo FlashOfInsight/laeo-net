@@ -1,0 +1,274 @@
+[
+  {
+    "bucket": -5,
+    "devs": 21,
+    "units": 11724,
+    "n": {
+      "all": 7233,
+      "FELONY": 2071,
+      "MISDEMEANOR": 3819,
+      "VIOLATION": 1343
+    },
+    "rate": {
+      "all": 616.94,
+      "FELONY": 176.65,
+      "MISDEMEANOR": 325.74,
+      "VIOLATION": 114.55
+    }
+  },
+  {
+    "bucket": -4,
+    "devs": 22,
+    "units": 12024,
+    "n": {
+      "all": 7816,
+      "FELONY": 2436,
+      "MISDEMEANOR": 3920,
+      "VIOLATION": 1460
+    },
+    "rate": {
+      "all": 650.03,
+      "FELONY": 202.59,
+      "MISDEMEANOR": 326.01,
+      "VIOLATION": 121.42
+    }
+  },
+  {
+    "bucket": -3,
+    "devs": 26,
+    "units": 13146,
+    "n": {
+      "all": 8498,
+      "FELONY": 2652,
+      "MISDEMEANOR": 4278,
+      "VIOLATION": 1568
+    },
+    "rate": {
+      "all": 646.43,
+      "FELONY": 201.73,
+      "MISDEMEANOR": 325.42,
+      "VIOLATION": 119.28
+    }
+  },
+  {
+    "bucket": -2,
+    "devs": 26,
+    "units": 13146,
+    "n": {
+      "all": 8779,
+      "FELONY": 2713,
+      "MISDEMEANOR": 4249,
+      "VIOLATION": 1817
+    },
+    "rate": {
+      "all": 667.81,
+      "FELONY": 206.37,
+      "MISDEMEANOR": 323.22,
+      "VIOLATION": 138.22
+    }
+  },
+  {
+    "bucket": -1,
+    "devs": 27,
+    "units": 14541,
+    "n": {
+      "all": 9175,
+      "FELONY": 2907,
+      "MISDEMEANOR": 4399,
+      "VIOLATION": 1869
+    },
+    "rate": {
+      "all": 630.97,
+      "FELONY": 199.92,
+      "MISDEMEANOR": 302.52,
+      "VIOLATION": 128.53
+    }
+  },
+  {
+    "bucket": 0,
+    "devs": 25,
+    "units": 12705,
+    "n": {
+      "all": 3047,
+      "FELONY": 934,
+      "MISDEMEANOR": 1468,
+      "VIOLATION": 645
+    },
+    "rate": {
+      "all": 239.83,
+      "FELONY": 73.51,
+      "MISDEMEANOR": 115.55,
+      "VIOLATION": 50.77
+    }
+  },
+  {
+    "bucket": 1,
+    "devs": 26,
+    "units": 14317,
+    "n": {
+      "all": 8618,
+      "FELONY": 2746,
+      "MISDEMEANOR": 3996,
+      "VIOLATION": 1876
+    },
+    "rate": {
+      "all": 601.94,
+      "FELONY": 191.8,
+      "MISDEMEANOR": 279.11,
+      "VIOLATION": 131.03
+    }
+  },
+  {
+    "bucket": 2,
+    "devs": 21,
+    "units": 12612,
+    "n": {
+      "all": 6402,
+      "FELONY": 2008,
+      "MISDEMEANOR": 3007,
+      "VIOLATION": 1387
+    },
+    "rate": {
+      "all": 507.61,
+      "FELONY": 159.21,
+      "MISDEMEANOR": 238.42,
+      "VIOLATION": 109.97
+    }
+  },
+  {
+    "bucket": 3,
+    "devs": 16,
+    "units": 9237,
+    "n": {
+      "all": 4419,
+      "FELONY": 1442,
+      "MISDEMEANOR": 2042,
+      "VIOLATION": 935
+    },
+    "rate": {
+      "all": 478.4,
+      "FELONY": 156.11,
+      "MISDEMEANOR": 221.07,
+      "VIOLATION": 101.22
+    }
+  },
+  {
+    "bucket": 4,
+    "devs": 12,
+    "units": 6939,
+    "n": {
+      "all": 3982,
+      "FELONY": 1326,
+      "MISDEMEANOR": 1783,
+      "VIOLATION": 873
+    },
+    "rate": {
+      "all": 573.86,
+      "FELONY": 191.09,
+      "MISDEMEANOR": 256.95,
+      "VIOLATION": 125.81
+    }
+  },
+  {
+    "bucket": 5,
+    "devs": 11,
+    "units": 6362,
+    "n": {
+      "all": 2375,
+      "FELONY": 781,
+      "MISDEMEANOR": 1117,
+      "VIOLATION": 477
+    },
+    "rate": {
+      "all": 373.31,
+      "FELONY": 122.76,
+      "MISDEMEANOR": 175.57,
+      "VIOLATION": 74.98
+    }
+  },
+  {
+    "bucket": 6,
+    "devs": 8,
+    "units": 3083,
+    "n": {
+      "all": 2060,
+      "FELONY": 660,
+      "MISDEMEANOR": 1005,
+      "VIOLATION": 395
+    },
+    "rate": {
+      "all": 668.18,
+      "FELONY": 214.08,
+      "MISDEMEANOR": 325.98,
+      "VIOLATION": 128.12
+    }
+  },
+  {
+    "bucket": 7,
+    "devs": 6,
+    "units": 2817,
+    "n": {
+      "all": 1148,
+      "FELONY": 342,
+      "MISDEMEANOR": 560,
+      "VIOLATION": 246
+    },
+    "rate": {
+      "all": 407.53,
+      "FELONY": 121.41,
+      "MISDEMEANOR": 198.79,
+      "VIOLATION": 87.33
+    }
+  },
+  {
+    "bucket": 8,
+    "devs": 5,
+    "units": 2517,
+    "n": {
+      "all": 348,
+      "FELONY": 114,
+      "MISDEMEANOR": 142,
+      "VIOLATION": 92
+    },
+    "rate": {
+      "all": 138.26,
+      "FELONY": 45.29,
+      "MISDEMEANOR": 56.42,
+      "VIOLATION": 36.55
+    }
+  },
+  {
+    "bucket": 9,
+    "devs": 1,
+    "units": 1395,
+    "n": {
+      "all": 303,
+      "FELONY": 93,
+      "MISDEMEANOR": 143,
+      "VIOLATION": 67
+    },
+    "rate": {
+      "all": 217.2,
+      "FELONY": 66.67,
+      "MISDEMEANOR": 102.51,
+      "VIOLATION": 48.03
+    }
+  },
+  {
+    "bucket": 10,
+    "devs": 1,
+    "units": 1395,
+    "n": {
+      "all": 82,
+      "FELONY": 18,
+      "MISDEMEANOR": 45,
+      "VIOLATION": 19
+    },
+    "rate": {
+      "all": 58.78,
+      "FELONY": 12.9,
+      "MISDEMEANOR": 32.26,
+      "VIOLATION": 13.62
+    }
+  }
+]
