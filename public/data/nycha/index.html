@@ -274,7 +274,7 @@
   <section class="intro">
     <div class="section-label">DATA SOURCES</div>
     <h1>Source Data</h1>
-    <p>This analysis draws on eleven public datasets. All are freely accessible with no
+    <p>This analysis draws on twelve public datasets. All are freely accessible with no
     API key required except where noted. Sources are labeled S1–S12 and referenced
     throughout the methodology.</p>
     <p><a class="source-link" href="data/pact_bbl_export.csv" download>Download PACT BBL dataset (CSV) →</a></p>
@@ -306,10 +306,12 @@
         <div class="source-publisher">NYC Housing Authority via NYC Open Data · Socrata resource 3ub5-4ph8</div>
         <p class="source-desc">
           Building-level records for NYCHA-managed properties including address,
-          borough-block-lot (BBL), and a <code>privately_managed</code> flag.
+          borough-block-lot (BBL), latitude, longitude, and a <code>privately_managed</code> flag.
           Used initially for BBL lookup, but PACT buildings are removed from this
           dataset after transfer to private management. Superseded by PLUTO for
-          the control group BBL set.
+          the control group BBL set. Primary source for the NYPD analysis non-PACT
+          spatial index (Phase 0b): all ~2,955 building-level coordinates are fetched
+          to generate per-building 150m query circles for the non-PACT incident count.
         </p>
         <a class="source-link" href="https://data.cityofnewyork.us/Housing-Development/NYCHA-Residential-Addresses/3ub5-4ph8" target="_blank" rel="noopener">
           NYC Open Data — NYCHA Residential Addresses →
@@ -342,12 +344,15 @@
         <div class="source-publisher">NYC Department of City Planning via NYC Open Data · Socrata resource 64uk-42ks</div>
         <p class="source-desc">
           Tax lot–level property data for all of NYC with owner name, residential
-          unit count, address, and coordinates. Used in two ways: (1) resolving
+          unit count, address, and coordinates. Used in three ways: (1) resolving
           BBLs for PACT developments by searching for the PACT entity's owner name
           (e.g., "NYC PACT PRESERVATION PARTNERS LLC"); (2) identifying all non-PACT
           NYCHA buildings as lots where <code>ownername</code> contains
-          "NYC HOUSING AUTHORITY." The PLUTO owner-name split cleanly separates
-          PACT from non-PACT because ownership transfers when a development converts.
+          "NYC HOUSING AUTHORITY" — the PLUTO owner-name split cleanly separates
+          PACT from non-PACT because ownership transfers at conversion; (3) providing
+          per-BBL lat/lon coordinates for the NYPD analysis PACT spatial index
+          (Phase 0a), where each BBL is queried by BBL number to retrieve building
+          coordinates used to center the 150m incident query circles.
         </p>
         <a class="source-link" href="https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks" target="_blank" rel="noopener">
           NYC Open Data — MapPLUTO →
@@ -532,30 +537,43 @@
       <div class="source-id">S12</div>
       <div class="source-body">
         <div class="source-title">NYPD Complaint Data — Historical and Current YTD</div>
-        <div class="source-publisher">NYC Open Data · Socrata API · No key required</div>
+        <div class="source-publisher">NYC Police Department via NYC Open Data · Socrata resources qgea-i56i and 5uac-w243 · Updated daily</div>
         <p class="source-desc">
-          Two datasets cover NYPD complaint incidents (felony, misdemeanor, violation):
-          <a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i" target="_blank" rel="noopener">Historical (qgea-i56i)</a>
-          covers 2006–2025 and
-          <a href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243" target="_blank" rel="noopener">Current YTD (5uac-w243)</a>
-          covers the current calendar year. Analysis begins in 2015.
+          Two Socrata datasets cover all NYPD complaint incidents (felony, misdemeanor, violation)
+          reported across NYC. The <strong>Historical dataset (qgea-i56i)</strong> covers 2006
+          through the prior calendar year; the <strong>Current YTD dataset (5uac-w243)</strong>
+          covers the current calendar year. The geospatial field name differs between them
+          (<code>lat_lon</code> vs. <code>geocoded_column</code>), affecting how
+          <code>within_circle()</code> SoQL queries are structured. Analysis begins in 2015.
         </p>
         <p class="source-desc">
           Both PACT and non-PACT groups use a <strong>uniform 150m-per-building circle</strong>
-          methodology. Non-PACT building locations come from the
-          <a href="https://data.cityofnewyork.us/resource/3ub5-4ph8.json" target="_blank" rel="noopener">NYCHA Residential Addresses dataset (3ub5-4ph8)</a>
-          (~2,955 buildings across 216 non-PACT developments). PACT building locations are
-          resolved from MapPLUTO by BBL. For each building, a <code>within_circle(field, lat, lon, 150)</code>
-          query is issued against both NYPD datasets; results are deduplicated by complaint number.
-          No <code>prem_typ_desc</code> filter is applied — the 150m geometry defines scope.
-          Scattered developments (LINDEN: 15 parcels; BUSHWICK II: 9 parcels) use one circle
-          per BBL location rather than a single centroid to avoid over-sweeping.
+          methodology. For each building, a <code>within_circle(field, lat, lon, 150)</code>
+          SoQL query is issued against both datasets; results are deduplicated by
+          <code>cmplnt_num</code>. No <code>prem_typ_desc</code> filter is applied —
+          the geometry defines scope. Scattered developments (LINDEN: 15 parcels; BUSHWICK II:
+          9 parcels) use one circle per BBL rather than a centroid to avoid over-sweeping.
+          Non-PACT building coordinates come from S2 (~2,955 buildings); PACT coordinates
+          from S4 (PLUTO, by BBL).
         </p>
         <p class="source-desc">
-          PACT incident data covers 5 years pre-conversion and all post-conversion years,
-          enabling the before/after trajectory chart (click the card to expand). Rates are
-          per 1,000 residential units using the same denominators as the eviction analysis.
+          PACT data covers 5 years pre-conversion and all post-conversion years, producing
+          two charts: (1) a <strong>cohort calendar-year chart</strong> that tracks incident
+          rates for PACT-destined developments (using pre-conversion data before transfer,
+          post-conversion data after) alongside non-PACT rates from 2015 to present;
+          (2) a <strong>before/after bar chart</strong> using anniversary-year buckets anchored
+          to each development's conversion date (bucket 0 = first 365 days post-conversion,
+          bucket −1 = 365 days before, etc.), so each bar represents exactly one year of
+          exposure. Rates are per 1,000 residential units with Poisson 95% confidence intervals.
         </p>
+        <div class="source-links-row">
+          <a class="source-link" href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i" target="_blank" rel="noopener">
+            NYC Open Data — NYPD Complaint Historic (qgea-i56i) →
+          </a>
+          <a class="source-link" href="https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243" target="_blank" rel="noopener">
+            NYC Open Data — NYPD Complaint Current YTD (5uac-w243) →
+          </a>
+        </div>
       </div>
     </div>
 
