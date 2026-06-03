@@ -1073,12 +1073,30 @@ function renderNypdCohortChart(canvas) {
   if (!canvas || !nypdCohort.length) return;
   const rows = nypdCohort;
   const labels = rows.map(d => String(d.year));
-  const pactRates = rows.map(d => d.pact_rate ? (d.pact_rate[_nypdType] ?? null) : null);
-  const ctrlRates = rows.map(d => d.ctrl_rate ? (d.ctrl_rate[_nypdType] ?? null) : null);
+  // Use annualized rate for the current (partial) year
+  const pactRates = rows.map(d => {
+    const src = d.ytd_days ? d.pact_annualized_rate : d.pact_rate;
+    return src ? (src[_nypdType] ?? null) : null;
+  });
+  const ctrlRates = rows.map(d => {
+    const src = d.ytd_days ? d.ctrl_annualized_rate : d.ctrl_rate;
+    return src ? (src[_nypdType] ?? null) : null;
+  });
+
+  // Draw the current-year point as open circles to signal it's annualized YTD
+  const lastIdx = rows.length - 1;
+  const isYtd   = rows[lastIdx]?.ytd_days != null;
+  const pactPointStyles = rows.map((_, i) => (isYtd && i === lastIdx) ? 'circle' : 'circle');
+  const pactPointRadii  = rows.map((_, i) => (isYtd && i === lastIdx) ? 4 : 3);
+  const pactBgColors    = rows.map((_, i) => (isYtd && i === lastIdx) ? 'transparent' : '#111111');
+
   return new Chart(canvas, {
     type: 'line',
     data: { labels, datasets: [
-      { label: 'PACT cohort', data: pactRates, ...LINE('#111111'),       spanGaps: false },
+      { label: 'PACT cohort', data: pactRates, ...LINE('#111111'),
+        spanGaps: false,
+        pointStyle: pactPointStyles, pointRadius: pactPointRadii, pointBackgroundColor: pactBgColors,
+        pointBorderWidth: 2 },
       { label: 'Non-PACT NYCHA', data: ctrlRates, ...LINE('#999999', true), spanGaps: false },
     ]},
     options: { ...CHART_OPTS, plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
@@ -1086,12 +1104,13 @@ function renderNypdCohortChart(canvas) {
         const row = rows[c.dataIndex];
         const v = c.parsed.y;
         if (v == null) return ` ${c.dataset.label}: —`;
+        const ytdNote = row.ytd_days ? ` · annualized from ${row.ytd_days}-day YTD` : '';
         if (c.datasetIndex === 0) {
           const ctrl = ctrlRates[c.dataIndex];
           const ratio = ctrl ? ` · ${(v / ctrl).toFixed(2)}× ctrl` : '';
-          return ` PACT cohort: ${v.toFixed(1)} / 1k${ratio} · ${row.pact_devs_converted}/${row.pact_devs_in_scope} converted`;
+          return ` PACT cohort: ${v.toFixed(1)} / 1k${ratio} · ${row.pact_devs_converted}/${row.pact_devs_in_scope} converted${ytdNote}`;
         }
-        return ` Non-PACT NYCHA: ${v.toFixed(1)} / 1k`;
+        return ` Non-PACT NYCHA: ${v.toFixed(1)} / 1k${ytdNote}`;
       }}
     }}, scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
       ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }

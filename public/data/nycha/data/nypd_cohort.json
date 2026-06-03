@@ -369,6 +369,19 @@
       "FELONY": 29.71,
       "MISDEMEANOR": 52.95,
       "VIOLATION": 21.01
+    },
+    "ytd_days": 153,
+    "pact_annualized_rate": {
+      "all": 348.98,
+      "FELONY": 104.65,
+      "MISDEMEANOR": 169.83,
+      "VIOLATION": 74.5
+    },
+    "ctrl_annualized_rate": {
+      "all": 247.46,
+      "FELONY": 70.92,
+      "MISDEMEANOR": 126.39,
+      "VIOLATION": 50.14
     }
   }
 ]
