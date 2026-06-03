@@ -1104,7 +1104,7 @@ function renderNypdCohortChart(canvas) {
         const row = rows[c.dataIndex];
         const v = c.parsed.y;
         if (v == null) return ` ${c.dataset.label}: —`;
-        const ytdNote = row.ytd_days ? ` · annualized from ${row.ytd_days}-day YTD` : '';
+        const ytdNote = row.ytd_days ? ` · annualized from data through ${row.ytd_through || row.ytd_days + ' days'}` : '';
         if (c.datasetIndex === 0) {
           const ctrl = ctrlRates[c.dataIndex];
           const ratio = ctrl ? ` · ${(v / ctrl).toFixed(2)}× ctrl` : '';

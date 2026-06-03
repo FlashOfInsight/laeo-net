@@ -370,18 +370,19 @@
       "MISDEMEANOR": 52.95,
       "VIOLATION": 21.01
     },
-    "ytd_days": 153,
+    "ytd_days": 90,
+    "ytd_through": "2026-03-31",
     "pact_annualized_rate": {
-      "all": 348.98,
-      "FELONY": 104.65,
-      "MISDEMEANOR": 169.83,
-      "VIOLATION": 74.5
+      "all": 593.26,
+      "FELONY": 177.9,
+      "MISDEMEANOR": 288.71,
+      "VIOLATION": 126.64
     },
     "ctrl_annualized_rate": {
-      "all": 247.46,
-      "FELONY": 70.92,
-      "MISDEMEANOR": 126.39,
-      "VIOLATION": 50.14
+      "all": 420.67,
+      "FELONY": 120.56,
+      "MISDEMEANOR": 214.87,
+      "VIOLATION": 85.25
     }
   }
 ]
