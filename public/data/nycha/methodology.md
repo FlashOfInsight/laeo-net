@@ -1038,12 +1038,22 @@ Rates are expressed per 1,000 residential units per year.
 // For each year, pools pre-conversion data for PACT-destined devs not yet converted
 // and post-conversion data for those already converted. Denominator = units of devs
 // with data in that year only.
+// Full-year row:
 {"year": 2018, "pact_devs_in_scope": 14, "pact_devs_converted": 4,
  "pact_units": 8200,
  "pact_n": {"all": 5904, "FELONY": ..., ...},
  "pact_rate": {"all": 719.9, ...},
  "ctrl_units": 183000,
  "ctrl_n": {"all": 69500, ...}, "ctrl_rate": {"all": 379.8, ...}}
+
+// Current (partial) year — extra annualization fields added:
+{"year": 2026, ...,
+ "pact_rate": {"all": 146.18, ...},      // raw YTD rate
+ "ctrl_rate": {"all": 103.66, ...},
+ "ytd_days": 90,                          // days from Jan 1 to latest record date
+ "ytd_through": "2026-03-31",             // latest date actually present in the cache
+ "pact_annualized_rate": {"all": 593.26, ...},  // pact_rate × (365.25 / ytd_days)
+ "ctrl_annualized_rate": {"all": 420.67, ...}}
 ```
 
 ### 13.7 Chart Presentation
@@ -1060,6 +1070,16 @@ Non-PACT (dashed gray) is the same annual rate series as in the aggregate chart.
 A tooltip on each year shows the PACT/non-PACT ratio and how many developments
 had converted vs. how many were in scope. The type dropdown (All / Felony /
 Misdemeanor / Violation) applies to both charts simultaneously.
+
+**Current-year annualization:** The current calendar year is always a partial year
+because the NYPD datasets have a reporting lag of several weeks to months — the cache
+typically extends only through the end of the most recently closed month, not through
+today. To produce a comparable rate for the current year, the pipeline computes
+`ytd_days` as `(max_record_date − Jan 1) + 1` using the latest date actually present
+in the PACT cache (not `date.today()`), then annualizes: `annualized_rate = raw_rate × (365.25 / ytd_days)`.
+Both PACT and ctrl rates are annualized on the same basis. The current-year point is
+rendered as an open circle on the chart and the tooltip shows the date the data runs
+through (e.g., "data through 2026-03-31").
 
 **Chart 2 — Before/After Conversion Bar Chart (anniversary-year buckets, Phase D data)**
 
@@ -1085,4 +1105,22 @@ Both charts are expandable (click card) and share the incident-type dropdown fil
 
 ---
 
-## Known Limitations and Caveats
+## Known Limitations and Caveats (NYPD)
+
+### L10 — NYPD reporting lag affects current-year data
+
+The NYPD current-year dataset (5uac-w243) has a reporting lag of several weeks to
+months: incidents occurring in the most recent weeks may not yet appear. In practice
+the cache typically extends only through the end of the most recently closed month.
+For example, a cache pulled in late May 2026 contained data only through 2026-03-31.
+
+Using `date.today()` as the YTD denominator would significantly understate the rate
+(153-day denominator on 90 days of data produces a ~40% apparent drop). The pipeline
+instead computes `ytd_days` from the maximum record date in the cached PACT CSV.
+The tooltip shows `ytd_through` so the coverage is transparent.
+
+**Implication for annual updates:** After a fresh data pull, verify that the current
+year's `ytd_through` in `nypd_cohort.json` is close to the pull date. If it is
+several months stale, re-run `pact_nypd.py --refresh-pact` to fetch fresh data.
+
+---
