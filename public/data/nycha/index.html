@@ -61,7 +61,7 @@
   <div class="key-stats">
     <div class="stat-item">
       <span class="stat-value" id="stat-pact-rate">—</span>
-      <span class="stat-label">PACT Complete exec rate / 1k units (2025)</span>
+      <span class="stat-label">PACT exec rate / 1k units (2025)</span>
     </div>
     <div class="stat-item">
       <span class="stat-value" id="stat-ctrl-rate">—</span>
@@ -69,7 +69,7 @@
     </div>
     <div class="stat-item">
       <span class="stat-value" id="stat-ratio">—</span>
-      <span class="stat-label">Complete-to-non-PACT ratio (2025)</span>
+      <span class="stat-label">PACT-to-non-PACT ratio (2025)</span>
     </div>
     <div class="stat-item">
       <span class="stat-value">29</span>
@@ -119,7 +119,7 @@
         <div class="chart-subtitle">Marshal-executed evictions / residential units × 1,000</div>
         <div class="chart-canvas-wrap"><canvas id="chart-rate"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT Construction Complete</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT (all developments)</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (numerator); NYC MapPLUTO + NYCHA Development Data Book (denominator).</div>
@@ -132,7 +132,7 @@
         <div class="chart-subtitle">Raw count of marshal-executed evictions by year</div>
         <div class="chart-canvas-wrap"><canvas id="chart-count"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT Construction Complete</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT (all developments)</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA</div>
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
@@ -703,9 +703,11 @@ async function loadData() {
 function populateStats() {
   const y = aggregateRates.find(r => String(r.Year).startsWith('2025'));
   if (!y) return;
-  document.getElementById('stat-pact-rate').textContent = Number(y['PACT Complete /1k units']).toFixed(2);
-  document.getElementById('stat-ctrl-rate').textContent = Number(y['Non-PACT /1k units']).toFixed(2);
-  document.getElementById('stat-ratio').textContent     = Number(y['Ratio (PACT:non-PACT)']).toFixed(1) + '×';
+  const pactRate = Number(y['PACT /1k units']);
+  const ctrlRate = Number(y['Non-PACT /1k units']);
+  document.getElementById('stat-pact-rate').textContent = pactRate.toFixed(2);
+  document.getElementById('stat-ctrl-rate').textContent = ctrlRate.toFixed(2);
+  document.getElementById('stat-ratio').textContent     = ctrlRate > 0 ? (pactRate / ctrlRate).toFixed(1) + '×' : '—';
 }
 
 // ── Map ────────────────────────────────────────────────────────────────────────
@@ -1023,18 +1025,18 @@ function buildCharts() {
   if (chartsDone) return;
   chartsDone = true;
   const labels       = aggregateRates.map(r => String(r.Year));
-  const completeRates = ytdAnnualize(aggregateRates.map(r => r['PACT Complete /1k units']));
-  const ctrlRates    = ytdAnnualize(aggregateRates.map(r => r['Non-PACT /1k units']));
-  const pactCounts   = aggregateRates.map(r => r['PACT exec']);
-  const ctrlCounts   = aggregateRates.map(r => r['Non-PACT exec']);
+  const pactRates  = ytdAnnualize(aggregateRates.map(r => r['PACT /1k units']));
+  const ctrlRates  = ytdAnnualize(aggregateRates.map(r => r['Non-PACT /1k units']));
+  const pactCounts = aggregateRates.map(r => r['PACT exec']);
+  const ctrlCounts = aggregateRates.map(r => r['Non-PACT exec']);
 
   new Chart(document.getElementById('chart-rate'), { type:'line', data:{labels,
-    datasets:[{label:'PACT Construction Complete',data:completeRates,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlRates,...LINE('#999999',true)}]},
+    datasets:[{label:'PACT (all developments)',data:pactRates,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlRates,...LINE('#999999',true)}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
       callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(2) : '—'} / 1k units`}}}}});
 
   new Chart(document.getElementById('chart-count'), { type:'line', data:{labels,
-    datasets:[{label:'PACT Construction Complete',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
+    datasets:[{label:'PACT (all developments)',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
       callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} executions`}}}}});
 
@@ -1422,13 +1424,11 @@ function renderNypdConvChart(canvas) {
 let expandedChart = null;
 let _currentChartType = null;
 
-function getCompleteMonthly() {
-  const complete = developments.filter(f =>
-    f.properties.type === 'pact' && (f.properties.status || '').includes('Complete')
-  );
-  const totalUnits = complete.reduce((s, f) => s + (f.properties.total_units || 0), 0);
+function getAllPactMonthly() {
+  const pact = developments.filter(f => f.properties.type === 'pact');
+  const totalUnits = pact.reduce((s, f) => s + (f.properties.total_units || 0), 0);
   const monthly = {};
-  for (const f of complete) {
+  for (const f of pact) {
     const me = typeof f.properties.monthly_executions === 'string'
       ? JSON.parse(f.properties.monthly_executions)
       : (f.properties.monthly_executions || {});
@@ -1489,15 +1489,15 @@ function renderExpandedChart(type, resolution) {
     chartPlugins = [makeCovidPlugin(labels)];
   } else if (resolution === 'yearly') {
     labels = aggregateRates.map(r => String(r.Year));
-    const completeVals = isRate
-      ? ytdAnnualize(aggregateRates.map(r => r['PACT Complete /1k units']))
+    const pactVals = isRate
+      ? ytdAnnualize(aggregateRates.map(r => r['PACT /1k units']))
       : aggregateRates.map(r => r['PACT exec']);
     const ctrlVals = isRate
       ? ytdAnnualize(aggregateRates.map(r => r['Non-PACT /1k units']))
       : aggregateRates.map(r => r['Non-PACT exec']);
     datasets = [
-      { label:'PACT Construction Complete', data:completeVals, ...LINE('#111111') },
-      { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#999999', isRate) },
+      { label:'PACT (all developments)', data:pactVals,  ...LINE('#111111') },
+      { label:'Non-PACT NYCHA',          data:ctrlVals,  ...LINE('#999999', isRate) },
     ];
     tooltipCb = isRate
       ? c => ` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(2) : '—'} / 1k / yr`
@@ -1505,7 +1505,7 @@ function renderExpandedChart(type, resolution) {
     chartPlugins = [makeCovidPlugin(labels)];
   } else {
     const periodMonths = resolution === 'monthly' ? 1 : resolution === '3mo' ? 3 : 6;
-    const { monthly: completeMo, totalUnits: completeUnits } = getCompleteMonthly();
+    const { monthly: completeMo, totalUnits: completeUnits } = getAllPactMonthly();
     const ctrlMonths = controlMonthly.monthly || {};
     const ctrlUnits  = controlMonthly.units || 1;
 
@@ -1548,8 +1548,8 @@ function renderExpandedChart(type, resolution) {
 
     labels = periodLabels;
     datasets = [
-      { label:'PACT Construction Complete', data:completeVals, ...LINE('#111111') },
-      { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#999999', isRate) },
+      { label:'PACT (all developments)', data:completeVals, ...LINE('#111111') },
+      { label:'Non-PACT NYCHA',          data:ctrlVals,     ...LINE('#999999', isRate) },
     ];
     const suffix = isRate ? '/ 1k / yr (ann.)' : 'executions';
     tooltipCb = c => {
@@ -1631,10 +1631,10 @@ function openChartOverlay(type) {
   nypdTypeEl.value = _nypdType;
 
   const legendDashed = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT (all developments)</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>`;
   const legendSolid = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT Construction Complete</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT (all developments)</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999"></div>Non-PACT NYCHA</div>`;
 
   if (type === 'rodent') {
