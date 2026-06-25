@@ -342,8 +342,8 @@
       "rate_per_1k": 0.12
     },
     "2024-02": {
-      "executions": 34,
-      "rate_per_1k": 0.204
+      "executions": 30,
+      "rate_per_1k": 0.18
     },
     "2024-03": {
       "executions": 13,
@@ -450,8 +450,12 @@
       "rate_per_1k": 0.234
     },
     "2026-05": {
-      "executions": 18,
-      "rate_per_1k": 0.108
+      "executions": 29,
+      "rate_per_1k": 0.174
+    },
+    "2026-06": {
+      "executions": 36,
+      "rate_per_1k": 0.216
     }
   }
 }
