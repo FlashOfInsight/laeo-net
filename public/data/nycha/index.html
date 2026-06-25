@@ -135,6 +135,19 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA</div>
         </div>
       </div>
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy">
+        <div class="chart-card-header">
+          <div class="chart-title">NYCHA OCCUPANCY RATE · 2015–2025</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">Unit-weighted average occupancy at publicly managed NYCHA developments · annual snapshot</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-occupancy"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA public housing</div>
+        </div>
+        <div class="chart-note">Source: HUD Picture of Subsidized Households (PSH), 2015–2025. Unit-weighted average occupancy across all NYC public housing projects. PACT-converted buildings leave HUD public housing records upon RAD transfer, so later years reflect an increasingly smaller non-PACT universe. N = 130–160 developments per year.</div>
+      </div>
+
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="rodent">
         <div class="chart-card-header">
           <div class="chart-title">RODENT INSPECTION FAILURE RATE</div>
@@ -639,10 +652,10 @@ if (initTab !== 'analysis') switchTab(initTab);
 
 
 // ── Data loading ───────────────────────────────────────────────────────────────
-let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], nypdAgg = [], nypdConv = [], nypdCohort = [], mapInitialised = false, chartsDone = false;
+let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], nypdAgg = [], nypdConv = [], nypdCohort = [], hudOccupancy = [], mapInitialised = false, chartsDone = false;
 
 async function loadData() {
-  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, nypdRes, nypdConvRes, nypdCohortRes] = await Promise.all([
+  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, nypdRes, nypdConvRes, nypdCohortRes, occRes] = await Promise.all([
     fetch('data/developments.geojson'),
     fetch('data/aggregate_rates.json'),
     fetch('data/control_monthly.json'),
@@ -652,6 +665,7 @@ async function loadData() {
     fetch('data/nypd_aggregate.json'),
     fetch('data/nypd_by_conversion.json'),
     fetch('data/nypd_cohort.json'),
+    fetch('data/hud_occupancy.json'),
   ]);
   developments    = (await geoRes.json()).features;
   aggregateRates  = await ratesRes.json();
@@ -662,6 +676,7 @@ async function loadData() {
   nypdAgg         = await nypdRes.json();
   nypdConv        = await nypdConvRes.json();
   nypdCohort      = await nypdCohortRes.json();
+  hudOccupancy    = await occRes.json();
 }
 
 // ── Key stats ─────────────────────────────────────────────────────────────────
@@ -1013,10 +1028,34 @@ function buildCharts() {
       scales:{...CHART_OPTS.scales,y:{...CHART_OPTS.scales.y,
         ticks:{...CHART_OPTS.scales.y.ticks,callback:v=>v+'%'}}}}});
 
+  renderOccupancyChart(document.getElementById('chart-occupancy'));
   renderComplaintsAggChart(document.getElementById('chart-complaints'));
   renderPermitsAggChart(document.getElementById('chart-permits'));
   renderNypdConvChart(document.getElementById('chart-nypd-conv'));
   renderNypdCohortChart(document.getElementById('chart-nypd-cohort'));
+}
+
+function renderOccupancyChart(canvas) {
+  if (!canvas || !hudOccupancy.length) return;
+  const labels = hudOccupancy.map(d => d.year);
+  const vals   = hudOccupancy.map(d => d.pct_occupied);
+  return new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Non-PACT NYCHA', data: vals, ...LINE('#999999') }] },
+    options: {
+      ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+        callbacks: {
+          label: c => ` ${c.parsed.y.toFixed(1)}% occupied · ${hudOccupancy[c.dataIndex].n_developments} developments · ${(hudOccupancy[c.dataIndex].total_units).toLocaleString()} units`,
+        }
+      }},
+      scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+        beginAtZero: false,
+        suggestedMin: 85,
+        ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '%' },
+      }}
+    }
+  });
 }
 
 function renderComplaintsAggChart(canvas) {
@@ -1401,7 +1440,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort') ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy') ? 'none' : '';
   const nypdTypeEl = document.getElementById('cfo-nypd-type');
   nypdTypeEl.style.display = (type === 'nypd-conv' || type === 'nypd-cohort') ? '' : 'none';
   nypdTypeEl.value = _nypdType;
@@ -1430,6 +1469,12 @@ function openChartOverlay(type) {
     document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
+  } else if (type === 'occupancy') {
+    document.getElementById('cfo-title').textContent    = 'NYCHA OCCUPANCY RATE · 2015–2025';
+    document.getElementById('cfo-subtitle').textContent = 'Unit-weighted average occupancy at publicly managed NYCHA developments · annual snapshot';
+    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;"></div>Non-PACT NYCHA public housing</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderOccupancyChart(document.getElementById('cfo-canvas'));
   } else if (type === 'nypd-conv') {
     const typeLabel = { all: 'All incidents', FELONY: 'Felony', MISDEMEANOR: 'Misdemeanor', VIOLATION: 'Violation' }[_nypdType] || 'All incidents';
     document.getElementById('cfo-title').textContent    = 'NYPD INCIDENTS — BEFORE AND AFTER CONVERSION';

@@ -1,0 +1,68 @@
+[
+  {
+    "year": "2015",
+    "pct_occupied": 98.6,
+    "n_developments": 158,
+    "total_units": 157702
+  },
+  {
+    "year": "2016",
+    "pct_occupied": 98.3,
+    "n_developments": 157,
+    "total_units": 157249
+  },
+  {
+    "year": "2017",
+    "pct_occupied": 98.5,
+    "n_developments": 160,
+    "total_units": 157601
+  },
+  {
+    "year": "2018",
+    "pct_occupied": 98.2,
+    "n_developments": 156,
+    "total_units": 155279
+  },
+  {
+    "year": "2019",
+    "pct_occupied": 97.8,
+    "n_developments": 149,
+    "total_units": 153191
+  },
+  {
+    "year": "2020",
+    "pct_occupied": 97.9,
+    "n_developments": 145,
+    "total_units": 149662
+  },
+  {
+    "year": "2021",
+    "pct_occupied": 97.5,
+    "n_developments": 143,
+    "total_units": 147936
+  },
+  {
+    "year": "2022",
+    "pct_occupied": 96.1,
+    "n_developments": 140,
+    "total_units": 146579
+  },
+  {
+    "year": "2023",
+    "pct_occupied": 94.8,
+    "n_developments": 137,
+    "total_units": 143711
+  },
+  {
+    "year": "2024",
+    "pct_occupied": 93.8,
+    "n_developments": 137,
+    "total_units": 143200
+  },
+  {
+    "year": "2025",
+    "pct_occupied": 91.5,
+    "n_developments": 130,
+    "total_units": 139036
+  }
+]
