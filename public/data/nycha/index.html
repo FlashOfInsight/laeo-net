@@ -1147,7 +1147,7 @@ function renderConvEvictionsChart(canvas) {
           label: c => {
             const d = pooled[c.dataIndex];
             const r = c.parsed.y != null ? c.parsed.y.toFixed(2) : '—';
-            return ` ${r} / 1k  (${d.n_devs} developments · ${d.executions} executions)`;
+            return ` ${r} / 1k  (${d.executions} executions · ${d.units.toLocaleString()} units · ${d.n_devs} devs)`;
           }
         }
       }},
