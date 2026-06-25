@@ -1108,6 +1108,28 @@ function renderConvEvictionsChart(canvas) {
     }
   };
 
+  let _selectedDev = null;
+
+  // Draws selected dev name + stats in top-right of chart area
+  const devInfoPlugin = {
+    id: 'devInfo',
+    afterDraw(ch) {
+      if (!_selectedDev) return;
+      const info = byDev[_selectedDev];
+      if (!info) return;
+      const { ctx, chartArea: { right, top } } = ch;
+      ctx.save();
+      ctx.textAlign = 'right';
+      ctx.font = "bold 11px 'IBM Plex Mono',monospace";
+      ctx.fillStyle = '#111111';
+      ctx.fillText(_selectedDev, right - 10, top + 16);
+      ctx.font = "10px 'IBM Plex Mono',monospace";
+      ctx.fillStyle = '#666666';
+      ctx.fillText(`conv. ${info.conv_year} · ${info.units.toLocaleString()} units`, right - 10, top + 30);
+      ctx.restore();
+    }
+  };
+
   const chart = new Chart(canvas, {
     type: 'line',
     data: { labels, datasets: [...devDatasets, pooledDataset] },
@@ -1133,13 +1155,15 @@ function renderConvEvictionsChart(canvas) {
         ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
       }}
     },
-    plugins: [zeroLinePlugin],
+    plugins: [zeroLinePlugin, devInfoPlugin],
   });
 
-  // Called by overlay dropdown to highlight a single dev line
+  // Called by overlay dropdown
   chart.highlightDev = function(devName) {
-    const idx = devName ? devDatasets.findIndex(ds => ds.label === devName) : -1;
-    devDatasets.forEach((ds, i) => {
+    _selectedDev = devName || null;
+    const idx = devName ? chart.data.datasets.findIndex(ds => ds.label === devName) : -1;
+    chart.data.datasets.forEach((ds, i) => {
+      if (i >= devDatasets.length) return; // leave pooled line alone
       if (idx < 0) {
         ds.borderColor = 'rgba(180,180,180,0.45)';
         ds.borderWidth = 1;
@@ -1151,7 +1175,7 @@ function renderConvEvictionsChart(canvas) {
         ds.borderWidth = 1;
       }
     });
-    chart.update('none');
+    chart.update();
   };
 
   return chart;
