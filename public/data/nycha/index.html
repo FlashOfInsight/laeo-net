@@ -148,7 +148,7 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#cccccc;"></div>Individual development</div>
         </div>
-        <div class="chart-note">Year 0 = conversion year (partial year for most developments). Use the dropdown in the chart header to highlight an individual development's trajectory. Pooled rate is unit-weighted; n varies as different developments contribute at each offset — extreme offsets reflect only the most recently converted sites. COVID eviction moratorium (Mar 2020–Jan 2022) suppresses rates for developments whose post-conversion window overlapped that period. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
+        <div class="chart-note">Year 0 = conversion year (partial year for most developments). Use the dropdown in the chart header to highlight an individual development's trajectory. Pooled rate is unit-weighted; n varies as different developments contribute at each offset — extreme offsets reflect only the most recently converted sites. Open circles on development lines mark calendar years 2020–2021 (NYC COVID eviction moratorium); rates at those points are artificially suppressed — because each development converted in a different year, the moratorium falls at a different x-position on each line. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
       </div>
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy">
@@ -1130,6 +1130,45 @@ function renderConvEvictionsChart(canvas) {
     }
   };
 
+  // Draws hollow circles at each dev's 2020–2021 offsets (COVID moratorium years).
+  // Because each dev converted at a different time, the moratorium falls at a
+  // different x-position for every line — circles are subtle when no dev is
+  // selected, more prominent when one is highlighted via the dropdown.
+  const moratoriumPlugin = {
+    id: 'moratorium',
+    afterDraw(ch) {
+      const { ctx } = ch;
+      const hasSelection = _selectedDev !== null;
+      ctx.save();
+      Object.entries(byDev).forEach(([dev, info]) => {
+        const morOff = [2020 - info.conv_year, 2021 - info.conv_year];
+        const isSelected = _selectedDev === dev;
+        const strokeColor = !hasSelection   ? 'rgba(130,130,130,0.28)'
+                          : isSelected      ? 'rgba(60,60,60,0.72)'
+                          :                   'rgba(130,130,130,0.07)';
+        const r = isSelected ? 4 : 3;
+        const lw = isSelected ? 1.5 : 1;
+        const dsIdx = ch.data.datasets.findIndex(ds => ds.label === dev);
+        if (dsIdx < 0) return;
+        const meta = ch.getDatasetMeta(dsIdx);
+        if (!meta?.data?.length) return;
+        morOff.forEach(off => {
+          const oi = offsets.indexOf(off);
+          if (oi < 0) return;
+          if (ch.data.datasets[dsIdx].data[oi] == null) return;
+          const pt = meta.data[oi];
+          if (pt?.x == null) return;
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+          ctx.strokeStyle = strokeColor;
+          ctx.lineWidth = lw;
+          ctx.stroke();
+        });
+      });
+      ctx.restore();
+    }
+  };
+
   const chart = new Chart(canvas, {
     type: 'line',
     data: { labels, datasets: [...devDatasets, pooledDataset] },
@@ -1155,7 +1194,7 @@ function renderConvEvictionsChart(canvas) {
         ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
       }}
     },
-    plugins: [zeroLinePlugin, devInfoPlugin],
+    plugins: [zeroLinePlugin, devInfoPlugin, moratoriumPlugin],
   });
 
   // Called by overlay dropdown
@@ -1622,7 +1661,8 @@ function openChartOverlay(type) {
     document.getElementById('cfo-subtitle').textContent = 'Execution rate per 1,000 units · by year relative to conversion date · all 28 PACT developments';
     document.getElementById('cfo-legend').innerHTML     = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#cccccc;"></div>Individual development</div>`;
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#cccccc;"></div>Individual development</div>
+      <div class="cfo-legend-item"><svg width="12" height="12" viewBox="0 0 12 12" style="display:inline-block;margin-right:6px;flex-shrink:0"><circle cx="6" cy="6" r="4" stroke="#888" stroke-width="1.3" fill="none"/></svg><span>Open circles: 2020–2021 — COVID eviction moratorium suppresses rates; because each development converted in a different year, the moratorium falls at a different x-position on each line</span></div>`;
     devSelEl.innerHTML = '<option value="">— All developments —</option>';
     Object.keys(convEvictions.by_dev || {}).sort().forEach(name => {
       const opt = document.createElement('option');
