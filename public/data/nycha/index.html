@@ -148,7 +148,7 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#cccccc;"></div>Individual development</div>
         </div>
-        <div class="chart-note">Year 0 = conversion year (partial year for most developments). Pooled rate is unit-weighted; n varies as different developments contribute at each offset. The composition of contributing developments changes across the x-axis — extreme offsets reflect only the most recently converted sites. COVID eviction moratorium (Mar 2020–Jan 2022) suppresses rates for developments whose post-conversion window overlapped that period. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
+        <div class="chart-note">Year 0 = conversion year (partial year for most developments). Hover a faint line to highlight a single development; click it to see its name, conversion year, and unit count. Pooled rate is unit-weighted; n varies as different developments contribute at each offset — extreme offsets reflect only the most recently converted sites. COVID eviction moratorium (Mar 2020–Jan 2022) suppresses rates for developments whose post-conversion window overlapped that period. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
       </div>
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy">
@@ -1062,7 +1062,24 @@ function renderConvEvictionsChart(canvas) {
   const offsets = pooled.map(d => d.offset);
   const labels  = offsets.map(o => o > 0 ? '+' + o : String(o));
 
-  // Individual dev datasets — faint, no hover interaction
+  // Label div — shows dev info on click, positioned relative to canvas wrapper
+  const wrap = canvas.parentElement;
+  const existingLabel = wrap.querySelector('.cev-dev-label');
+  if (existingLabel) existingLabel.remove();
+  const labelDiv = document.createElement('div');
+  labelDiv.className = 'cev-dev-label';
+  labelDiv.style.cssText = [
+    'position:absolute','display:none',
+    'background:#F7F6F2','border:1px solid #111111',
+    'padding:7px 11px',
+    "font-family:'IBM Plex Mono',monospace",'font-size:11px',
+    'line-height:1.65','pointer-events:none','z-index:20',
+    'white-space:nowrap',
+  ].join(';');
+  if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
+  wrap.appendChild(labelDiv);
+
+  // Dev datasets — faint by default, hit-detectable via pointHitRadius
   const devDatasets = Object.entries(byDev).map(([dev, info]) => {
     const devMap = {};
     (info.data || []).forEach(d => { devMap[d.offset] = d.rate; });
@@ -1073,13 +1090,12 @@ function renderConvEvictionsChart(canvas) {
       backgroundColor: 'transparent',
       borderWidth: 1,
       pointRadius: 0,
-      hoverRadius: 0,
+      pointHitRadius: 20,
       tension: 0.3,
       spanGaps: false,
     };
   });
 
-  // Pooled dataset — on top
   const pooledDataset = {
     label: 'Pooled avg',
     data: pooled.map(d => d.rate),
@@ -1089,7 +1105,45 @@ function renderConvEvictionsChart(canvas) {
     tension: 0.3,
   };
 
-  // Vertical dashed line at offset 0
+  // Hover state — highlight one dev line, dim the rest
+  let _hoveredIdx = -1;
+  let chart;
+
+  function applyHover(idx) {
+    if (idx === _hoveredIdx) return;
+    _hoveredIdx = idx;
+    devDatasets.forEach((ds, i) => {
+      if (idx < 0) {
+        ds.borderColor = 'rgba(180,180,180,0.45)';
+        ds.borderWidth = 1;
+      } else if (i === idx) {
+        ds.borderColor = 'rgba(50,50,50,0.9)';
+        ds.borderWidth = 2.5;
+      } else {
+        ds.borderColor = 'rgba(180,180,180,0.18)';
+        ds.borderWidth = 1;
+      }
+    });
+    chart.update('none');
+  }
+
+  function showDevLabel(idx, nativeEvent) {
+    const devName = devDatasets[idx].label;
+    const info    = byDev[devName];
+    labelDiv.innerHTML =
+      `<strong>${devName}</strong><br>` +
+      `Converted: ${info.conv_year} &nbsp;·&nbsp; ${info.units.toLocaleString()} units`;
+    labelDiv.style.display = 'block';
+    const wrapRect = wrap.getBoundingClientRect();
+    let lx = nativeEvent.clientX - wrapRect.left + 14;
+    let ly = nativeEvent.clientY - wrapRect.top  - 10;
+    // Keep within right edge
+    const lw = labelDiv.offsetWidth;
+    if (lx + lw > wrap.offsetWidth - 6) lx = nativeEvent.clientX - wrapRect.left - lw - 14;
+    labelDiv.style.left = lx + 'px';
+    labelDiv.style.top  = Math.max(4, ly) + 'px';
+  }
+
   const zeroLinePlugin = {
     id: 'convZeroLine',
     afterDraw(chart) {
@@ -1108,11 +1162,21 @@ function renderConvEvictionsChart(canvas) {
     }
   };
 
-  return new Chart(canvas, {
+  chart = new Chart(canvas, {
     type: 'line',
     data: { labels, datasets: [...devDatasets, pooledDataset] },
     options: {
       ...CHART_OPTS,
+      onHover: (event, elements) => {
+        const devEls = elements.filter(e => e.datasetIndex < devDatasets.length);
+        applyHover(devEls.length > 0 ? devEls[0].datasetIndex : -1);
+        canvas.style.cursor = devEls.length > 0 ? 'pointer' : 'default';
+      },
+      onClick: (event, elements) => {
+        const devEls = elements.filter(e => e.datasetIndex < devDatasets.length);
+        if (devEls.length === 0) { labelDiv.style.display = 'none'; return; }
+        showDevLabel(devEls[0].datasetIndex, event.native);
+      },
       plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
         filter: item => item.datasetIndex === devDatasets.length,
         callbacks: {
@@ -1135,6 +1199,7 @@ function renderConvEvictionsChart(canvas) {
     },
     plugins: [zeroLinePlugin],
   });
+  return chart;
 }
 
 function renderOccupancyChart(canvas) {
