@@ -1041,7 +1041,7 @@ function buildCharts() {
           return ` ${c.dataset.label}: ${rStr} · ${row?.['PACT devs'] ?? '?'} devs · ${row?.['PACT units'] ?? '?'} units`;
         }
         return ` ${c.dataset.label}: ${rStr}`;
-      }}}}}}});
+      }}}}}});
 
   new Chart(document.getElementById('chart-count'), { type:'line', data:{labels,
     datasets:[{label:'PACT (all developments)',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
