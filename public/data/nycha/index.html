@@ -1033,7 +1033,15 @@ function buildCharts() {
   new Chart(document.getElementById('chart-rate'), { type:'line', data:{labels,
     datasets:[{label:'PACT (all developments)',data:pactRates,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlRates,...LINE('#999999',true)}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
-      callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(2) : '—'} / 1k units`}}}}});
+      callbacks:{label:c=>{
+        const v = c.parsed.y;
+        const rStr = v != null ? v.toFixed(2) + ' / 1k units' : '—';
+        if (c.dataset.label.startsWith('PACT')) {
+          const row = aggregateRates[c.dataIndex];
+          return ` ${c.dataset.label}: ${rStr} · ${row?.['PACT devs'] ?? '?'} devs · ${row?.['PACT units'] ?? '?'} units`;
+        }
+        return ` ${c.dataset.label}: ${rStr}`;
+      }}}}}}});
 
   new Chart(document.getElementById('chart-count'), { type:'line', data:{labels,
     datasets:[{label:'PACT (all developments)',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
@@ -1500,7 +1508,15 @@ function renderExpandedChart(type, resolution) {
       { label:'Non-PACT NYCHA',          data:ctrlVals,  ...LINE('#999999', isRate) },
     ];
     tooltipCb = isRate
-      ? c => ` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(2) : '—'} / 1k / yr`
+      ? c => {
+          const v = c.parsed.y;
+          const rStr = v != null ? v.toFixed(2) + ' / 1k / yr' : '—';
+          if (c.dataset.label.startsWith('PACT')) {
+            const row = aggregateRates[c.dataIndex];
+            return ` ${c.dataset.label}: ${rStr} · ${row?.['PACT devs'] ?? '?'} devs · ${row?.['PACT units'] ?? '?'} units`;
+          }
+          return ` ${c.dataset.label}: ${rStr}`;
+        }
       : c => ` ${c.dataset.label}: ${c.parsed.y} executions`;
     chartPlugins = [makeCovidPlugin(labels)];
   } else {
