@@ -252,6 +252,9 @@
         <option value="MISDEMEANOR">Misdemeanor</option>
         <option value="VIOLATION">Violation</option>
       </select>
+      <select class="cfo-resolution" id="cfo-dev-select" style="display:none;min-width:220px">
+        <option value="">— All developments —</option>
+      </select>
       <select class="cfo-resolution" id="cfo-resolution">
         <option value="yearly">Yearly</option>
         <option value="6mo">Every 6 months</option>
@@ -1062,24 +1065,6 @@ function renderConvEvictionsChart(canvas) {
   const offsets = pooled.map(d => d.offset);
   const labels  = offsets.map(o => o > 0 ? '+' + o : String(o));
 
-  // Label div — shows dev info on click, positioned relative to canvas wrapper
-  const wrap = canvas.parentElement;
-  const existingLabel = wrap.querySelector('.cev-dev-label');
-  if (existingLabel) existingLabel.remove();
-  const labelDiv = document.createElement('div');
-  labelDiv.className = 'cev-dev-label';
-  labelDiv.style.cssText = [
-    'position:absolute','display:none',
-    'background:#F7F6F2','border:1px solid #111111',
-    'padding:7px 11px',
-    "font-family:'IBM Plex Mono',monospace",'font-size:11px',
-    'line-height:1.65','pointer-events:none','z-index:20',
-    'white-space:nowrap',
-  ].join(';');
-  if (getComputedStyle(wrap).position === 'static') wrap.style.position = 'relative';
-  wrap.appendChild(labelDiv);
-
-  // Dev datasets — faint by default, hit-detectable via pointHitRadius
   const devDatasets = Object.entries(byDev).map(([dev, info]) => {
     const devMap = {};
     (info.data || []).forEach(d => { devMap[d.offset] = d.rate; });
@@ -1090,7 +1075,7 @@ function renderConvEvictionsChart(canvas) {
       backgroundColor: 'transparent',
       borderWidth: 1,
       pointRadius: 0,
-      pointHitRadius: 20,
+      hoverRadius: 0,
       tension: 0.3,
       spanGaps: false,
     };
@@ -1104,45 +1089,6 @@ function renderConvEvictionsChart(canvas) {
     pointHoverRadius: 5,
     tension: 0.3,
   };
-
-  // Hover state — highlight one dev line, dim the rest
-  let _hoveredIdx = -1;
-  let chart;
-
-  function applyHover(idx) {
-    if (idx === _hoveredIdx) return;
-    _hoveredIdx = idx;
-    devDatasets.forEach((ds, i) => {
-      if (idx < 0) {
-        ds.borderColor = 'rgba(180,180,180,0.45)';
-        ds.borderWidth = 1;
-      } else if (i === idx) {
-        ds.borderColor = 'rgba(50,50,50,0.9)';
-        ds.borderWidth = 2.5;
-      } else {
-        ds.borderColor = 'rgba(180,180,180,0.18)';
-        ds.borderWidth = 1;
-      }
-    });
-    chart.update('none');
-  }
-
-  function showDevLabel(idx, nativeEvent) {
-    const devName = devDatasets[idx].label;
-    const info    = byDev[devName];
-    labelDiv.innerHTML =
-      `<strong>${devName}</strong><br>` +
-      `Converted: ${info.conv_year} &nbsp;·&nbsp; ${info.units.toLocaleString()} units`;
-    labelDiv.style.display = 'block';
-    const wrapRect = wrap.getBoundingClientRect();
-    let lx = nativeEvent.clientX - wrapRect.left + 14;
-    let ly = nativeEvent.clientY - wrapRect.top  - 10;
-    // Keep within right edge
-    const lw = labelDiv.offsetWidth;
-    if (lx + lw > wrap.offsetWidth - 6) lx = nativeEvent.clientX - wrapRect.left - lw - 14;
-    labelDiv.style.left = lx + 'px';
-    labelDiv.style.top  = Math.max(4, ly) + 'px';
-  }
 
   const zeroLinePlugin = {
     id: 'convZeroLine',
@@ -1162,21 +1108,11 @@ function renderConvEvictionsChart(canvas) {
     }
   };
 
-  chart = new Chart(canvas, {
+  const chart = new Chart(canvas, {
     type: 'line',
     data: { labels, datasets: [...devDatasets, pooledDataset] },
     options: {
       ...CHART_OPTS,
-      onHover: (event, elements) => {
-        const devEls = elements.filter(e => e.datasetIndex < devDatasets.length);
-        applyHover(devEls.length > 0 ? devEls[0].datasetIndex : -1);
-        canvas.style.cursor = devEls.length > 0 ? 'pointer' : 'default';
-      },
-      onClick: (event, elements) => {
-        const devEls = elements.filter(e => e.datasetIndex < devDatasets.length);
-        if (devEls.length === 0) { labelDiv.style.display = 'none'; return; }
-        showDevLabel(devEls[0].datasetIndex, event.native);
-      },
       plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
         filter: item => item.datasetIndex === devDatasets.length,
         callbacks: {
@@ -1199,6 +1135,25 @@ function renderConvEvictionsChart(canvas) {
     },
     plugins: [zeroLinePlugin],
   });
+
+  // Called by overlay dropdown to highlight a single dev line
+  chart.highlightDev = function(devName) {
+    const idx = devName ? devDatasets.findIndex(ds => ds.label === devName) : -1;
+    devDatasets.forEach((ds, i) => {
+      if (idx < 0) {
+        ds.borderColor = 'rgba(180,180,180,0.45)';
+        ds.borderWidth = 1;
+      } else if (i === idx) {
+        ds.borderColor = 'rgba(50,50,50,0.9)';
+        ds.borderWidth = 2.5;
+      } else {
+        ds.borderColor = 'rgba(180,180,180,0.18)';
+        ds.borderWidth = 1;
+      }
+    });
+    chart.update('none');
+  };
+
   return chart;
 }
 
@@ -1610,6 +1565,8 @@ function openChartOverlay(type) {
   resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy' || type === 'conv-evictions') ? 'none' : '';
   const nypdTypeEl = document.getElementById('cfo-nypd-type');
   nypdTypeEl.style.display = (type === 'nypd-conv' || type === 'nypd-cohort') ? '' : 'none';
+  const devSelEl = document.getElementById('cfo-dev-select');
+  devSelEl.style.display = type === 'conv-evictions' ? '' : 'none';
   nypdTypeEl.value = _nypdType;
 
   const legendDashed = `
@@ -1642,8 +1599,18 @@ function openChartOverlay(type) {
     document.getElementById('cfo-legend').innerHTML     = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#cccccc;"></div>Individual development</div>`;
+    devSelEl.innerHTML = '<option value="">— All developments —</option>';
+    Object.keys(convEvictions.by_dev || {}).sort().forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = name;
+      devSelEl.appendChild(opt);
+    });
+    devSelEl.value = '';
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderConvEvictionsChart(document.getElementById('cfo-canvas'));
+    devSelEl.onchange = () => {
+      if (expandedChart && expandedChart.highlightDev) expandedChart.highlightDev(devSelEl.value || null);
+    };
   } else if (type === 'occupancy') {
     document.getElementById('cfo-title').textContent    = 'NYCHA OCCUPANCY RATE · 2015–2025';
     document.getElementById('cfo-subtitle').textContent = 'Unit-weighted average occupancy at publicly managed NYCHA developments · annual snapshot';
@@ -1684,6 +1651,8 @@ function openChartOverlay(type) {
 document.getElementById('cfo-close').addEventListener('click', () => {
   document.getElementById('chart-full-overlay').classList.remove('open');
   if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+  const ds = document.getElementById('cfo-dev-select');
+  ds.style.display = 'none'; ds.onchange = null;
 });
 
 document.getElementById('cfo-resolution').addEventListener('change', e => {
