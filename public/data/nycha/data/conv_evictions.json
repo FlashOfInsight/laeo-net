@@ -9,64 +9,64 @@
     },
     {
       "offset": -8,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 1.695,
+      "executions": 6,
       "units": 3539,
       "n_devs": 7
     },
     {
       "offset": -7,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 3.326,
+      "executions": 23,
       "units": 6916,
       "n_devs": 12
     },
     {
       "offset": -6,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 5.623,
+      "executions": 54,
       "units": 9604,
       "n_devs": 16
     },
     {
       "offset": -5,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 4.911,
+      "executions": 50,
       "units": 10181,
       "n_devs": 17
     },
     {
       "offset": -4,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 3.117,
+      "executions": 43,
       "units": 13796,
       "n_devs": 20
     },
     {
       "offset": -3,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 1.067,
+      "executions": 15,
       "units": 14062,
       "n_devs": 22
     },
     {
       "offset": -2,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 1.607,
+      "executions": 24,
       "units": 14938,
       "n_devs": 23
     },
     {
       "offset": -1,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 1.058,
+      "executions": 17,
       "units": 16061,
       "n_devs": 27
     },
     {
       "offset": 0,
-      "rate": 0.0,
-      "executions": 0,
+      "rate": 1.308,
+      "executions": 21,
       "units": 16061,
       "n_devs": 27
     },
@@ -79,29 +79,29 @@
     },
     {
       "offset": 2,
-      "rate": 5.245,
-      "executions": 73,
+      "rate": 5.317,
+      "executions": 74,
       "units": 13917,
       "n_devs": 21
     },
     {
       "offset": 3,
-      "rate": 8.824,
-      "executions": 93,
+      "rate": 9.108,
+      "executions": 96,
       "units": 10540,
       "n_devs": 16
     },
     {
       "offset": 4,
-      "rate": 9.934,
-      "executions": 78,
+      "rate": 10.061,
+      "executions": 79,
       "units": 7852,
       "n_devs": 12
     },
     {
       "offset": 5,
-      "rate": 5.086,
-      "executions": 37,
+      "rate": 5.636,
+      "executions": 41,
       "units": 7275,
       "n_devs": 11
     },
@@ -114,15 +114,15 @@
     },
     {
       "offset": 7,
-      "rate": 8.839,
-      "executions": 30,
+      "rate": 9.134,
+      "executions": 31,
       "units": 3394,
       "n_devs": 6
     },
     {
       "offset": 8,
-      "rate": 9.531,
-      "executions": 24,
+      "rate": 11.517,
+      "executions": 29,
       "units": 2518,
       "n_devs": 5
     },
@@ -135,863 +135,65 @@
     },
     {
       "offset": 10,
-      "rate": 14.337,
-      "executions": 20,
+      "rate": 15.054,
+      "executions": 21,
       "units": 1395,
       "n_devs": 1
     }
   ],
   "by_dev": {
-    "OCEAN BAY APARTMENTS (BAYSIDE)": {
-      "conv_year": 2016,
-      "units": 1395,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": 1,
-          "executions": 41,
-          "rate": 29.391
-        },
-        {
-          "offset": 2,
-          "executions": 37,
-          "rate": 26.523
-        },
-        {
-          "offset": 3,
-          "executions": 23,
-          "rate": 16.487
-        },
-        {
-          "offset": 4,
-          "executions": 2,
-          "rate": 1.434
-        },
-        {
-          "offset": 5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 6,
-          "executions": 3,
-          "rate": 2.151
-        },
-        {
-          "offset": 7,
-          "executions": 11,
-          "rate": 7.885
-        },
-        {
-          "offset": 8,
-          "executions": 14,
-          "rate": 10.036
-        },
-        {
-          "offset": 9,
-          "executions": 20,
-          "rate": 14.337
-        },
-        {
-          "offset": 10,
-          "executions": 20,
-          "rate": 14.337
-        }
-      ]
-    },
-    "TWIN PARKS WEST (SITES 1 & 2)": {
-      "conv_year": 2018,
-      "units": 312,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 4,
-          "executions": 1,
-          "rate": 3.205
-        },
-        {
-          "offset": 5,
-          "executions": 3,
-          "rate": 9.615
-        },
-        {
-          "offset": 6,
-          "executions": 5,
-          "rate": 16.026
-        },
-        {
-          "offset": 7,
-          "executions": 8,
-          "rate": 25.641
-        },
-        {
-          "offset": 8,
-          "executions": 5,
-          "rate": 16.026
-        }
-      ]
-    },
-    "BETANCES I": {
-      "conv_year": 2018,
-      "units": 309,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 2,
-          "rate": 6.472
-        },
-        {
-          "offset": 2,
-          "executions": 1,
-          "rate": 3.236
-        },
-        {
-          "offset": 3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 4,
-          "executions": 1,
-          "rate": 3.236
-        },
-        {
-          "offset": 5,
-          "executions": 1,
-          "rate": 3.236
-        },
-        {
-          "offset": 6,
-          "executions": 5,
-          "rate": 16.181
-        },
-        {
-          "offset": 7,
-          "executions": 1,
-          "rate": 3.236
-        },
-        {
-          "offset": 8,
-          "executions": 1,
-          "rate": 3.236
-        }
-      ]
-    },
-    "FRANKLIN AVENUE I CONVENTIONAL": {
-      "conv_year": 2018,
-      "units": 61,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 7,
-          "executions": 2,
-          "rate": 32.787
-        },
-        {
-          "offset": 8,
-          "executions": 2,
-          "rate": 32.787
-        }
-      ]
-    },
-    "BAYCHESTER": {
-      "conv_year": 2018,
-      "units": 441,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 1,
-          "rate": 2.268
-        },
-        {
-          "offset": 3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 6,
-          "executions": 7,
-          "rate": 15.873
-        },
-        {
-          "offset": 7,
-          "executions": 6,
-          "rate": 13.605
-        },
-        {
-          "offset": 8,
-          "executions": 2,
-          "rate": 4.535
-        }
-      ]
-    },
-    "BUSHWICK II (GROUPS A & C)": {
-      "conv_year": 2019,
-      "units": 876,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 3,
-          "executions": 3,
-          "rate": 3.425
-        },
-        {
-          "offset": 4,
-          "executions": 10,
-          "rate": 11.416
-        },
-        {
-          "offset": 5,
-          "executions": 10,
-          "rate": 11.416
-        },
-        {
-          "offset": 6,
-          "executions": 8,
-          "rate": 9.132
-        },
-        {
-          "offset": 7,
-          "executions": 2,
-          "rate": 2.283
-        }
-      ]
-    },
-    "572 WARREN STREET": {
-      "conv_year": 2020,
-      "units": 200,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 3,
-          "executions": 2,
-          "rate": 10.0
-        },
-        {
-          "offset": 4,
-          "executions": 1,
-          "rate": 5.0
-        },
-        {
-          "offset": 5,
-          "executions": 4,
-          "rate": 20.0
-        },
-        {
-          "offset": 6,
-          "executions": 0,
-          "rate": 0.0
-        }
-      ]
-    },
-    "335 EAST 111TH STREET": {
-      "conv_year": 2020,
-      "units": 66,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 4,
-          "executions": 1,
-          "rate": 15.152
-        },
-        {
-          "offset": 5,
-          "executions": 1,
-          "rate": 15.152
-        },
-        {
-          "offset": 6,
-          "executions": 0,
-          "rate": 0.0
-        }
-      ]
-    },
-    "BELMONT-SUTTER AREA": {
-      "conv_year": 2021,
-      "units": 72,
+    "1010 EAST 178TH STREET": {
+      "conv_year": 2025,
+      "units": 220,
       "status": "Under Construction",
       "data": [
         {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 5,
-          "executions": 0,
-          "rate": 0.0
-        }
-      ]
-    },
-    "LINDEN": {
-      "conv_year": 2021,
-      "units": 1922,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
+          "offset": -8,
           "executions": 2,
-          "rate": 1.041
+          "rate": 9.091
         },
         {
-          "offset": 2,
-          "executions": 22,
-          "rate": 11.446
-        },
-        {
-          "offset": 3,
-          "executions": 32,
-          "rate": 16.649
-        },
-        {
-          "offset": 4,
-          "executions": 54,
-          "rate": 28.096
-        },
-        {
-          "offset": 5,
-          "executions": 11,
-          "rate": 5.723
-        }
-      ]
-    },
-    "WILLIAMSBURG": {
-      "conv_year": 2021,
-      "units": 1621,
-      "status": "Construction Complete",
-      "data": [
-        {
-          "offset": -4,
+          "offset": -7,
           "executions": 0,
           "rate": 0.0
         },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 1,
-          "rate": 0.617
-        },
-        {
-          "offset": 3,
-          "executions": 15,
-          "rate": 9.254
-        },
-        {
-          "offset": 4,
-          "executions": 8,
-          "rate": 4.935
-        },
-        {
-          "offset": 5,
-          "executions": 7,
-          "rate": 4.318
-        }
-      ]
-    },
-    "HARLEM RIVER": {
-      "conv_year": 2022,
-      "units": 577,
-      "status": "Under Construction",
-      "data": [
-        {
-          "offset": -5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 5,
-          "rate": 8.666
-        },
-        {
-          "offset": 3,
-          "executions": 5,
-          "rate": 8.666
-        },
-        {
-          "offset": 4,
-          "executions": 0,
-          "rate": 0.0
-        }
-      ]
-    },
-    "AUDUBON": {
-      "conv_year": 2023,
-      "units": 557,
-      "status": "Under Construction",
-      "data": [
         {
           "offset": -6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 3,
-          "executions": 0,
-          "rate": 0.0
-        }
-      ]
-    },
-    "EDENWALD": {
-      "conv_year": 2023,
-      "units": 2035,
-      "status": "Under Construction",
-      "data": [
-        {
-          "offset": -6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 2,
-          "rate": 0.983
-        },
-        {
-          "offset": 3,
-          "executions": 13,
-          "rate": 6.388
-        }
-      ]
-    },
-    "EAGLE AVENUE-EAST 163RD STREET": {
-      "conv_year": 2023,
-      "units": 66,
-      "status": "Under Construction",
-      "data": [
-        {
-          "offset": -6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
           "executions": 1,
-          "rate": 15.152
+          "rate": 4.545
         },
         {
-          "offset": 2,
+          "offset": -5,
           "executions": 1,
-          "rate": 15.152
+          "rate": 4.545
         },
         {
-          "offset": 3,
+          "offset": -4,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
           "executions": 0,
           "rate": 0.0
         }
@@ -1054,88 +256,11 @@
         }
       ]
     },
-    "SACK WERN": {
-      "conv_year": 2024,
-      "units": 413,
-      "status": "Under Construction",
+    "335 EAST 111TH STREET": {
+      "conv_year": 2020,
+      "units": 66,
+      "status": "Construction Complete",
       "data": [
-        {
-          "offset": -7,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 2,
-          "executions": 3,
-          "rate": 7.264
-        }
-      ]
-    },
-    "WEST BRIGHTON I": {
-      "conv_year": 2024,
-      "units": 490,
-      "status": "Under Construction",
-      "data": [
-        {
-          "offset": -7,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
         {
           "offset": -3,
           "executions": 0,
@@ -1165,63 +290,368 @@
           "offset": 2,
           "executions": 0,
           "rate": 0.0
-        }
-      ]
-    },
-    "SAMUEL (CITY)": {
-      "conv_year": 2024,
-      "units": 664,
-      "status": "Under Construction",
-      "data": [
+        },
         {
-          "offset": -7,
+          "offset": 3,
           "executions": 0,
           "rate": 0.0
         },
         {
-          "offset": -6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -5,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -4,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -3,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -2,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -1,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 0,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": 1,
+          "offset": 4,
           "executions": 1,
-          "rate": 1.506
+          "rate": 15.152
+        },
+        {
+          "offset": 5,
+          "executions": 1,
+          "rate": 15.152
+        },
+        {
+          "offset": 6,
+          "executions": 0,
+          "rate": 0.0
+        }
+      ]
+    },
+    "572 WARREN STREET": {
+      "conv_year": 2020,
+      "units": 200,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 1,
+          "rate": 5.0
+        },
+        {
+          "offset": -1,
+          "executions": 1,
+          "rate": 5.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
         },
         {
           "offset": 2,
           "executions": 0,
           "rate": 0.0
+        },
+        {
+          "offset": 3,
+          "executions": 2,
+          "rate": 10.0
+        },
+        {
+          "offset": 4,
+          "executions": 1,
+          "rate": 5.0
+        },
+        {
+          "offset": 5,
+          "executions": 4,
+          "rate": 20.0
+        },
+        {
+          "offset": 6,
+          "executions": 0,
+          "rate": 0.0
+        }
+      ]
+    },
+    "AUDUBON": {
+      "conv_year": 2023,
+      "units": 557,
+      "status": "Under Construction",
+      "data": [
+        {
+          "offset": -6,
+          "executions": 3,
+          "rate": 5.386
+        },
+        {
+          "offset": -5,
+          "executions": 2,
+          "rate": 3.591
+        },
+        {
+          "offset": -4,
+          "executions": 1,
+          "rate": 1.795
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 3,
+          "executions": 0,
+          "rate": 0.0
+        }
+      ]
+    },
+    "BAY VIEW": {
+      "conv_year": 2025,
+      "units": 1610,
+      "status": "Under Construction",
+      "data": [
+        {
+          "offset": -8,
+          "executions": 3,
+          "rate": 1.863
+        },
+        {
+          "offset": -7,
+          "executions": 3,
+          "rate": 1.863
+        },
+        {
+          "offset": -6,
+          "executions": 8,
+          "rate": 4.969
+        },
+        {
+          "offset": -5,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -4,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 1,
+          "rate": 0.621
+        },
+        {
+          "offset": -1,
+          "executions": 3,
+          "rate": 1.863
+        },
+        {
+          "offset": 0,
+          "executions": 6,
+          "rate": 3.727
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        }
+      ]
+    },
+    "BAYCHESTER": {
+      "conv_year": 2018,
+      "units": 441,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -1,
+          "executions": 2,
+          "rate": 4.535
+        },
+        {
+          "offset": 0,
+          "executions": 3,
+          "rate": 6.803
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 1,
+          "rate": 2.268
+        },
+        {
+          "offset": 3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 4,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 5,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 6,
+          "executions": 7,
+          "rate": 15.873
+        },
+        {
+          "offset": 7,
+          "executions": 6,
+          "rate": 13.605
+        },
+        {
+          "offset": 8,
+          "executions": 2,
+          "rate": 4.535
+        }
+      ]
+    },
+    "BELMONT-SUTTER AREA": {
+      "conv_year": 2021,
+      "units": 72,
+      "status": "Under Construction",
+      "data": [
+        {
+          "offset": -4,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 4,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 5,
+          "executions": 0,
+          "rate": 0.0
+        }
+      ]
+    },
+    "BETANCES I": {
+      "conv_year": 2018,
+      "units": 309,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -1,
+          "executions": 1,
+          "rate": 3.236
+        },
+        {
+          "offset": 0,
+          "executions": 2,
+          "rate": 6.472
+        },
+        {
+          "offset": 1,
+          "executions": 2,
+          "rate": 6.472
+        },
+        {
+          "offset": 2,
+          "executions": 1,
+          "rate": 3.236
+        },
+        {
+          "offset": 3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 4,
+          "executions": 1,
+          "rate": 3.236
+        },
+        {
+          "offset": 5,
+          "executions": 1,
+          "rate": 3.236
+        },
+        {
+          "offset": 6,
+          "executions": 5,
+          "rate": 16.181
+        },
+        {
+          "offset": 7,
+          "executions": 1,
+          "rate": 3.236
+        },
+        {
+          "offset": 8,
+          "executions": 1,
+          "rate": 3.236
         }
       ]
     },
@@ -1232,18 +662,18 @@
       "data": [
         {
           "offset": -7,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 1,
+          "rate": 1.859
         },
         {
           "offset": -6,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 4,
+          "rate": 7.435
         },
         {
           "offset": -5,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 3,
+          "rate": 5.576
         },
         {
           "offset": -4,
@@ -1282,11 +712,78 @@
         }
       ]
     },
-    "MANHATTANVILLE": {
-      "conv_year": 2024,
-      "units": 1272,
+    "BUSHWICK II (GROUPS A & C)": {
+      "conv_year": 2019,
+      "units": 876,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -2,
+          "executions": 2,
+          "rate": 2.283
+        },
+        {
+          "offset": -1,
+          "executions": 2,
+          "rate": 2.283
+        },
+        {
+          "offset": 0,
+          "executions": 1,
+          "rate": 1.142
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 3,
+          "executions": 3,
+          "rate": 3.425
+        },
+        {
+          "offset": 4,
+          "executions": 10,
+          "rate": 11.416
+        },
+        {
+          "offset": 5,
+          "executions": 10,
+          "rate": 11.416
+        },
+        {
+          "offset": 6,
+          "executions": 8,
+          "rate": 9.132
+        },
+        {
+          "offset": 7,
+          "executions": 3,
+          "rate": 3.425
+        }
+      ]
+    },
+    "CAMPOS PLAZA II": {
+      "conv_year": 2026,
+      "units": 224,
       "status": "Under Construction",
       "data": [
+        {
+          "offset": -9,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -8,
+          "executions": 0,
+          "rate": 0.0
+        },
         {
           "offset": -7,
           "executions": 0,
@@ -1314,6 +811,48 @@
         },
         {
           "offset": -2,
+          "executions": 1,
+          "rate": 4.464
+        },
+        {
+          "offset": -1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        }
+      ]
+    },
+    "EAGLE AVENUE-EAST 163RD STREET": {
+      "conv_year": 2023,
+      "units": 66,
+      "status": "Under Construction",
+      "data": [
+        {
+          "offset": -6,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -5,
+          "executions": 1,
+          "rate": 15.152
+        },
+        {
+          "offset": -4,
+          "executions": 2,
+          "rate": 30.303
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
           "executions": 0,
           "rate": 0.0
         },
@@ -1330,10 +869,15 @@
         {
           "offset": 1,
           "executions": 1,
-          "rate": 0.786
+          "rate": 15.152
         },
         {
           "offset": 2,
+          "executions": 1,
+          "rate": 15.152
+        },
+        {
+          "offset": 3,
           "executions": 0,
           "rate": 0.0
         }
@@ -1346,23 +890,23 @@
       "data": [
         {
           "offset": -8,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 1,
+          "rate": 1.14
         },
         {
           "offset": -7,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 3,
+          "rate": 3.421
         },
         {
           "offset": -6,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 8,
+          "rate": 9.122
         },
         {
           "offset": -5,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 3,
+          "rate": 3.421
         },
         {
           "offset": -4,
@@ -1396,35 +940,25 @@
         }
       ]
     },
-    "1010 EAST 178TH STREET": {
-      "conv_year": 2025,
-      "units": 220,
+    "EDENWALD": {
+      "conv_year": 2023,
+      "units": 2035,
       "status": "Under Construction",
       "data": [
         {
-          "offset": -8,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -7,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
           "offset": -6,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 19,
+          "rate": 9.337
         },
         {
           "offset": -5,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 16,
+          "rate": 7.862
         },
         {
           "offset": -4,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 14,
+          "rate": 6.88
         },
         {
           "offset": -3,
@@ -1450,43 +984,95 @@
           "offset": 1,
           "executions": 0,
           "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 2,
+          "rate": 0.983
+        },
+        {
+          "offset": 3,
+          "executions": 16,
+          "rate": 7.862
         }
       ]
     },
-    "OCEAN HILL APARTMENTS": {
-      "conv_year": 2025,
-      "units": 236,
+    "FRANKLIN AVENUE I CONVENTIONAL": {
+      "conv_year": 2018,
+      "units": 61,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -1,
+          "executions": 1,
+          "rate": 16.393
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 4,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 5,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 6,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 7,
+          "executions": 2,
+          "rate": 32.787
+        },
+        {
+          "offset": 8,
+          "executions": 2,
+          "rate": 32.787
+        }
+      ]
+    },
+    "HARLEM RIVER": {
+      "conv_year": 2022,
+      "units": 577,
       "status": "Under Construction",
       "data": [
         {
-          "offset": -8,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -7,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -6,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
           "offset": -5,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 4,
+          "rate": 6.932
         },
         {
           "offset": -4,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 1,
+          "rate": 1.733
         },
         {
           "offset": -3,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 1,
+          "rate": 1.733
         },
         {
           "offset": -2,
@@ -1505,6 +1091,135 @@
         },
         {
           "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 5,
+          "rate": 8.666
+        },
+        {
+          "offset": 3,
+          "executions": 5,
+          "rate": 8.666
+        },
+        {
+          "offset": 4,
+          "executions": 2,
+          "rate": 3.466
+        }
+      ]
+    },
+    "LINDEN": {
+      "conv_year": 2021,
+      "units": 1922,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -4,
+          "executions": 23,
+          "rate": 11.967
+        },
+        {
+          "offset": -3,
+          "executions": 12,
+          "rate": 6.243
+        },
+        {
+          "offset": -2,
+          "executions": 12,
+          "rate": 6.243
+        },
+        {
+          "offset": -1,
+          "executions": 3,
+          "rate": 1.561
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 2,
+          "rate": 1.041
+        },
+        {
+          "offset": 2,
+          "executions": 22,
+          "rate": 11.446
+        },
+        {
+          "offset": 3,
+          "executions": 32,
+          "rate": 16.649
+        },
+        {
+          "offset": 4,
+          "executions": 53,
+          "rate": 27.575
+        },
+        {
+          "offset": 5,
+          "executions": 13,
+          "rate": 6.764
+        }
+      ]
+    },
+    "MANHATTANVILLE": {
+      "conv_year": 2024,
+      "units": 1272,
+      "status": "Under Construction",
+      "data": [
+        {
+          "offset": -7,
+          "executions": 4,
+          "rate": 3.145
+        },
+        {
+          "offset": -6,
+          "executions": 3,
+          "rate": 2.358
+        },
+        {
+          "offset": -5,
+          "executions": 6,
+          "rate": 4.717
+        },
+        {
+          "offset": -4,
+          "executions": 1,
+          "rate": 0.786
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -1,
+          "executions": 2,
+          "rate": 1.572
+        },
+        {
+          "offset": 0,
+          "executions": 6,
+          "rate": 4.717
+        },
+        {
+          "offset": 1,
+          "executions": 1,
+          "rate": 0.786
+        },
+        {
+          "offset": 2,
           "executions": 0,
           "rate": 0.0
         }
@@ -1624,9 +1339,66 @@
         }
       ]
     },
-    "BAY VIEW": {
+    "OCEAN BAY APARTMENTS (BAYSIDE)": {
+      "conv_year": 2016,
+      "units": 1395,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": 1,
+          "executions": 41,
+          "rate": 29.391
+        },
+        {
+          "offset": 2,
+          "executions": 37,
+          "rate": 26.523
+        },
+        {
+          "offset": 3,
+          "executions": 23,
+          "rate": 16.487
+        },
+        {
+          "offset": 4,
+          "executions": 2,
+          "rate": 1.434
+        },
+        {
+          "offset": 5,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 6,
+          "executions": 3,
+          "rate": 2.151
+        },
+        {
+          "offset": 7,
+          "executions": 11,
+          "rate": 7.885
+        },
+        {
+          "offset": 8,
+          "executions": 14,
+          "rate": 10.036
+        },
+        {
+          "offset": 9,
+          "executions": 20,
+          "rate": 14.337
+        },
+        {
+          "offset": 10,
+          "executions": 21,
+          "rate": 15.054
+        }
+      ]
+    },
+    "OCEAN HILL APARTMENTS": {
       "conv_year": 2025,
-      "units": 1610,
+      "units": 236,
       "status": "Under Construction",
       "data": [
         {
@@ -1636,8 +1408,60 @@
         },
         {
           "offset": -7,
+          "executions": 1,
+          "rate": 4.237
+        },
+        {
+          "offset": -6,
+          "executions": 2,
+          "rate": 8.475
+        },
+        {
+          "offset": -5,
+          "executions": 1,
+          "rate": 4.237
+        },
+        {
+          "offset": -4,
           "executions": 0,
           "rate": 0.0
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        }
+      ]
+    },
+    "SACK WERN": {
+      "conv_year": 2024,
+      "units": 413,
+      "status": "Under Construction",
+      "data": [
+        {
+          "offset": -7,
+          "executions": 3,
+          "rate": 7.264
         },
         {
           "offset": -6,
@@ -1678,38 +1502,33 @@
           "offset": 1,
           "executions": 0,
           "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 3,
+          "rate": 7.264
         }
       ]
     },
-    "CAMPOS PLAZA II": {
-      "conv_year": 2026,
-      "units": 224,
+    "SAMUEL (CITY)": {
+      "conv_year": 2024,
+      "units": 664,
       "status": "Under Construction",
       "data": [
         {
-          "offset": -9,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
-          "offset": -8,
-          "executions": 0,
-          "rate": 0.0
-        },
-        {
           "offset": -7,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 2,
+          "rate": 3.012
         },
         {
           "offset": -6,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 3,
+          "rate": 4.518
         },
         {
           "offset": -5,
-          "executions": 0,
-          "rate": 0.0
+          "executions": 5,
+          "rate": 7.53
         },
         {
           "offset": -4,
@@ -1733,8 +1552,189 @@
         },
         {
           "offset": 0,
+          "executions": 2,
+          "rate": 3.012
+        },
+        {
+          "offset": 1,
+          "executions": 1,
+          "rate": 1.506
+        },
+        {
+          "offset": 2,
           "executions": 0,
           "rate": 0.0
+        }
+      ]
+    },
+    "TWIN PARKS WEST (SITES 1 & 2)": {
+      "conv_year": 2018,
+      "units": 312,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 4,
+          "executions": 1,
+          "rate": 3.205
+        },
+        {
+          "offset": 5,
+          "executions": 3,
+          "rate": 9.615
+        },
+        {
+          "offset": 6,
+          "executions": 5,
+          "rate": 16.026
+        },
+        {
+          "offset": 7,
+          "executions": 8,
+          "rate": 25.641
+        },
+        {
+          "offset": 8,
+          "executions": 10,
+          "rate": 32.051
+        }
+      ]
+    },
+    "WEST BRIGHTON I": {
+      "conv_year": 2024,
+      "units": 490,
+      "status": "Under Construction",
+      "data": [
+        {
+          "offset": -7,
+          "executions": 6,
+          "rate": 12.245
+        },
+        {
+          "offset": -6,
+          "executions": 3,
+          "rate": 6.122
+        },
+        {
+          "offset": -5,
+          "executions": 8,
+          "rate": 16.327
+        },
+        {
+          "offset": -4,
+          "executions": 1,
+          "rate": 2.041
+        },
+        {
+          "offset": -3,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -2,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -1,
+          "executions": 2,
+          "rate": 4.082
+        },
+        {
+          "offset": 0,
+          "executions": 1,
+          "rate": 2.041
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 1,
+          "rate": 2.041
+        }
+      ]
+    },
+    "WILLIAMSBURG": {
+      "conv_year": 2021,
+      "units": 1621,
+      "status": "Construction Complete",
+      "data": [
+        {
+          "offset": -4,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": -3,
+          "executions": 2,
+          "rate": 1.234
+        },
+        {
+          "offset": -2,
+          "executions": 7,
+          "rate": 4.318
+        },
+        {
+          "offset": -1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 0,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 1,
+          "executions": 0,
+          "rate": 0.0
+        },
+        {
+          "offset": 2,
+          "executions": 1,
+          "rate": 0.617
+        },
+        {
+          "offset": 3,
+          "executions": 15,
+          "rate": 9.254
+        },
+        {
+          "offset": 4,
+          "executions": 8,
+          "rate": 4.935
+        },
+        {
+          "offset": 5,
+          "executions": 9,
+          "rate": 5.552
         }
       ]
     }
