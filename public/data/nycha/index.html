@@ -274,21 +274,19 @@
   <!-- Table -->
   <section class="table-section">
     <div class="table-header">
-      <div class="section-label">PACT DEVELOPMENTS — EXECUTION RATES BY YEAR</div>
-      <div class="table-note">Click any column header to sort · 2026 figures are YTD · rate per 1,000 units · <a href="data/pact_bbl_export.csv" download style="color:inherit;text-decoration:underline;">Download BBL dataset ↓</a></div>
+      <div class="section-label">PACT DEVELOPMENTS — REFERENCE</div>
+      <div class="table-note">Click any column header to sort · <a href="data/pact_bbl_export.csv" download style="color:inherit;text-decoration:underline;">Download full BBL dataset ↓</a></div>
     </div>
     <div style="overflow-x:auto;">
       <table class="data-table" id="pact-table">
         <thead>
           <tr>
             <th data-col="development_name">Development</th>
-            <th data-col="status">Status</th>
+            <th data-col="property_manager">Manager</th>
+            <th data-col="conversion_date">Conversion Date</th>
+            <th data-col="bbls">BBL(s)</th>
             <th data-col="total_units" class="num">Units</th>
-            <th data-col="r2022" class="num">2022</th>
-            <th data-col="r2023" class="num">2023</th>
-            <th data-col="r2024" class="num">2024</th>
-            <th data-col="r2025" class="num">2025</th>
-            <th data-col="r2026" class="num">2026 <span class="ytd-badge">YTD</span></th>
+            <th data-col="status">Status</th>
           </tr>
         </thead>
         <tbody id="pact-tbody"></tbody>
@@ -1783,7 +1781,7 @@ document.getElementById('nypd-type-filter').addEventListener('change', e => {
 });
 
 // ── Table ──────────────────────────────────────────────────────────────────────
-let sortState = { col:'r2025', dir:'desc' };
+let sortState = { col:'conversion_date', dir:'asc' };
 let tableRows = [];
 
 function buildTable() {
@@ -1791,43 +1789,58 @@ function buildTable() {
     .filter(f => f.properties.type === 'pact')
     .map(f => {
       const p = f.properties;
-      const by = typeof p.by_year === 'string' ? JSON.parse(p.by_year) : (p.by_year||{});
-      const g = y => by[y] ? by[y].rate_per_1k : null;
-      return { development_name:p.development_name,
-        property_manager:(p.property_manager||'').split(';')[0].split('\n')[0].trim(),
-        status:p.status, total_units:p.total_units, has_data:p.has_data,
-        r2022:g('2022'),r2023:g('2023'),r2024:g('2024'),r2025:g('2025'),r2026:g('2026') };
+      return {
+        development_name: p.development_name,
+        property_manager: (p.property_manager||'').split(';')[0].split('\n')[0].trim(),
+        conversion_date:  p.conversion_date || '',
+        bbls:             p.bbls || '',
+        total_units:      p.total_units,
+        status:           p.status || '',
+      };
     });
   renderTable();
 
   document.querySelectorAll('#pact-table th[data-col]').forEach(th => {
     th.addEventListener('click', () => {
-      sortState.dir = sortState.col===th.dataset.col ? (sortState.dir==='asc'?'desc':'asc') : (th.dataset.col.startsWith('r')?'desc':'asc');
+      const numCols = new Set(['total_units']);
+      sortState.dir = sortState.col===th.dataset.col ? (sortState.dir==='asc'?'desc':'asc') : (numCols.has(th.dataset.col)?'desc':'asc');
       sortState.col = th.dataset.col;
       renderTable();
     });
   });
 }
 
-function rClass(v) { return v==null?'':v>=15?'rate-high':v>=8?'rate-mid':'rate-low'; }
-function fmt(v)    { return v!=null ? `<span class="rate-cell ${rClass(v)}">${v.toFixed(1)}</span>` : '<span style="color:var(--ink-light)">—</span>'; }
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const [y,m,d] = iso.split('-');
+  const mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1];
+  return `${mon} ${+d}, ${y}`;
+}
+
+function fmtBbls(raw) {
+  if (!raw) return '—';
+  const list = raw.split('|').filter(Boolean);
+  if (list.length <= 3) return `<span style="font-family:monospace;font-size:0.82em">${list.join('<br>')}</span>`;
+  return `<span style="font-family:monospace;font-size:0.82em" title="${list.join(', ')}">${list[0]}<br><span style="color:var(--ink-light)">+${list.length-1} more</span></span>`;
+}
 
 function renderTable() {
   const {col,dir} = sortState;
   tableRows.sort((a,b)=>{
-    const av=a[col]??(dir==='asc'?Infinity:-Infinity), bv=b[col]??(dir==='asc'?Infinity:-Infinity);
-    return typeof av==='string'?(dir==='asc'?av.localeCompare(bv):bv.localeCompare(av)):(dir==='asc'?av-bv:bv-av);
+    const av=a[col]??(dir==='asc'?'':'￿'), bv=b[col]??(dir==='asc'?'':'￿');
+    const an=typeof av==='number', bn=typeof bv==='number';
+    if(an&&bn) return dir==='asc'?av-bv:bv-av;
+    return dir==='asc'?String(av).localeCompare(String(bv)):String(bv).localeCompare(String(av));
   });
-  document.getElementById('pact-tbody').innerHTML = tableRows.map(r => {
-    const st = (r.status||'').replace('Construction Complete','Complete').replace('Under Construction','Const.');
-    return `<tr ${r.has_data?'':'style="opacity:0.5"'}>
-      <td><div class="dev-name">${r.development_name}</div><div class="manager-name">${r.property_manager||'—'}</div></td>
-      <td><span class="status-pill">${st}</span></td>
-      <td class="num">${r.total_units?r.total_units.toLocaleString():'—'}</td>
-      <td class="num">${fmt(r.r2022)}</td><td class="num">${fmt(r.r2023)}</td>
-      <td class="num">${fmt(r.r2024)}</td><td class="num">${fmt(r.r2025)}</td>
-      <td class="num">${fmt(r.r2026)}</td></tr>`;
-  }).join('');
+  const st = s => (s||'').replace('Construction Complete','Complete').replace('Under Construction','Under Const.');
+  document.getElementById('pact-tbody').innerHTML = tableRows.map(r => `<tr>
+    <td><div class="dev-name">${r.development_name}</div></td>
+    <td><div class="manager-name" style="font-size:0.85em">${r.property_manager||'—'}</div></td>
+    <td style="white-space:nowrap">${fmtDate(r.conversion_date)}</td>
+    <td>${fmtBbls(r.bbls)}</td>
+    <td class="num">${r.total_units?r.total_units.toLocaleString():'—'}</td>
+    <td><span class="status-pill">${st(r.status)}</span></td>
+  </tr>`).join('');
   document.querySelectorAll('#pact-table th').forEach(th=>{
     th.classList.remove('sort-asc','sort-desc');
     if(th.dataset.col===sortState.col) th.classList.add(sortState.dir==='asc'?'sort-asc':'sort-desc');
