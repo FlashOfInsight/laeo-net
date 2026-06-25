@@ -137,6 +137,20 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="conv-evictions">
+        <div class="chart-card-header">
+          <div class="chart-title">EVICTION RATE BEFORE AND AFTER PACT CONVERSION</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">Execution rate per 1,000 units · by year relative to conversion date · all 28 PACT developments</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-conv-evictions"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#cccccc;"></div>Individual development</div>
+        </div>
+        <div class="chart-note">Year 0 = conversion year (partial year for most developments). Pooled rate is unit-weighted across all contributing developments; n falls at the extremes as fewer developments have data that far from their conversion date. COVID eviction moratorium (Mar 2020–Jan 2022) suppresses rates for developments whose early post-conversion years fell in that window. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
+      </div>
+
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy">
         <div class="chart-card-header">
           <div class="chart-title">NYCHA OCCUPANCY RATE · 2015–2025</div>
@@ -655,10 +669,10 @@ if (initTab !== 'analysis') switchTab(initTab);
 
 
 // ── Data loading ───────────────────────────────────────────────────────────────
-let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], nypdAgg = [], nypdConv = [], nypdCohort = [], hudOccupancy = [], mapInitialised = false, chartsDone = false;
+let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], nypdAgg = [], nypdConv = [], nypdCohort = [], hudOccupancy = [], convEvictions = {}, mapInitialised = false, chartsDone = false;
 
 async function loadData() {
-  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, nypdRes, nypdConvRes, nypdCohortRes, occRes] = await Promise.all([
+  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, nypdRes, nypdConvRes, nypdCohortRes, occRes, convEvRes] = await Promise.all([
     fetch('data/developments.geojson'),
     fetch('data/aggregate_rates.json'),
     fetch('data/control_monthly.json'),
@@ -669,6 +683,7 @@ async function loadData() {
     fetch('data/nypd_by_conversion.json'),
     fetch('data/nypd_cohort.json'),
     fetch('data/hud_occupancy.json'),
+    fetch('data/conv_evictions.json'),
   ]);
   developments    = (await geoRes.json()).features;
   aggregateRates  = await ratesRes.json();
@@ -680,6 +695,7 @@ async function loadData() {
   nypdConv        = await nypdConvRes.json();
   nypdCohort      = await nypdCohortRes.json();
   hudOccupancy    = await occRes.json();
+  convEvictions   = await convEvRes.json();
 }
 
 // ── Key stats ─────────────────────────────────────────────────────────────────
@@ -1031,11 +1047,94 @@ function buildCharts() {
       scales:{...CHART_OPTS.scales,y:{...CHART_OPTS.scales.y,
         ticks:{...CHART_OPTS.scales.y.ticks,callback:v=>v+'%'}}}}});
 
+  renderConvEvictionsChart(document.getElementById('chart-conv-evictions'));
   renderOccupancyChart(document.getElementById('chart-occupancy'));
   renderComplaintsAggChart(document.getElementById('chart-complaints'));
   renderPermitsAggChart(document.getElementById('chart-permits'));
   renderNypdConvChart(document.getElementById('chart-nypd-conv'));
   renderNypdCohortChart(document.getElementById('chart-nypd-cohort'));
+}
+
+function renderConvEvictionsChart(canvas) {
+  if (!canvas || !convEvictions.pooled) return;
+  const pooled  = convEvictions.pooled;
+  const byDev   = convEvictions.by_dev || {};
+  const offsets = pooled.map(d => d.offset);
+  const labels  = offsets.map(o => o > 0 ? '+' + o : String(o));
+
+  // Individual dev datasets — faint, no hover interaction
+  const devDatasets = Object.entries(byDev).map(([dev, info]) => {
+    const devMap = {};
+    (info.data || []).forEach(d => { devMap[d.offset] = d.rate; });
+    return {
+      label: dev,
+      data: offsets.map(o => devMap.hasOwnProperty(o) ? devMap[o] : null),
+      borderColor: 'rgba(180,180,180,0.45)',
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      pointRadius: 0,
+      hoverRadius: 0,
+      tension: 0.3,
+      spanGaps: false,
+    };
+  });
+
+  // Pooled dataset — on top
+  const pooledDataset = {
+    label: 'Pooled avg',
+    data: pooled.map(d => d.rate),
+    ...LINE('#111111'),
+    pointRadius: 3,
+    pointHoverRadius: 5,
+    tension: 0.3,
+  };
+
+  // Vertical dashed line at offset 0
+  const zeroLinePlugin = {
+    id: 'convZeroLine',
+    afterDraw(chart) {
+      const idx = offsets.indexOf(0);
+      if (idx < 0) return;
+      const meta = chart.getDatasetMeta(chart.data.datasets.length - 1);
+      const x = meta.data[idx]?.x;
+      if (x == null) return;
+      const { ctx, chartArea: { top, bottom } } = chart;
+      ctx.save();
+      ctx.strokeStyle = '#888888'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+      ctx.font = "9px 'IBM Plex Mono',monospace"; ctx.fillStyle = '#AAAAAA';
+      ctx.fillText('conversion', x + 4, top + 12);
+      ctx.restore();
+    }
+  };
+
+  return new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets: [...devDatasets, pooledDataset] },
+    options: {
+      ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+        filter: item => item.datasetIndex === devDatasets.length,
+        callbacks: {
+          title: items => {
+            const o = offsets[items[0].dataIndex];
+            return o < 0 ? `Year ${o} before conversion`
+                         : o === 0 ? 'Year 0 · conversion year'
+                         : `Year +${o} after conversion`;
+          },
+          label: c => {
+            const d = pooled[c.dataIndex];
+            const r = c.parsed.y != null ? c.parsed.y.toFixed(2) : '—';
+            return ` ${r} / 1k  (${d.n_devs} developments · ${d.executions} executions)`;
+          }
+        }
+      }},
+      scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+        ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
+      }}
+    },
+    plugins: [zeroLinePlugin],
+  });
 }
 
 function renderOccupancyChart(canvas) {
@@ -1443,7 +1542,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy') ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy' || type === 'conv-evictions') ? 'none' : '';
   const nypdTypeEl = document.getElementById('cfo-nypd-type');
   nypdTypeEl.style.display = (type === 'nypd-conv' || type === 'nypd-cohort') ? '' : 'none';
   nypdTypeEl.value = _nypdType;
@@ -1472,6 +1571,14 @@ function openChartOverlay(type) {
     document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
+  } else if (type === 'conv-evictions') {
+    document.getElementById('cfo-title').textContent    = 'EVICTION RATE BEFORE AND AFTER PACT CONVERSION';
+    document.getElementById('cfo-subtitle').textContent = 'Execution rate per 1,000 units · by year relative to conversion date · all 28 PACT developments';
+    document.getElementById('cfo-legend').innerHTML     = `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#cccccc;"></div>Individual development</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderConvEvictionsChart(document.getElementById('cfo-canvas'));
   } else if (type === 'occupancy') {
     document.getElementById('cfo-title').textContent    = 'NYCHA OCCUPANCY RATE · 2015–2025';
     document.getElementById('cfo-subtitle').textContent = 'Unit-weighted average occupancy at publicly managed NYCHA developments · annual snapshot';
