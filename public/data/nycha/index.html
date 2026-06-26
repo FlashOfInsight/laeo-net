@@ -142,7 +142,7 @@
           <div class="chart-title">EVICTION RATE BEFORE AND AFTER PACT CONVERSION</div>
           <div class="chart-expand-hint">Click to expand →</div>
         </div>
-        <div class="chart-subtitle">Execution rate per 1,000 units · by year relative to conversion date · all 28 PACT developments</div>
+        <div class="chart-subtitle">Execution rate per 1,000 units · by year relative to conversion date · all 29 PACT developments</div>
         <div class="chart-canvas-wrap"><canvas id="chart-conv-evictions"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
@@ -234,7 +234,7 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT cohort (pre + post conversion)</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
         </div>
-        <div class="chart-note">Tracks all 28 PACT developments with confirmed conversion dates as a single cohort — using pre-conversion incident data before each transfer date and post-conversion data after. Hover for ratio and conversion count. Type filter (above) applies to both NYPD charts. Source: <a href="https://data.cityofnewyork.us/d/qgea-i56i" target="_blank" rel="noopener">NYPD Complaint Data Historic</a> + <a href="https://data.cityofnewyork.us/d/5uac-w243" target="_blank" rel="noopener">Current YTD</a>.</div>
+        <div class="chart-note">Tracks all 29 PACT developments as a single cohort — using pre-conversion incident data before each transfer date and post-conversion data after. Hover for ratio and conversion count. Type filter (above) applies to both NYPD charts. Source: <a href="https://data.cityofnewyork.us/d/qgea-i56i" target="_blank" rel="noopener">NYPD Complaint Data Historic</a> + <a href="https://data.cityofnewyork.us/d/5uac-w243" target="_blank" rel="noopener">Current YTD</a>.</div>
       </div>
     </div>
   </section>
@@ -1672,7 +1672,7 @@ function openChartOverlay(type) {
     expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
   } else if (type === 'conv-evictions') {
     document.getElementById('cfo-title').textContent    = 'EVICTION RATE BEFORE AND AFTER PACT CONVERSION';
-    document.getElementById('cfo-subtitle').textContent = 'Execution rate per 1,000 units · by year relative to conversion date · all 28 PACT developments';
+    document.getElementById('cfo-subtitle').textContent = 'Execution rate per 1,000 units · by year relative to conversion date · all 29 PACT developments';
     document.getElementById('cfo-legend').innerHTML     = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#cccccc;"></div>Individual development</div>

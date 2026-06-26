@@ -454,8 +454,8 @@
       "rate_per_1k": 0.174
     },
     "2026-06": {
-      "executions": 36,
-      "rate_per_1k": 0.216
+      "executions": 39,
+      "rate_per_1k": 0.234
     }
   }
 }

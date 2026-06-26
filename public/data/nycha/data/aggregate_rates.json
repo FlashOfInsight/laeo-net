@@ -109,14 +109,14 @@
   },
   {
     "Year": "2026 (YTD)",
-    "PACT devs": 28,
-    "PACT units": "17,456",
-    "PACT exec": 83,
+    "PACT devs": 29,
+    "PACT units": "17,677",
+    "PACT exec": 84,
     "PACT /1k units": 4.75,
-    "PACT Complete /1k units": 8.47,
+    "PACT Complete /1k units": 8.61,
     "Non-PACT units": "166,759",
-    "Non-PACT exec": 193,
-    "Non-PACT /1k units": 1.16,
+    "Non-PACT exec": 196,
+    "Non-PACT /1k units": 1.18,
     "Ratio (PACT:non-PACT)": 7.3
   }
 ]
