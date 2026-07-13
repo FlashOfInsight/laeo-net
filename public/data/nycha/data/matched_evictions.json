@@ -1,0 +1,392 @@
+{
+  "data_floor": "2022-01-01",
+  "generated": "2026-07-13",
+  "note": "Matched pairs: 7 PACT developments (converting 2024-2025) each paired with a non-converting NYCHA control matched on pre-conversion REAC inspection score (\u00b14 pts) and unit count. 2022+ data floor avoids distortion from NYCHA's 2022 mass nonpayment case nullification.",
+  "pairs": [
+    {
+      "pact_dev": "SAMUEL (CITY)",
+      "pact_display": "Frederick Samuel (City)",
+      "pact_conv_date": "2024-09-26",
+      "pact_units": 664,
+      "pact_reac_score": 4,
+      "pact_reac_date": "2019-08-12",
+      "ctrl_dev": "GENERAL GRANT",
+      "ctrl_display": "General Grant",
+      "ctrl_units": 1940,
+      "ctrl_reac_score": 9,
+      "ctrl_reac_date": "2019-09-09",
+      "annual": [
+        {
+          "year": 2022,
+          "years_to_conv": -2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2023,
+          "years_to_conv": -1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2024,
+          "years_to_conv": 0,
+          "pact_executions": 2,
+          "pact_rate_per_1k": 3.01,
+          "ctrl_executions": 1,
+          "ctrl_rate_per_1k": 0.52
+        },
+        {
+          "year": 2025,
+          "years_to_conv": 1,
+          "pact_executions": 1,
+          "pact_rate_per_1k": 1.51,
+          "ctrl_executions": 2,
+          "ctrl_rate_per_1k": 1.03
+        },
+        {
+          "year": 2026,
+          "years_to_conv": 2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 5,
+          "ctrl_rate_per_1k": 2.58
+        }
+      ]
+    },
+    {
+      "pact_dev": "EASTCHESTER GARDENS",
+      "pact_display": "Eastchester Gardens",
+      "pact_conv_date": "2025-03-27",
+      "pact_units": 877,
+      "pact_reac_score": 7,
+      "pact_reac_date": "2019-07-09",
+      "ctrl_dev": "FREDERICK DOUGLASS & ADD.",
+      "ctrl_display": "Frederick Douglass & Add.",
+      "ctrl_units": 2193,
+      "ctrl_reac_score": 9,
+      "ctrl_reac_date": "2019-08-12",
+      "annual": [
+        {
+          "year": 2022,
+          "years_to_conv": -3,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2023,
+          "years_to_conv": -2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2024,
+          "years_to_conv": -1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2025,
+          "years_to_conv": 0,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 6,
+          "ctrl_rate_per_1k": 2.74
+        },
+        {
+          "year": 2026,
+          "years_to_conv": 1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 5,
+          "ctrl_rate_per_1k": 2.28
+        }
+      ]
+    },
+    {
+      "pact_dev": "MANHATTANVILLE",
+      "pact_display": "Manhattanville",
+      "pact_conv_date": "2024-12-12",
+      "pact_units": 1272,
+      "pact_reac_score": 14,
+      "pact_reac_date": "2019-08-05",
+      "ctrl_dev": "THROGGS NECK",
+      "ctrl_display": "Throggs Neck",
+      "ctrl_units": 1664,
+      "ctrl_reac_score": 15,
+      "ctrl_reac_date": "2019-07-22",
+      "annual": [
+        {
+          "year": 2022,
+          "years_to_conv": -2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2023,
+          "years_to_conv": -1,
+          "pact_executions": 2,
+          "pact_rate_per_1k": 1.57,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2024,
+          "years_to_conv": 0,
+          "pact_executions": 6,
+          "pact_rate_per_1k": 4.72,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2025,
+          "years_to_conv": 1,
+          "pact_executions": 1,
+          "pact_rate_per_1k": 0.79,
+          "ctrl_executions": 1,
+          "ctrl_rate_per_1k": 0.6
+        },
+        {
+          "year": 2026,
+          "years_to_conv": 2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 1,
+          "ctrl_rate_per_1k": 0.6
+        }
+      ]
+    },
+    {
+      "pact_dev": "SACK WERN",
+      "pact_display": "Sack Wern",
+      "pact_conv_date": "2024-06-26",
+      "pact_units": 413,
+      "pact_reac_score": 28,
+      "pact_reac_date": "2019-07-08",
+      "ctrl_dev": "SAMUEL GOMPERS",
+      "ctrl_display": "Samuel Gompers",
+      "ctrl_units": 711,
+      "ctrl_reac_score": 28,
+      "ctrl_reac_date": "2019-09-16",
+      "annual": [
+        {
+          "year": 2022,
+          "years_to_conv": -2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2023,
+          "years_to_conv": -1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 1,
+          "ctrl_rate_per_1k": 1.41
+        },
+        {
+          "year": 2024,
+          "years_to_conv": 0,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2025,
+          "years_to_conv": 1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2026,
+          "years_to_conv": 2,
+          "pact_executions": 3,
+          "pact_rate_per_1k": 7.26,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        }
+      ]
+    },
+    {
+      "pact_dev": "1010 EAST 178TH STREET",
+      "pact_display": "1010 East 178th Street",
+      "pact_conv_date": "2025-06-24",
+      "pact_units": 220,
+      "pact_reac_score": 31,
+      "pact_reac_date": "2018-10-02",
+      "ctrl_dev": "WEST FARMS ROAD",
+      "ctrl_display": "West Farms Road",
+      "ctrl_units": 252,
+      "ctrl_reac_score": 34,
+      "ctrl_reac_date": "2019-02-04",
+      "annual": [
+        {
+          "year": 2022,
+          "years_to_conv": -3,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2023,
+          "years_to_conv": -2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2024,
+          "years_to_conv": -1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2025,
+          "years_to_conv": 0,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2026,
+          "years_to_conv": 1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        }
+      ]
+    },
+    {
+      "pact_dev": "WEST BRIGHTON I",
+      "pact_display": "West Brighton I",
+      "pact_conv_date": "2024-06-26",
+      "pact_units": 490,
+      "pact_reac_score": 50,
+      "pact_reac_date": "2019-08-05",
+      "ctrl_dev": "GEN. CHARLES W. BERRY",
+      "ctrl_display": "Gen. Charles W. Berry",
+      "ctrl_units": 506,
+      "ctrl_reac_score": 51,
+      "ctrl_reac_date": "2019-02-04",
+      "annual": [
+        {
+          "year": 2022,
+          "years_to_conv": -2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2023,
+          "years_to_conv": -1,
+          "pact_executions": 2,
+          "pact_rate_per_1k": 4.08,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2024,
+          "years_to_conv": 0,
+          "pact_executions": 1,
+          "pact_rate_per_1k": 2.04,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2025,
+          "years_to_conv": 1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2026,
+          "years_to_conv": 2,
+          "pact_executions": 1,
+          "pact_rate_per_1k": 2.04,
+          "ctrl_executions": 2,
+          "ctrl_rate_per_1k": 3.95
+        }
+      ]
+    },
+    {
+      "pact_dev": "BOSTON SECOR",
+      "pact_display": "Boston Secor",
+      "pact_conv_date": "2024-09-26",
+      "pact_units": 538,
+      "pact_reac_score": 76,
+      "pact_reac_date": "2018-08-07",
+      "ctrl_dev": "LANGSTON HUGHES APTS",
+      "ctrl_display": "Langston Hughes Apts",
+      "ctrl_units": 475,
+      "ctrl_reac_score": 75,
+      "ctrl_reac_date": "2018-08-22",
+      "annual": [
+        {
+          "year": 2022,
+          "years_to_conv": -2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2023,
+          "years_to_conv": -1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2024,
+          "years_to_conv": 0,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 4,
+          "ctrl_rate_per_1k": 8.42
+        },
+        {
+          "year": 2025,
+          "years_to_conv": 1,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 0,
+          "ctrl_rate_per_1k": 0.0
+        },
+        {
+          "year": 2026,
+          "years_to_conv": 2,
+          "pact_executions": 0,
+          "pact_rate_per_1k": 0.0,
+          "ctrl_executions": 2,
+          "ctrl_rate_per_1k": 4.21
+        }
+      ]
+    }
+  ]
+}
