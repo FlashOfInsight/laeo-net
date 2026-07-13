@@ -1282,23 +1282,43 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
   const convLinePlugin = {
     id: 'matchedConvLine',
     afterDraw(ch) {
-      if (selectedIdx == null) return;
-      const p = pairs[selectedIdx];
-      const convYear = String(parseInt(p.pact_conv_date));
-      const xi = years.indexOf(convYear);
-      if (xi < 0) return;
-      // use first dataset's meta for x position
-      const meta = ch.getDatasetMeta(0);
-      const x = meta.data[xi]?.x;
-      if (x == null) return;
       const { ctx, chartArea: { top, bottom } } = ch;
-      ctx.save();
-      ctx.strokeStyle = '#888'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
-      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
-      ctx.font = "9px 'IBM Plex Mono',monospace"; ctx.fillStyle = '#AAAAAA';
-      ctx.setLineDash([]);
-      ctx.fillText('conversion', x + 4, top + 12);
-      ctx.restore();
+      const meta = ch.getDatasetMeta(0);
+      if (selectedIdx != null) {
+        // Single pair selected: prominent line at that pair's conversion year
+        const p = pairs[selectedIdx];
+        const convYear = String(parseInt(p.pact_conv_date));
+        const xi = years.indexOf(convYear);
+        if (xi < 0) return;
+        const x = meta.data[xi]?.x;
+        if (x == null) return;
+        ctx.save();
+        ctx.strokeStyle = '#888'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+        ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+        ctx.font = "9px 'IBM Plex Mono',monospace"; ctx.fillStyle = '#AAAAAA';
+        ctx.setLineDash([]);
+        ctx.fillText('conversion', x + 4, top + 12);
+        ctx.restore();
+      } else {
+        // All pairs: draw a faint line at each unique conversion year
+        const seen = new Set();
+        pairs.forEach(p => {
+          const convYear = String(parseInt(p.pact_conv_date));
+          if (seen.has(convYear)) return;
+          seen.add(convYear);
+          const xi = years.indexOf(convYear);
+          if (xi < 0) return;
+          const x = meta.data[xi]?.x;
+          if (x == null) return;
+          ctx.save();
+          ctx.strokeStyle = 'rgba(140,140,140,0.45)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+          ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+          ctx.font = "8px 'IBM Plex Mono',monospace"; ctx.fillStyle = '#BBBBBB';
+          ctx.setLineDash([]);
+          ctx.fillText(convYear + ' conv.', x + 3, top + 12);
+          ctx.restore();
+        });
+      }
     }
   };
 
