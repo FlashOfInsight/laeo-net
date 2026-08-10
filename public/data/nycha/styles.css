@@ -142,6 +142,30 @@ main {
   text-transform: uppercase;
 }
 
+/* ── Context note ───────────────────────────────────────────────────────── */
+.context-note {
+  max-width: 680px;
+  border-left: 3px solid var(--border);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+.context-note-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--ink-light);
+  text-transform: uppercase;
+  margin-bottom: var(--space-xs);
+}
+.context-note p {
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  line-height: 1.7;
+}
+.context-note a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--border-light); text-underline-offset: 3px; }
+.context-note a:hover { text-decoration-color: var(--ink); }
+
 /* ── Page nav ────────────────────────────────────────────────────────────── */
 .page-nav-wrap {
   border-bottom: 1px solid var(--border);
