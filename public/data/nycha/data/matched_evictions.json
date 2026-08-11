@@ -1,6 +1,6 @@
 {
   "data_floor": "2022-01-01",
-  "generated": "2026-07-13",
+  "generated": "2026-08-10",
   "note": "Matched pairs: 7 PACT developments (converting 2024-2025) each paired with a non-converting NYCHA control matched on pre-conversion REAC inspection score (\u00b14 pts) and unit count. 2022+ data floor avoids distortion from NYCHA's 2022 mass nonpayment case nullification.",
   "pairs": [
     {
@@ -53,8 +53,8 @@
           "years_to_conv": 2,
           "pact_executions": 0,
           "pact_rate_per_1k": 0.0,
-          "ctrl_executions": 5,
-          "ctrl_rate_per_1k": 2.58
+          "ctrl_executions": 6,
+          "ctrl_rate_per_1k": 3.09
         }
       ]
     },
@@ -108,8 +108,8 @@
           "years_to_conv": 1,
           "pact_executions": 0,
           "pact_rate_per_1k": 0.0,
-          "ctrl_executions": 5,
-          "ctrl_rate_per_1k": 2.28
+          "ctrl_executions": 6,
+          "ctrl_rate_per_1k": 2.74
         }
       ]
     },
@@ -326,10 +326,10 @@
         {
           "year": 2026,
           "years_to_conv": 2,
-          "pact_executions": 1,
-          "pact_rate_per_1k": 2.04,
-          "ctrl_executions": 2,
-          "ctrl_rate_per_1k": 3.95
+          "pact_executions": 3,
+          "pact_rate_per_1k": 6.12,
+          "ctrl_executions": 3,
+          "ctrl_rate_per_1k": 5.93
         }
       ]
     },
@@ -383,8 +383,8 @@
           "years_to_conv": 2,
           "pact_executions": 0,
           "pact_rate_per_1k": 0.0,
-          "ctrl_executions": 2,
-          "ctrl_rate_per_1k": 4.21
+          "ctrl_executions": 3,
+          "ctrl_rate_per_1k": 6.32
         }
       ]
     }

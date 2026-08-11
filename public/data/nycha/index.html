@@ -194,16 +194,16 @@
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-pooled" id="idx-matched-pooled">
         <div class="chart-card-header">
-          <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED (2022+)</div>
+          <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED, BY YEAR RELATIVE TO CONVERSION</div>
           <div class="chart-expand-hint">Click to expand →</div>
         </div>
-        <div class="chart-subtitle">All 7 PACT developments pooled into one line vs. all 7 matched controls pooled into another · per 1,000 units</div>
+        <div class="chart-subtitle">All 7 PACT developments and their matched controls, aligned to each pair's own conversion year (0) · per 1,000 units</div>
         <div class="chart-canvas-wrap"><canvas id="chart-matched-pooled"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT (pooled, 7 devs)</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched control (pooled, 7 devs)</div>
         </div>
-        <div class="chart-note">Same 7 matched pairs as "Evictions in Matched Control vs. PACT," aggregated: rate = total executions across all 7 / total units across all 7, per group, per year — rather than shown pair by pair. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
+        <div class="chart-note">Same 7 matched pairs as "Evictions in Matched Control vs. PACT," but re-indexed so each pair shares one axis: offset 0 = the year that specific PACT development converted. The control's line is its own real eviction data — it never converts — relabeled onto its partner's conversion year purely so the two are comparable at the same relative time. Year 0 is a partial year for most pairs (conversion rarely falls Jan 1). Open circles = offset includes annualized year-to-date 2026 data. Hover for exact n (pairs) contributing at each offset — thinnest at the tails (n=2 at −3, n=5 at +2), full n=7 from −2 to +1. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy" id="idx-occupancy">
@@ -1452,33 +1452,101 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
 
 function renderMatchedPooledChart(canvas) {
   if (!canvas || !(matchedEvictions.pairs || []).length) return;
-  const pairs     = matchedEvictions.pairs;
-  const years     = pairs[0].annual.map(d => String(d.year));
-  const pactUnits = pairs.reduce((s, p) => s + p.pact_units, 0);
-  const ctrlUnits = pairs.reduce((s, p) => s + p.ctrl_units, 0);
-  const pactExecs = years.map((_, i) => pairs.reduce((s, p) => s + p.annual[i].pact_executions, 0));
-  const ctrlExecs = years.map((_, i) => pairs.reduce((s, p) => s + p.annual[i].ctrl_executions, 0));
-  const pactRates = pactExecs.map(n => pactUnits ? +(n / pactUnits * 1000).toFixed(2) : null);
-  const ctrlRates = ctrlExecs.map(n => ctrlUnits ? +(n / ctrlUnits * 1000).toFixed(2) : null);
+  const pairs   = matchedEvictions.pairs;
+  const nowYear = new Date().getFullYear();
+
+  // Annualize the current (partial) year before pooling, so it doesn't read
+  // as a real decline relative to complete prior years.
+  const startOfYear     = new Date(nowYear, 0, 1);
+  const startOfNextYear = new Date(nowYear + 1, 0, 1);
+  const daysInYear   = Math.round((startOfNextYear - startOfYear) / 86400000);
+  const daysElapsed  = Math.round((new Date() - startOfYear) / 86400000) + 1;
+  const ytdFactor    = daysElapsed > 0 ? daysInYear / daysElapsed : 1;
+
+  // Re-key every pair's annual rows by years_to_conv (each pair's own
+  // conversion year = offset 0) instead of calendar year, so all 7 PACT
+  // lines — and their controls, which never convert but borrow the same
+  // offset — align on one shared "distance from conversion" axis.
+  const byOffset = new Map();
+  pairs.forEach(p => {
+    p.annual.forEach(a => {
+      const off = a.years_to_conv;
+      if (!byOffset.has(off)) byOffset.set(off, { pactExecs: 0, pactUnits: 0, ctrlExecs: 0, ctrlUnits: 0, n: 0, ytd: false });
+      const b = byOffset.get(off);
+      const isYtd = a.year === nowYear;
+      const factor = isYtd ? ytdFactor : 1;
+      b.pactExecs += a.pact_executions * factor;
+      b.ctrlExecs += a.ctrl_executions * factor;
+      b.pactUnits += p.pact_units;
+      b.ctrlUnits += p.ctrl_units;
+      b.n += 1;
+      if (isYtd) b.ytd = true;
+    });
+  });
+
+  const offsets = [...byOffset.keys()].sort((x, y) => x - y);
+  const labels  = offsets.map(o => (o > 0 ? '+' : '') + o);
+  const pactRates = offsets.map(o => { const b = byOffset.get(o); return b.pactUnits ? +(b.pactExecs / b.pactUnits * 1000).toFixed(2) : null; });
+  const ctrlRates = offsets.map(o => { const b = byOffset.get(o); return b.ctrlUnits ? +(b.ctrlExecs / b.ctrlUnits * 1000).toFixed(2) : null; });
+  // Open circles (transparent fill) flag any offset where at least one
+  // pair's contribution is annualized YTD data rather than a complete
+  // calendar year.
+  const pactPointBg = offsets.map(o => byOffset.get(o).ytd ? 'transparent' : '#8B3A3D');
+  const ctrlPointBg = offsets.map(o => byOffset.get(o).ytd ? 'transparent' : '#888888');
+
+  const zeroLinePlugin = {
+    id: 'matchedPooledZeroLine',
+    afterDraw(chart) {
+      const idx = offsets.indexOf(0);
+      if (idx < 0) return;
+      const meta = chart.getDatasetMeta(0);
+      const x = meta.data[idx]?.x;
+      if (x == null) return;
+      const { ctx, chartArea: { top, bottom } } = chart;
+      ctx.save();
+      ctx.strokeStyle = '#888888'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+      ctx.font = "9px 'IBM Plex Mono',monospace"; ctx.fillStyle = '#AAAAAA';
+      ctx.fillText('conversion', x + 4, top + 12);
+      ctx.restore();
+    }
+  };
 
   return new Chart(canvas, {
     type: 'line',
-    data: { labels: years, datasets: [
-      { label: 'PACT (pooled, 7 devs)',            data: pactRates, ...LINE('#8B3A3D') },
-      { label: 'Matched control (pooled, 7 devs)', data: ctrlRates, ...LINE('#888888', true) },
+    data: { labels, datasets: [
+      { label: 'PACT (pooled, 7 devs)', data: pactRates,
+        ...LINE('#8B3A3D'), pointBackgroundColor: pactPointBg, pointBorderWidth: 2 },
+      { label: 'Matched control (pooled, 7 devs)', data: ctrlRates,
+        ...LINE('#888888', true), pointBackgroundColor: ctrlPointBg, pointBorderWidth: 2 },
     ]},
     options: {
       ...CHART_OPTS,
       plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
         callbacks: {
+          title: items => {
+            const o = offsets[items[0].dataIndex];
+            return o < 0 ? `Year ${o} before conversion`
+                         : o === 0 ? 'Year 0 · conversion year'
+                         : `Year +${o} after conversion`;
+          },
           label: c => {
-            const execs = c.datasetIndex === 0 ? pactExecs[c.dataIndex] : ctrlExecs[c.dataIndex];
-            const units = c.datasetIndex === 0 ? pactUnits : ctrlUnits;
-            return ` ${c.dataset.label}: ${c.parsed.y ?? '—'}/1k (${execs} evictions · ${units.toLocaleString()} units)`;
+            const o = offsets[c.dataIndex];
+            const b = byOffset.get(o);
+            const isPact = c.datasetIndex === 0;
+            const execs  = isPact ? b.pactExecs : b.ctrlExecs;
+            const units  = isPact ? b.pactUnits : b.ctrlUnits;
+            const r      = c.parsed.y != null ? c.parsed.y.toFixed(2) : '—';
+            const ytdTag = b.ytd ? ', incl. annualized YTD' : '';
+            return ` ${c.dataset.label}: ${r}/1k (${execs.toFixed(1)} evictions · ${units.toLocaleString()} units · ${b.n} pairs${ytdTag})`;
           }
         }
+      }},
+      scales: { ...CHART_OPTS.scales, y: { ...CHART_OPTS.scales.y,
+        ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '/1k' }
       }}
-    }
+    },
+    plugins: [zeroLinePlugin],
   });
 }
 
@@ -2007,8 +2075,8 @@ function openChartOverlay(type) {
       }
     };
   } else if (type === 'matched-pooled') {
-    document.getElementById('cfo-title').textContent    = 'EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED (2022+)';
-    document.getElementById('cfo-subtitle').textContent = 'All 7 PACT developments pooled into one line vs. all 7 matched controls pooled into another · per 1,000 units';
+    document.getElementById('cfo-title').textContent    = 'EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED, BY YEAR RELATIVE TO CONVERSION';
+    document.getElementById('cfo-subtitle').textContent = "All 7 PACT developments and their matched controls, aligned to each pair's own conversion year (0) · per 1,000 units";
     document.getElementById('cfo-legend').innerHTML = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D;"></div>PACT (pooled, 7 devs)</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched control (pooled, 7 devs)</div>`;
