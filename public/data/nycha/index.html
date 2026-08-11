@@ -60,6 +60,7 @@
       <a href="#idx-case-type" class="page-index-link">Eviction Type</a> ·
       <a href="#idx-conv-evictions" class="page-index-link">Before/After Conversion</a> ·
       <a href="#idx-matched-evictions" class="page-index-link">Evictions in Matched Control vs. PACT</a> ·
+      <a href="#idx-matched-pooled" class="page-index-link">Matched Control vs. PACT (Pooled)</a> ·
       <a href="#idx-occupancy" class="page-index-link">Non-PACT NYCHA Occupancy Rate</a> ·
       <a href="#idx-rodent" class="page-index-link">Rodent Inspections</a> ·
       <a href="#idx-complaints" class="page-index-link">HPD 311 Complaints</a> ·
@@ -189,6 +190,20 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched non-PACT control</div>
         </div>
         <div class="chart-note">Controls matched on pre-conversion REAC inspection score (±4 pts) then unit count. 2022 data floor avoids distortion from NYCHA's mass nonpayment case nullification. Dashed vertical = conversion year. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
+      </div>
+
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-pooled" id="idx-matched-pooled">
+        <div class="chart-card-header">
+          <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED (2022+)</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">All 7 PACT developments pooled into one line vs. all 7 matched controls pooled into another · per 1,000 units</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-matched-pooled"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT (pooled, 7 devs)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched control (pooled, 7 devs)</div>
+        </div>
+        <div class="chart-note">Same 7 matched pairs as "Evictions in Matched Control vs. PACT," aggregated: rate = total executions across all 7 / total units across all 7, per group, per year — rather than shown pair by pair. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy" id="idx-occupancy">
@@ -1137,6 +1152,7 @@ function buildCharts() {
 
   renderConvEvictionsChart(document.getElementById('chart-conv-evictions'));
   renderMatchedEvictionsChart(document.getElementById('chart-matched-evictions'));
+  renderMatchedPooledChart(document.getElementById('chart-matched-pooled'));
   renderOccupancyChart(document.getElementById('chart-occupancy'));
   renderComplaintsAggChart(document.getElementById('chart-complaints'));
   renderPermitsAggChart(document.getElementById('chart-permits'));
@@ -1432,6 +1448,38 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
   };
 
   return chart;
+}
+
+function renderMatchedPooledChart(canvas) {
+  if (!canvas || !(matchedEvictions.pairs || []).length) return;
+  const pairs     = matchedEvictions.pairs;
+  const years     = pairs[0].annual.map(d => String(d.year));
+  const pactUnits = pairs.reduce((s, p) => s + p.pact_units, 0);
+  const ctrlUnits = pairs.reduce((s, p) => s + p.ctrl_units, 0);
+  const pactExecs = years.map((_, i) => pairs.reduce((s, p) => s + p.annual[i].pact_executions, 0));
+  const ctrlExecs = years.map((_, i) => pairs.reduce((s, p) => s + p.annual[i].ctrl_executions, 0));
+  const pactRates = pactExecs.map(n => pactUnits ? +(n / pactUnits * 1000).toFixed(2) : null);
+  const ctrlRates = ctrlExecs.map(n => ctrlUnits ? +(n / ctrlUnits * 1000).toFixed(2) : null);
+
+  return new Chart(canvas, {
+    type: 'line',
+    data: { labels: years, datasets: [
+      { label: 'PACT (pooled, 7 devs)',            data: pactRates, ...LINE('#8B3A3D') },
+      { label: 'Matched control (pooled, 7 devs)', data: ctrlRates, ...LINE('#888888', true) },
+    ]},
+    options: {
+      ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+        callbacks: {
+          label: c => {
+            const execs = c.datasetIndex === 0 ? pactExecs[c.dataIndex] : ctrlExecs[c.dataIndex];
+            const units = c.datasetIndex === 0 ? pactUnits : ctrlUnits;
+            return ` ${c.dataset.label}: ${c.parsed.y ?? '—'}/1k (${execs} evictions · ${units.toLocaleString()} units)`;
+          }
+        }
+      }}
+    }
+  });
 }
 
 function renderOccupancyChart(canvas) {
@@ -1879,7 +1927,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy' || type === 'conv-evictions' || type === 'matched-evictions' || type === 'case-type') ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy' || type === 'conv-evictions' || type === 'matched-evictions' || type === 'matched-pooled' || type === 'case-type') ? 'none' : '';
   const nypdTypeEl = document.getElementById('cfo-nypd-type');
   nypdTypeEl.style.display = (type === 'nypd-conv' || type === 'nypd-cohort') ? '' : 'none';
   const devSelEl = document.getElementById('cfo-dev-select');
@@ -1958,6 +2006,14 @@ function openChartOverlay(type) {
           : '7 PACT developments (converting 2024–2025) vs. matched non-PACT NYCHA controls · per 1,000 units';
       }
     };
+  } else if (type === 'matched-pooled') {
+    document.getElementById('cfo-title').textContent    = 'EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED (2022+)';
+    document.getElementById('cfo-subtitle').textContent = 'All 7 PACT developments pooled into one line vs. all 7 matched controls pooled into another · per 1,000 units';
+    document.getElementById('cfo-legend').innerHTML = `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D;"></div>PACT (pooled, 7 devs)</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched control (pooled, 7 devs)</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderMatchedPooledChart(document.getElementById('cfo-canvas'));
   } else if (type === 'case-type') {
     document.getElementById('cfo-title').textContent    = 'EVICTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)';
     document.getElementById('cfo-subtitle').textContent = 'Share of matched evictions by case type · OCA docket-number match';
