@@ -8,8 +8,15 @@
   --border:       #111111;
   --border-light: #DDDDCC;
   --hover-bg:     #EEEEE8;
-  --pact-color:   #111111;
-  --non-pact-color: #888888;
+  /* Categorical accent palette — validated with dataviz skill's validate_palette.js
+     (all-pairs mode, since the map uses these as scatter dots): maroon/blue/gray
+     clear CVD separation (worst pair ΔE 12.2 protan / 15.1 normal-vision) and
+     ≥3:1 contrast on the --bg surface. Gray is deliberately achromatic (Non-PACT
+     reads as the neutral/baseline group); maroon and blue carry the hue-identity
+     work for the two PACT states. */
+  --pact-color:     #8B3A3D; /* maroon — PACT (general / Construction Complete) */
+  --pact-uc-color:  #2F6DA3; /* dark blue — PACT Under Construction */
+  --non-pact-color: #888888; /* gray — Non-PACT NYCHA (baseline) */
   --no-data-color: #CCCCBB;
   --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
@@ -612,8 +619,8 @@ button.inline-tab-link:hover { text-decoration-color: var(--ink); }
 }
 
 /* ── Legend dots — PACT status variants ──────────────────────────────────── */
-.legend-dot.pact-complete { background: #111111; }
-.legend-dot.pact-uc       { background: #888888; }
+.legend-dot.pact-complete { background: var(--pact-color); }
+.legend-dot.pact-uc       { background: var(--pact-uc-color); }
 
 /* ── Divider ─────────────────────────────────────────────────────────────── */
 .divider {

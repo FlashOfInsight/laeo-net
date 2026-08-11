@@ -147,8 +147,8 @@
         <div class="chart-subtitle">Marshal-executed evictions / residential units × 1,000</div>
         <div class="chart-canvas-wrap"><canvas id="chart-rate"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT (all developments)</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT (all developments)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;"></div>Non-PACT NYCHA</div>
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (numerator); NYC MapPLUTO + NYCHA Development Data Book (denominator).</div>
       </div>
@@ -160,8 +160,8 @@
         <div class="chart-subtitle">Share of matched evictions by case type · OCA docket-number match</div>
         <div class="chart-canvas-wrap"><canvas id="chart-case-type"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Non-Payment</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Holdover</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>Non-Payment</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#2F6DA3;"></div>Holdover</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#DDDDCC;"></div>Other</div>
         </div>
         <div class="chart-note">Data floor 2022 — OCA docket-level case classification has zero coverage before then. The classification lookup is also a static snapshot from 2026-05-01, so more recent evictions are undercounted as unmatched until it's rebuilt: 74% of PACT and 87% of non-PACT 2022+ evictions currently matched. Unmatched evictions are excluded from the percentages shown. See Step 7 in Methodology. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> joined to HDC OCA housing court records.</div>
@@ -175,7 +175,7 @@
         <div class="chart-subtitle">Eviction rate per 1,000 units · by year relative to conversion date · all 29 PACT developments</div>
         <div class="chart-canvas-wrap"><canvas id="chart-conv-evictions"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>Pooled average (n varies)</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#cccccc;"></div>Individual development</div>
         </div>
         <div class="chart-note">Year 0 = conversion year (partial year for most developments). Use the dropdown in the chart header to highlight an individual development's trajectory. Pooled rate is unit-weighted; n varies as different developments contribute at each offset — extreme offsets reflect only the most recently converted sites. Open circles on development lines mark calendar years 2020–2021 (NYC COVID eviction moratorium); rates at those points are artificially suppressed — because each development converted in a different year, the moratorium falls at a different x-position on each line. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
@@ -189,8 +189,8 @@
         <div class="chart-subtitle">7 PACT developments (converting 2024–2025) vs. matched non-PACT NYCHA controls · per 1,000 units</div>
         <div class="chart-canvas-wrap"><canvas id="chart-matched-evictions"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT development</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Matched non-PACT control</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT development</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched non-PACT control</div>
         </div>
         <div class="chart-note">Controls matched on pre-conversion REAC inspection score (±4 pts) then unit count. 2022 data floor avoids distortion from NYCHA's mass nonpayment case nullification. Dashed vertical = conversion year. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
@@ -203,7 +203,7 @@
         <div class="chart-subtitle">Unit-weighted average occupancy at publicly managed NYCHA developments · annual snapshot</div>
         <div class="chart-canvas-wrap"><canvas id="chart-occupancy"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA public housing</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;"></div>Non-PACT NYCHA public housing</div>
         </div>
         <div class="chart-note">Source: <a href="https://www.huduser.gov/portal/datasets/assthsg.html#data_2009-2025" target="_blank" rel="noopener">HUD Picture of Subsidized Households</a>, 2015–2025. Unit-weighted average occupancy across all NYC public housing projects. PACT-converted buildings leave HUD public housing records upon RAD transfer, so later years reflect an increasingly smaller non-PACT universe. N = 130–160 developments per year.</div>
       </div>
@@ -216,8 +216,8 @@
         <div class="chart-subtitle">% of DOHMH inspections failing for rat activity · annual</div>
         <div class="chart-canvas-wrap"><canvas id="chart-rodent"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT Construction Complete</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT Construction Complete</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;"></div>Non-PACT NYCHA</div>
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/p937-wjvj" target="_blank" rel="noopener">DOHMH Rodent Inspection</a> (NYC Open Data).</div>
       </div>
@@ -229,7 +229,7 @@
         <div class="chart-subtitle">HPD housing complaints per 1,000 units · by years since conversion · 23 developments</div>
         <div class="chart-canvas-wrap"><canvas id="chart-complaints"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT avg (all developments)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT avg (all developments)</div>
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/erm2-nwe9" target="_blank" rel="noopener">NYC 311 Service Requests</a> (HPD agency only, 2020–present). Year 0 = conversion year; n in parentheses = developments contributing to each point.</div>
       </div>
@@ -241,7 +241,7 @@
         <div class="chart-subtitle">DOB-declared construction costs per unit · by years since conversion · all PACT developments</div>
         <div class="chart-canvas-wrap"><canvas id="chart-permits"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT avg (all developments)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT avg (all developments)</div>
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/w9ak-ipjd" target="_blank" rel="noopener">NYC DOB Job Application Filings</a>. Declared costs are owner-estimated construction value filed with DOB; actual expenditures may differ. Year 0 = conversion year; n = developments contributing.</div>
       </div>
@@ -261,8 +261,8 @@
         <div class="chart-subtitle">Pooled across PACT developments · per 1,000 units · years relative to PACT transfer date</div>
         <div class="chart-canvas-wrap"><canvas id="chart-nypd-conv"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div style="width:12px;height:12px;background:rgba(160,160,160,0.7);display:inline-block;margin-right:6px;border-radius:2px;"></div>Pre-conversion</div>
-          <div class="chart-legend-item"><div style="width:12px;height:12px;background:rgba(30,30,30,0.85);display:inline-block;margin-right:6px;border-radius:2px;"></div>Post-conversion</div>
+          <div class="chart-legend-item"><div style="width:12px;height:12px;background:rgba(136,136,136,0.7);display:inline-block;margin-right:6px;border-radius:2px;"></div>Pre-conversion</div>
+          <div class="chart-legend-item"><div style="width:12px;height:12px;background:rgba(139,58,61,0.85);display:inline-block;margin-right:6px;border-radius:2px;"></div>Post-conversion</div>
         </div>
         <div class="chart-note">Error bars: Poisson 95% CI (±1.96√n / units × 1,000). Pre-conversion data covers 5 years before each development's PACT transfer date. Source: <a href="https://data.cityofnewyork.us/d/qgea-i56i" target="_blank" rel="noopener">NYPD Complaint Data Historic</a> + <a href="https://data.cityofnewyork.us/d/5uac-w243" target="_blank" rel="noopener">Current YTD</a>.</div>
       </div>
@@ -275,8 +275,8 @@
         <div class="chart-subtitle">All PACT-destined developments tracked from 2015 · pre- and post-conversion combined · per 1,000 units</div>
         <div class="chart-canvas-wrap"><canvas id="chart-nypd-cohort"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT cohort (pre + post conversion)</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT cohort (pre + post conversion)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;"></div>Non-PACT NYCHA</div>
         </div>
         <div class="chart-note">Tracks all 29 PACT developments as a single cohort — using pre-conversion incident data before each transfer date and post-conversion data after. Hover for ratio and conversion count. Type filter (above) applies to both NYPD charts. Source: <a href="https://data.cityofnewyork.us/d/qgea-i56i" target="_blank" rel="noopener">NYPD Complaint Data Historic</a> + <a href="https://data.cityofnewyork.us/d/5uac-w243" target="_blank" rel="noopener">Current YTD</a>.</div>
       </div>
@@ -289,8 +289,8 @@
         <div class="chart-subtitle">Raw count of marshal-executed evictions by year</div>
         <div class="chart-canvas-wrap"><canvas id="chart-count"></canvas></div>
         <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT (all developments)</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT (all developments)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;"></div>Non-PACT NYCHA</div>
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
@@ -815,11 +815,11 @@ function initMap() {
     map.addSource('pact-complete', { type: 'geojson', data: fc(isComplete) });
 
     map.addLayer({ id: 'non-pact-layer', type: 'circle', source: 'non-pact',
-      paint: { 'circle-radius': 5, 'circle-color': '#BBBBAA', 'circle-stroke-width': 0.5, 'circle-stroke-color': '#999988', 'circle-opacity': 0.7 }});
+      paint: { 'circle-radius': 5, 'circle-color': '#888888', 'circle-stroke-width': 0.5, 'circle-stroke-color': '#666666', 'circle-opacity': 0.7 }});
     map.addLayer({ id: 'pact-uc-layer', type: 'circle', source: 'pact-uc',
-      paint: { 'circle-radius': ['interpolate',['linear'],['zoom'],9,6,13,10], 'circle-color': '#888888', 'circle-stroke-width': 2, 'circle-stroke-color': '#F7F6F2' }});
+      paint: { 'circle-radius': ['interpolate',['linear'],['zoom'],9,6,13,10], 'circle-color': '#2F6DA3', 'circle-stroke-width': 2, 'circle-stroke-color': '#F7F6F2' }});
     map.addLayer({ id: 'pact-complete-layer', type: 'circle', source: 'pact-complete',
-      paint: { 'circle-radius': ['interpolate',['linear'],['zoom'],9,6,13,10], 'circle-color': '#111111', 'circle-stroke-width': 2, 'circle-stroke-color': '#F7F6F2' }});
+      paint: { 'circle-radius': ['interpolate',['linear'],['zoom'],9,6,13,10], 'circle-color': '#8B3A3D', 'circle-stroke-width': 2, 'circle-stroke-color': '#F7F6F2' }});
 
     const tooltip = document.getElementById('tooltip');
 
@@ -890,7 +890,7 @@ function buildMonthlyBarChart(canvasId, monthly, convDate, labelSuffix) {
     labels.push(key);
     counts.push(monthly[key] || 0);
     const isPost = convD ? cur >= convD : true;
-    bgColors.push(isPost ? '#111111' : '#BBBBBB');
+    bgColors.push(isPost ? '#8B3A3D' : '#BBBBBB');
     cur.setMonth(cur.getMonth() + 1);
   }
   const convLinePlugin = {
@@ -903,7 +903,7 @@ function buildMonthlyBarChart(canvasId, monthly, convDate, labelSuffix) {
       const x = chart.getDatasetMeta(0).data[idx]?.x;
       if (x == null) return;
       ctx.save();
-      ctx.strokeStyle = '#111111'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = '#888888'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
       ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
       ctx.restore();
     }
@@ -1110,7 +1110,7 @@ function buildCharts() {
   const ctrlCounts = aggregateRates.map(r => r['Non-PACT exec']);
 
   new Chart(document.getElementById('chart-rate'), { type:'line', data:{labels,
-    datasets:[{label:'PACT (all developments)',data:pactRates,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlRates,...LINE('#999999',true)}]},
+    datasets:[{label:'PACT (all developments)',data:pactRates,...LINE('#8B3A3D')},{label:'Non-PACT NYCHA',data:ctrlRates,...LINE('#888888',true)}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
       callbacks:{label:c=>{
         const v = c.parsed.y;
@@ -1123,7 +1123,7 @@ function buildCharts() {
       }}}}}});
 
   new Chart(document.getElementById('chart-count'), { type:'line', data:{labels,
-    datasets:[{label:'PACT (all developments)',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
+    datasets:[{label:'PACT (all developments)',data:pactCounts,...LINE('#8B3A3D')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#888888')}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
       callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} evictions`}}}}});
 
@@ -1131,7 +1131,7 @@ function buildCharts() {
   const rodentComplete = rodentAggregate.map(r => r.pact_complete.fail_rate_pct);
   const rodentCtrl     = rodentAggregate.map(r => r.non_pact.fail_rate_pct);
   new Chart(document.getElementById('chart-rodent'), { type:'line', data:{labels: rodentLabels,
-    datasets:[{label:'PACT Construction Complete',data:rodentComplete,...LINE('#111111')},{label:'Non-PACT NYCHA',data:rodentCtrl,...LINE('#999999',true)}]},
+    datasets:[{label:'PACT Construction Complete',data:rodentComplete,...LINE('#8B3A3D')},{label:'Non-PACT NYCHA',data:rodentCtrl,...LINE('#888888',true)}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
       callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(1)+'%' : '—'} fail rate`}}},
       scales:{...CHART_OPTS.scales,y:{...CHART_OPTS.scales.y,
@@ -1173,7 +1173,7 @@ function renderConvEvictionsChart(canvas) {
   const pooledDataset = {
     label: 'Pooled avg',
     data: pooled.map(d => d.rate),
-    ...LINE('#111111'),
+    ...LINE('#8B3A3D'),
     pointRadius: 3,
     pointHoverRadius: 5,
     tension: 0.3,
@@ -1318,8 +1318,8 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
   const datasets = [];
   pairs.forEach((p, i) => {
     const dim = hasSel && i !== selectedIdx;
-    const pactColor = dim ? 'rgba(50,50,50,0.12)' : '#111111';
-    const ctrlColor = dim ? 'rgba(150,150,150,0.12)' : '#999999';
+    const pactColor = dim ? 'rgba(139,58,61,0.15)' : '#8B3A3D';
+    const ctrlColor = dim ? 'rgba(136,136,136,0.15)' : '#888888';
     const pactW = (!hasSel || i === selectedIdx) ? 2 : 1;
     const ctrlW = pactW;
     datasets.push({
@@ -1423,8 +1423,8 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
       const dim2 = hasSel2 && pi !== idx;
       const isPact = ds._side === 'pact';
       ds.borderColor = dim2
-        ? (isPact ? 'rgba(50,50,50,0.12)' : 'rgba(150,150,150,0.12)')
-        : (isPact ? '#111111' : '#999999');
+        ? (isPact ? 'rgba(139,58,61,0.15)' : 'rgba(136,136,136,0.15)')
+        : (isPact ? '#8B3A3D' : '#888888');
       ds.borderWidth  = (!hasSel2 || pi === idx) ? 2 : 1;
       ds.pointRadius  = (hasSel2 && pi === idx) ? 4 : 2;
       ds.pointBackgroundColor = ds.borderColor;
@@ -1442,7 +1442,7 @@ function renderOccupancyChart(canvas) {
   const vals   = hudOccupancy.map(d => d.pct_occupied);
   return new Chart(canvas, {
     type: 'line',
-    data: { labels, datasets: [{ label: 'Non-PACT NYCHA', data: vals, ...LINE('#999999') }] },
+    data: { labels, datasets: [{ label: 'Non-PACT NYCHA', data: vals, ...LINE('#888888') }] },
     options: {
       ...CHART_OPTS,
       plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
@@ -1471,8 +1471,8 @@ function renderCaseTypeChart(canvas) {
   return new Chart(canvas, {
     type: 'bar',
     data: { labels, datasets: [
-      { label: 'Non-Payment', data: nonpayVals,   backgroundColor: '#111111', borderWidth: 0, stack: 's' },
-      { label: 'Holdover',    data: holdoverVals, backgroundColor: '#999999', borderWidth: 0, stack: 's' },
+      { label: 'Non-Payment', data: nonpayVals,   backgroundColor: '#8B3A3D', borderWidth: 0, stack: 's' },
+      { label: 'Holdover',    data: holdoverVals, backgroundColor: '#2F6DA3', borderWidth: 0, stack: 's' },
       { label: 'Other',       data: otherVals,    backgroundColor: '#DDDDCC', borderWidth: 0, stack: 's' },
     ]},
     options: {
@@ -1500,7 +1500,7 @@ function renderComplaintsAggChart(canvas) {
   const devCounts = complaintsAgg.map(d => d.dev_count);
   return new Chart(canvas, {
     type: 'line',
-    data: { labels, datasets: [{ label:'PACT avg', data: vals, ...LINE('#111111') }] },
+    data: { labels, datasets: [{ label:'PACT avg', data: vals, ...LINE('#8B3A3D') }] },
     options: {
       ...CHART_OPTS,
       plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
@@ -1524,7 +1524,7 @@ function renderPermitsAggChart(canvas) {
   const devCounts = permitsAgg.map(d => d.dev_count);
   return new Chart(canvas, {
     type: 'bar',
-    data: { labels, datasets: [{ label:'PACT avg', data: vals, backgroundColor: '#111111', borderWidth: 0 }] },
+    data: { labels, datasets: [{ label:'PACT avg', data: vals, backgroundColor: '#8B3A3D', borderWidth: 0 }] },
     options: {
       ...CHART_OPTS,
       plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
@@ -1562,16 +1562,16 @@ function renderNypdCohortChart(canvas) {
   const isYtd   = rows[lastIdx]?.ytd_days != null;
   const pactPointStyles = rows.map((_, i) => (isYtd && i === lastIdx) ? 'circle' : 'circle');
   const pactPointRadii  = rows.map((_, i) => (isYtd && i === lastIdx) ? 4 : 3);
-  const pactBgColors    = rows.map((_, i) => (isYtd && i === lastIdx) ? 'transparent' : '#111111');
+  const pactBgColors    = rows.map((_, i) => (isYtd && i === lastIdx) ? 'transparent' : '#8B3A3D');
 
   return new Chart(canvas, {
     type: 'line',
     data: { labels, datasets: [
-      { label: 'PACT cohort', data: pactRates, ...LINE('#111111'),
+      { label: 'PACT cohort', data: pactRates, ...LINE('#8B3A3D'),
         spanGaps: false,
         pointStyle: pactPointStyles, pointRadius: pactPointRadii, pointBackgroundColor: pactBgColors,
         pointBorderWidth: 2 },
-      { label: 'Non-PACT NYCHA', data: ctrlRates, ...LINE('#999999', true), spanGaps: false },
+      { label: 'Non-PACT NYCHA', data: ctrlRates, ...LINE('#888888', true), spanGaps: false },
     ]},
     options: { ...CHART_OPTS, plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
       callbacks: { label: c => {
@@ -1597,7 +1597,7 @@ function renderNypdConvChart(canvas) {
   const rows   = nypdConv;
   const labels = rows.map(d => (d.bucket >= 0 ? '+' : '') + d.bucket);
   const rates  = rows.map(d => d.rate ? (d.rate[_nypdType] ?? null) : null);
-  const colors = rows.map(d => d.bucket < 0 ? 'rgba(160,160,160,0.7)' : 'rgba(30,30,30,0.85)');
+  const colors = rows.map(d => d.bucket < 0 ? 'rgba(136,136,136,0.7)' : 'rgba(139,58,61,0.85)');
 
   // Poisson 95% CI: ±1.96 × sqrt(n) / units × 1000
   const errors = rows.map(d => {
@@ -1732,8 +1732,8 @@ function renderExpandedChart(type, resolution) {
     const completeVals = rodentAggregate.map(r => r.pact_complete.fail_rate_pct);
     const ctrlVals     = rodentAggregate.map(r => r.non_pact.fail_rate_pct);
     datasets = [
-      { label:'PACT Construction Complete', data:completeVals, ...LINE('#111111') },
-      { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#999999', true) },
+      { label:'PACT Construction Complete', data:completeVals, ...LINE('#8B3A3D') },
+      { label:'Non-PACT NYCHA',             data:ctrlVals,     ...LINE('#888888', true) },
     ];
     tooltipCb = c => ` ${c.dataset.label}: ${c.parsed.y != null ? c.parsed.y.toFixed(1)+'%' : '—'} fail rate`;
     chartPlugins = [makeCovidPlugin(labels)];
@@ -1746,8 +1746,8 @@ function renderExpandedChart(type, resolution) {
       ? ytdAnnualize(aggregateRates.map(r => r['Non-PACT /1k units']))
       : aggregateRates.map(r => r['Non-PACT exec']);
     datasets = [
-      { label:'PACT (all developments)', data:pactVals,  ...LINE('#111111') },
-      { label:'Non-PACT NYCHA',          data:ctrlVals,  ...LINE('#999999', isRate) },
+      { label:'PACT (all developments)', data:pactVals,  ...LINE('#8B3A3D') },
+      { label:'Non-PACT NYCHA',          data:ctrlVals,  ...LINE('#888888', isRate) },
     ];
     tooltipCb = isRate
       ? c => {
@@ -1806,8 +1806,8 @@ function renderExpandedChart(type, resolution) {
 
     labels = periodLabels;
     datasets = [
-      { label:'PACT (all developments)', data:completeVals, ...LINE('#111111') },
-      { label:'Non-PACT NYCHA',          data:ctrlVals,     ...LINE('#999999', isRate) },
+      { label:'PACT (all developments)', data:completeVals, ...LINE('#8B3A3D') },
+      { label:'Non-PACT NYCHA',          data:ctrlVals,     ...LINE('#888888', isRate) },
     ];
     const suffix = isRate ? '/ 1k / yr (ann.)' : 'evictions';
     tooltipCb = c => {
@@ -1891,11 +1891,11 @@ function openChartOverlay(type) {
   nypdTypeEl.value = _nypdType;
 
   const legendDashed = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT (all developments)</div>
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>`;
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D"></div>PACT (all developments)</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>`;
   const legendSolid = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT (all developments)</div>
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999"></div>Non-PACT NYCHA</div>`;
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D"></div>PACT (all developments)</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#888888"></div>Non-PACT NYCHA</div>`;
 
   if (type === 'rodent') {
     document.getElementById('cfo-title').textContent    = 'RODENT INSPECTION FAILURE RATE';
@@ -1905,20 +1905,20 @@ function openChartOverlay(type) {
   } else if (type === 'complaints') {
     document.getElementById('cfo-title').textContent    = 'HPD 311 COMPLAINTS SINCE PACT CONVERSION';
     document.getElementById('cfo-subtitle').textContent = 'HPD housing complaints per 1,000 units · by years since conversion';
-    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
+    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D"></div>PACT avg (all developments)</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderComplaintsAggChart(document.getElementById('cfo-canvas'));
   } else if (type === 'permits') {
     document.getElementById('cfo-title').textContent    = 'DECLARED RENOVATION COSTS AT PACT DEVELOPMENTS';
     document.getElementById('cfo-subtitle').textContent = 'DOB-declared construction costs per unit · by years since conversion';
-    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT avg (all developments)</div>`;
+    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D"></div>PACT avg (all developments)</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
   } else if (type === 'conv-evictions') {
     document.getElementById('cfo-title').textContent    = 'EVICTION RATE BEFORE AND AFTER PACT CONVERSION';
     document.getElementById('cfo-subtitle').textContent = 'Eviction rate per 1,000 units · by year relative to conversion date · all 29 PACT developments';
     document.getElementById('cfo-legend').innerHTML     = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D;"></div>Pooled average (n varies)</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#cccccc;"></div>Individual development</div>
       <div class="cfo-legend-item"><svg width="12" height="12" viewBox="0 0 12 12" style="display:inline-block;margin-right:6px;flex-shrink:0"><circle cx="6" cy="6" r="4" stroke="#888" stroke-width="1.3" fill="none"/></svg><span>Open circles: 2020–2021 — COVID eviction moratorium suppresses rates; because each development converted in a different year, the moratorium falls at a different x-position on each line</span></div>`;
     devSelEl.innerHTML = '<option value="">— All developments —</option>';
@@ -1937,8 +1937,8 @@ function openChartOverlay(type) {
     document.getElementById('cfo-title').textContent    = 'EVICTION RATES: PACT VS. MATCHED CONTROL (2022+)';
     document.getElementById('cfo-subtitle').textContent = '7 PACT developments (converting 2024–2025) vs. matched non-PACT NYCHA controls · per 1,000 units';
     document.getElementById('cfo-legend').innerHTML = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>PACT development</div>
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Matched non-PACT control</div>`;
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D;"></div>PACT development</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched non-PACT control</div>`;
     pairSelEl.innerHTML = '<option value="">— All pairs —</option>';
     (matchedEvictions.pairs || []).forEach((p, i) => {
       const opt = document.createElement('option');
@@ -1964,15 +1964,15 @@ function openChartOverlay(type) {
     document.getElementById('cfo-title').textContent    = 'EVICTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)';
     document.getElementById('cfo-subtitle').textContent = 'Share of matched evictions by case type · OCA docket-number match';
     document.getElementById('cfo-legend').innerHTML     = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Non-Payment</div>
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;"></div>Holdover</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D;"></div>Non-Payment</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#2F6DA3;"></div>Holdover</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#DDDDCC;"></div>Other</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderCaseTypeChart(document.getElementById('cfo-canvas'));
   } else if (type === 'occupancy') {
     document.getElementById('cfo-title').textContent    = 'NYCHA OCCUPANCY RATE · 2015–2025';
     document.getElementById('cfo-subtitle').textContent = 'Unit-weighted average occupancy at publicly managed NYCHA developments · annual snapshot';
-    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;"></div>Non-PACT NYCHA public housing</div>`;
+    document.getElementById('cfo-legend').innerHTML     = `<div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#888888;"></div>Non-PACT NYCHA public housing</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderOccupancyChart(document.getElementById('cfo-canvas'));
   } else if (type === 'nypd-conv') {
@@ -1980,8 +1980,8 @@ function openChartOverlay(type) {
     document.getElementById('cfo-title').textContent    = 'NYPD INCIDENTS — BEFORE AND AFTER CONVERSION';
     document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · years relative to PACT transfer date`;
     document.getElementById('cfo-legend').innerHTML     = `
-      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(160,160,160,0.7);display:inline-block;margin-right:6px;border-radius:2px;"></div>Pre-conversion</div>
-      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(30,30,30,0.85);display:inline-block;margin-right:6px;border-radius:2px;"></div>Post-conversion</div>`;
+      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(136,136,136,0.7);display:inline-block;margin-right:6px;border-radius:2px;"></div>Pre-conversion</div>
+      <div class="cfo-legend-item"><div style="width:14px;height:14px;background:rgba(139,58,61,0.85);display:inline-block;margin-right:6px;border-radius:2px;"></div>Post-conversion</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderNypdConvChart(document.getElementById('cfo-canvas'));
   } else if (type === 'nypd-cohort') {
@@ -1989,8 +1989,8 @@ function openChartOverlay(type) {
     document.getElementById('cfo-title').textContent    = 'NYPD INCIDENTS — PACT COHORT VS. NON-PACT';
     document.getElementById('cfo-subtitle').textContent = `${typeLabel} · per 1,000 units · 150m radius per building · 2015–present`;
     document.getElementById('cfo-legend').innerHTML     = `
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111"></div>PACT cohort (pre + post conversion)</div>
-      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>`;
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#8B3A3D"></div>PACT cohort (pre + post conversion)</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Non-PACT NYCHA</div>`;
     if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
     expandedChart = renderNypdCohortChart(document.getElementById('cfo-canvas'));
   } else {
