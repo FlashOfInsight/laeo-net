@@ -56,9 +56,8 @@
       traditionally managed NYCHA developments across:
     </p>
     <div class="page-index">
-      <a href="#idx-rate" class="page-index-link">Execution rate</a> ·
-      <a href="#idx-count" class="page-index-link">Total executions</a> ·
-      <a href="#idx-case-type" class="page-index-link">Execution type</a> ·
+      <a href="#idx-rate" class="page-index-link">Eviction rate</a> ·
+      <a href="#idx-case-type" class="page-index-link">Eviction type</a> ·
       <a href="#idx-conv-evictions" class="page-index-link">Before/after conversion</a> ·
       <a href="#idx-matched-evictions" class="page-index-link">vs. matched control</a> ·
       <a href="#idx-occupancy" class="page-index-link">Occupancy rate</a> ·
@@ -66,18 +65,19 @@
       <a href="#idx-complaints" class="page-index-link">HPD 311 complaints</a> ·
       <a href="#idx-permits" class="page-index-link">Renovation costs</a> ·
       <a href="#idx-nypd-conv" class="page-index-link">NYPD incidents (before/after)</a> ·
-      <a href="#idx-nypd-cohort" class="page-index-link">NYPD incidents (cohort)</a>
+      <a href="#idx-nypd-cohort" class="page-index-link">NYPD incidents (cohort)</a> ·
+      <a href="#idx-count" class="page-index-link">Total evictions</a>
     </div>
   </section>
 
   <div class="key-stats">
     <div class="stat-item">
       <span class="stat-value" id="stat-pact-rate">—</span>
-      <span class="stat-label">PACT exec rate / 1k units (2025)</span>
+      <span class="stat-label">PACT eviction rate / 1k units (2025)</span>
     </div>
     <div class="stat-item">
       <span class="stat-value" id="stat-ctrl-rate">—</span>
-      <span class="stat-label">Non-PACT exec rate / 1k units (2025)</span>
+      <span class="stat-label">Non-PACT eviction rate / 1k units (2025)</span>
     </div>
     <div class="stat-item">
       <span class="stat-value" id="stat-ratio">—</span>
@@ -92,14 +92,14 @@
   <div class="context-note">
     <div class="context-note-label">Context</div>
     <p>
-      A 2026 peer-reviewed study (Lochhead, Hepburn &amp; Ellen) found no significant
-      change in eviction filing rates from RAD conversion, nationally or in New York
-      State. This analysis measures eviction <strong>executions</strong> —
-      marshal-enforced removals — a downstream outcome not captured by that study.
-      The findings are compatible: if PACT managers do not file at substantially
-      higher rates but the gap in actual removals is this large, it implies a
-      structurally different enforcement posture at PACT properties, not merely
-      higher filing volume. See
+      Wherever this page says <strong>eviction</strong>, it means an eviction that was
+      <strong>executed</strong> — a marshal physically removed the tenant — not a case
+      filing. A 2026 peer-reviewed study (Lochhead, Hepburn &amp; Ellen) found no
+      significant change in eviction filing rates from RAD conversion, nationally or in
+      New York State. That's compatible with what's shown here: if PACT managers do not
+      file at substantially higher rates but the gap in actual removals is this large,
+      it implies a structurally different enforcement posture at PACT properties, not
+      merely higher filing volume. See
       <a href="#methodology" class="inline-tab-link" data-tab="methodology">L5 in Methodology</a>
       for the full discussion.
     </p>
@@ -121,7 +121,7 @@
       <div class="map-tooltip" id="tooltip">
         <div class="tooltip-name" id="tt-name"></div>
         <div class="tooltip-row"><span>Units</span><span id="tt-units"></span></div>
-        <div class="tooltip-row" id="tt-rate-row"><span id="tt-rate-label">Exec rate (2025)</span><span id="tt-rate"></span></div>
+        <div class="tooltip-row" id="tt-rate-row"><span id="tt-rate-label">Eviction rate (2025)</span><span id="tt-rate"></span></div>
         <div class="tooltip-row" id="tt-manager-row"><span>Manager</span><span id="tt-manager"></span></div>
         <div class="tooltip-hint" id="tt-hint"></div>
       </div>
@@ -139,9 +139,9 @@
   <section class="charts-section">
     <div class="section-label">EVICTION TRENDS · 2017–2026</div>
     <div class="charts-grid">
-      <div class="chart-card chart-card-clickable" data-chart="rate" id="idx-rate">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="rate" id="idx-rate">
         <div class="chart-card-header">
-          <div class="chart-title">EXECUTION RATE PER 1,000 UNITS</div>
+          <div class="chart-title">EVICTION RATE PER 1,000 UNITS</div>
           <div class="chart-expand-hint">Click to expand →</div>
         </div>
         <div class="chart-subtitle">Marshal-executed evictions / residential units × 1,000</div>
@@ -152,32 +152,19 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (numerator); NYC MapPLUTO + NYCHA Development Data Book (denominator).</div>
       </div>
-      <div class="chart-card chart-card-clickable" data-chart="count" id="idx-count">
-        <div class="chart-card-header">
-          <div class="chart-title">TOTAL EXECUTIONS</div>
-          <div class="chart-expand-hint">Click to expand →</div>
-        </div>
-        <div class="chart-subtitle">Raw count of marshal-executed evictions by year</div>
-        <div class="chart-canvas-wrap"><canvas id="chart-count"></canvas></div>
-        <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT (all developments)</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA</div>
-        </div>
-        <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
-      </div>
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="case-type" id="idx-case-type">
         <div class="chart-card-header">
-          <div class="chart-title">EXECUTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)</div>
+          <div class="chart-title">EVICTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)</div>
           <div class="chart-expand-hint">Click to expand →</div>
         </div>
-        <div class="chart-subtitle">Share of matched executions by case type · OCA docket-number match</div>
+        <div class="chart-subtitle">Share of matched evictions by case type · OCA docket-number match</div>
         <div class="chart-canvas-wrap"><canvas id="chart-case-type"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Non-Payment</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Holdover</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#DDDDCC;"></div>Other</div>
         </div>
-        <div class="chart-note">Data floor 2022 — OCA docket-level case classification has zero coverage before then. The classification lookup is also a static snapshot from 2026-05-01, so more recent executions are undercounted as unmatched until it's rebuilt: 74% of PACT and 87% of non-PACT 2022+ executions currently matched. Unmatched executions are excluded from the percentages shown. See Step 7 in Methodology. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> joined to HDC OCA housing court records.</div>
+        <div class="chart-note">Data floor 2022 — OCA docket-level case classification has zero coverage before then. The classification lookup is also a static snapshot from 2026-05-01, so more recent evictions are undercounted as unmatched until it's rebuilt: 74% of PACT and 87% of non-PACT 2022+ evictions currently matched. Unmatched evictions are excluded from the percentages shown. See Step 7 in Methodology. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> joined to HDC OCA housing court records.</div>
       </div>
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="conv-evictions" id="idx-conv-evictions">
@@ -185,7 +172,7 @@
           <div class="chart-title">EVICTION RATE BEFORE AND AFTER PACT CONVERSION</div>
           <div class="chart-expand-hint">Click to expand →</div>
         </div>
-        <div class="chart-subtitle">Execution rate per 1,000 units · by year relative to conversion date · all 29 PACT developments</div>
+        <div class="chart-subtitle">Eviction rate per 1,000 units · by year relative to conversion date · all 29 PACT developments</div>
         <div class="chart-canvas-wrap"><canvas id="chart-conv-evictions"></canvas></div>
         <div class="chart-legend">
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
@@ -292,6 +279,20 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;border-top:2px dashed #999;height:0;"></div>Non-PACT NYCHA</div>
         </div>
         <div class="chart-note">Tracks all 29 PACT developments as a single cohort — using pre-conversion incident data before each transfer date and post-conversion data after. Hover for ratio and conversion count. Type filter (above) applies to both NYPD charts. Source: <a href="https://data.cityofnewyork.us/d/qgea-i56i" target="_blank" rel="noopener">NYPD Complaint Data Historic</a> + <a href="https://data.cityofnewyork.us/d/5uac-w243" target="_blank" rel="noopener">Current YTD</a>.</div>
+      </div>
+
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="count" id="idx-count">
+        <div class="chart-card-header">
+          <div class="chart-title">TOTAL EVICTIONS</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">Raw count of marshal-executed evictions by year</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-count"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>PACT (all developments)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Non-PACT NYCHA</div>
+        </div>
+        <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
     </div>
   </section>
@@ -475,7 +476,7 @@
         <div class="source-publisher">NYC Department of Investigation via NYC Open Data · Socrata resource 6z8x-wfk4 · Updated daily</div>
         <p class="source-desc">
           One record per marshal-executed eviction, with BBL, marshal docket number,
-          court index number, address, execution date, and residential/commercial
+          court index number, address, eviction date, and residential/commercial
           indicator. This is the <strong>primary numerator</strong> for the eviction
           rate calculation — filtered to residential units from January 2017 onward.
           The BBL field enables direct joins to PLUTO-derived PACT and non-PACT lot
@@ -504,7 +505,7 @@
           <code>enforcementofficerdocketnumber</code>, enabling the join to S6);
           <code>oca_index</code> (case-level classification: Non-Payment, Holdover,
           and disposition method); <code>oca_causes</code> (cause of action type).
-          Joined to marshal data via docket number to add case type to each execution.
+          Joined to marshal data via docket number to add case type to each eviction.
           Note: the HDC tables contain respondent mailing ZIP codes but no
           street-level property addresses, so building-level filing rate analysis
           is not possible through this pipeline.
@@ -833,7 +834,7 @@ function initMap() {
       if (p.type === 'pact') {
         rRow.style.display = p.has_data ? '' : 'none';
         if (p.has_data) {
-          document.getElementById('tt-rate-label').textContent = 'Exec rate (2025)';
+          document.getElementById('tt-rate-label').textContent = 'Eviction rate (2025)';
           document.getElementById('tt-rate').textContent = r25 != null ? r25.toFixed(1) + ' / 1k' : '—';
         }
         mRow.style.display = '';
@@ -842,7 +843,7 @@ function initMap() {
       } else {
         const aggRate2025 = aggregateRates.find(r => String(r.Year).startsWith('2025'));
         rRow.style.display = '';
-        document.getElementById('tt-rate-label').textContent = 'Group exec rate (2025)';
+        document.getElementById('tt-rate-label').textContent = 'Group eviction rate (2025)';
         document.getElementById('tt-rate').textContent = aggRate2025
           ? Number(aggRate2025['Non-PACT /1k units']).toFixed(2) + ' / 1k' : '—';
         mRow.style.display = 'none';
@@ -954,7 +955,7 @@ function switchPanelTab(which) {
   if (which === 'evictions' && _panelProps.has_data) {
     const monthly = typeof _panelProps.monthly_executions === 'string'
       ? JSON.parse(_panelProps.monthly_executions) : (_panelProps.monthly_executions || {});
-    if (Object.keys(monthly).length) buildMonthlyBarChart('panel-monthly-chart', monthly, conv, 'execution(s)');
+    if (Object.keys(monthly).length) buildMonthlyBarChart('panel-monthly-chart', monthly, conv, 'eviction(s)');
   } else if (which === 'complaints') {
     const cd = typeof _panelProps.complaint_data === 'string'
       ? JSON.parse(_panelProps.complaint_data) : (_panelProps.complaint_data || null);
@@ -1012,7 +1013,7 @@ function openPanel(props) {
       <div id="pane-evictions">
         ${props.has_data ? `
           <hr class="panel-divider">
-          <div class="panel-section-label">MONTHLY EXECUTIONS</div>
+          <div class="panel-section-label">MONTHLY EVICTIONS</div>
           <div class="panel-chart-wrap"><canvas id="panel-monthly-chart"></canvas></div>
           <hr class="panel-divider">
           <div class="panel-section-label">ANNUAL RATE PER 1,000 UNITS</div>
@@ -1022,7 +1023,7 @@ function openPanel(props) {
           <div class="panel-meta" style="margin-top:.25rem">
             <div>Non-payment: <strong>${props.nonpayment_executions}</strong></div>
             <div>Holdover: <strong>${props.holdover_executions}</strong></div>
-            <div>Total executions: <strong>${props.total_executions}</strong></div>
+            <div>Total evictions: <strong>${props.total_executions}</strong></div>
           </div>
           ${rodent ? `
           <hr class="panel-divider">
@@ -1055,7 +1056,7 @@ function openPanel(props) {
 
   if (props.has_data && Object.keys(monthly).length > 0) {
     if (panelChart) { panelChart.destroy(); panelChart = null; }
-    buildMonthlyBarChart('panel-monthly-chart', monthly, props.conversion_date, 'execution(s)');
+    buildMonthlyBarChart('panel-monthly-chart', monthly, props.conversion_date, 'eviction(s)');
   }
 }
 
@@ -1124,7 +1125,7 @@ function buildCharts() {
   new Chart(document.getElementById('chart-count'), { type:'line', data:{labels,
     datasets:[{label:'PACT (all developments)',data:pactCounts,...LINE('#111111')},{label:'Non-PACT NYCHA',data:ctrlCounts,...LINE('#999999')}]},
     options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins,tooltip:{...CHART_OPTS.plugins.tooltip,
-      callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} executions`}}}}});
+      callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y} evictions`}}}}});
 
   const rodentLabels   = rodentAggregate.map(r => String(r.year));
   const rodentComplete = rodentAggregate.map(r => r.pact_complete.fail_rate_pct);
@@ -1274,7 +1275,7 @@ function renderConvEvictionsChart(canvas) {
           label: c => {
             const d = pooled[c.dataIndex];
             const r = c.parsed.y != null ? c.parsed.y.toFixed(2) : '—';
-            return ` ${r} / 1k  (${d.executions} executions · ${d.units.toLocaleString()} units · ${d.n_devs} devs)`;
+            return ` ${r} / 1k  (${d.executions} evictions · ${d.units.toLocaleString()} units · ${d.n_devs} devs)`;
           }
         }
       }},
@@ -1401,7 +1402,7 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
                 ? p.annual[c.dataIndex]?.pact_executions
                 : p.annual[c.dataIndex]?.ctrl_executions;
               const v = c.parsed.y;
-              return ` ${ds.label}: ${v != null ? v.toFixed(2) : '—'}/1k (${n} exec · ${units.toLocaleString()} units)`;
+              return ` ${ds.label}: ${v != null ? v.toFixed(2) : '—'}/1k (${n} evictions · ${units.toLocaleString()} units)`;
             }
           }
         }
@@ -1481,7 +1482,7 @@ function renderCaseTypeChart(canvas) {
         callbacks: {
           title: t => labels[t[0].dataIndex],
           label: t => ` ${t.dataset.label}: ${t.parsed.x}%`,
-          afterLabel: t => ` ${matched[t.dataIndex]}/${total[t.dataIndex]} executions matched to an OCA case record`,
+          afterLabel: t => ` ${matched[t.dataIndex]}/${total[t.dataIndex]} evictions matched to an OCA case record`,
         }
       }},
       scales: {
@@ -1758,7 +1759,7 @@ function renderExpandedChart(type, resolution) {
           }
           return ` ${c.dataset.label}: ${rStr}`;
         }
-      : c => ` ${c.dataset.label}: ${c.parsed.y} executions`;
+      : c => ` ${c.dataset.label}: ${c.parsed.y} evictions`;
     chartPlugins = [makeCovidPlugin(labels)];
   } else {
     const periodMonths = resolution === 'monthly' ? 1 : resolution === '3mo' ? 3 : 6;
@@ -1808,7 +1809,7 @@ function renderExpandedChart(type, resolution) {
       { label:'PACT (all developments)', data:completeVals, ...LINE('#111111') },
       { label:'Non-PACT NYCHA',          data:ctrlVals,     ...LINE('#999999', isRate) },
     ];
-    const suffix = isRate ? '/ 1k / yr (ann.)' : 'executions';
+    const suffix = isRate ? '/ 1k / yr (ann.)' : 'evictions';
     tooltipCb = c => {
       const v = c.parsed.y;
       return ` ${c.dataset.label}: ${v != null ? (isRate ? v.toFixed(2) : v) : '—'} ${suffix}`;
@@ -1915,7 +1916,7 @@ function openChartOverlay(type) {
     expandedChart = renderPermitsAggChart(document.getElementById('cfo-canvas'));
   } else if (type === 'conv-evictions') {
     document.getElementById('cfo-title').textContent    = 'EVICTION RATE BEFORE AND AFTER PACT CONVERSION';
-    document.getElementById('cfo-subtitle').textContent = 'Execution rate per 1,000 units · by year relative to conversion date · all 29 PACT developments';
+    document.getElementById('cfo-subtitle').textContent = 'Eviction rate per 1,000 units · by year relative to conversion date · all 29 PACT developments';
     document.getElementById('cfo-legend').innerHTML     = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Pooled average (n varies)</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#cccccc;"></div>Individual development</div>
@@ -1960,8 +1961,8 @@ function openChartOverlay(type) {
       }
     };
   } else if (type === 'case-type') {
-    document.getElementById('cfo-title').textContent    = 'EXECUTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)';
-    document.getElementById('cfo-subtitle').textContent = 'Share of matched executions by case type · OCA docket-number match';
+    document.getElementById('cfo-title').textContent    = 'EVICTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)';
+    document.getElementById('cfo-subtitle').textContent = 'Share of matched evictions by case type · OCA docket-number match';
     document.getElementById('cfo-legend').innerHTML     = `
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Non-Payment</div>
       <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;"></div>Holdover</div>
@@ -1994,7 +1995,7 @@ function openChartOverlay(type) {
     expandedChart = renderNypdCohortChart(document.getElementById('cfo-canvas'));
   } else {
     const isRate = type === 'rate';
-    document.getElementById('cfo-title').textContent    = isRate ? 'EXECUTION RATE PER 1,000 UNITS' : 'TOTAL EXECUTIONS';
+    document.getElementById('cfo-title').textContent    = isRate ? 'EVICTION RATE PER 1,000 UNITS' : 'TOTAL EVICTIONS';
     document.getElementById('cfo-subtitle').textContent = isRate
       ? 'Marshal-executed evictions / residential units × 1,000 · annual or annualized'
       : 'Raw count of marshal-executed evictions';
