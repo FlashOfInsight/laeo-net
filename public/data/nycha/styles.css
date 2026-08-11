@@ -177,12 +177,25 @@ main {
   letter-spacing: 0.1em;
   color: var(--ink-light);
   text-transform: uppercase;
-  margin-bottom: var(--space-xs);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
 }
+.context-note-label::-webkit-details-marker { display: none; }
+.context-note-label::before {
+  content: '▸';
+  display: inline-block;
+  width: 1em;
+  margin-right: 0.3em;
+  transition: transform 0.15s;
+}
+.context-note[open] .context-note-label::before { transform: rotate(90deg); }
+.context-note-label:hover { color: var(--ink-mid); }
 .context-note p {
   font-size: 0.9rem;
   color: var(--ink-mid);
   line-height: 1.7;
+  margin-top: var(--space-sm);
 }
 .context-note a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--border-light); text-underline-offset: 3px; }
 .context-note a:hover { text-decoration-color: var(--ink); }

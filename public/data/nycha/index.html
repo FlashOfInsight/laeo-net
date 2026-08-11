@@ -56,11 +56,11 @@
       traditionally managed NYCHA developments across:
     </p>
     <div class="page-index">
+      <a href="#idx-matched-pooled" class="page-index-link">Matched Control vs. PACT (Pooled)</a> ·
+      <a href="#idx-matched-evictions" class="page-index-link">Evictions in Matched Control vs. PACT</a> ·
       <a href="#idx-rate" class="page-index-link">Eviction Rate</a> ·
       <a href="#idx-case-type" class="page-index-link">Eviction Type</a> ·
       <a href="#idx-conv-evictions" class="page-index-link">Before/After Conversion</a> ·
-      <a href="#idx-matched-evictions" class="page-index-link">Evictions in Matched Control vs. PACT</a> ·
-      <a href="#idx-matched-pooled" class="page-index-link">Matched Control vs. PACT (Pooled)</a> ·
       <a href="#idx-occupancy" class="page-index-link">Non-PACT NYCHA Occupancy Rate</a> ·
       <a href="#idx-rodent" class="page-index-link">Rodent Inspections</a> ·
       <a href="#idx-complaints" class="page-index-link">HPD 311 Complaints</a> ·
@@ -86,8 +86,8 @@
     </div>
   </div>
 
-  <div class="context-note">
-    <div class="context-note-label">Context</div>
+  <details class="context-note">
+    <summary class="context-note-label">Executed Evictions Context (Read More)</summary>
     <p>
       Wherever this page says <strong>eviction</strong>, it means an eviction that was
       <strong>executed</strong> — a marshal physically removed the tenant — not a case
@@ -100,7 +100,7 @@
       <a href="#methodology" class="inline-tab-link" data-tab="methodology">L5 in Methodology</a>
       for the full discussion.
     </p>
-  </div>
+  </details>
 
   <!-- Map -->
   <section class="map-section">
@@ -136,6 +136,34 @@
   <section class="charts-section">
     <div class="section-label">EVICTION TRENDS · 2017–2026</div>
     <div class="charts-grid">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-pooled" id="idx-matched-pooled">
+        <div class="chart-card-header">
+          <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED, BY YEAR RELATIVE TO CONVERSION</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">All 7 PACT developments and their matched controls, aligned to each pair's own conversion year (0) · per 1,000 units</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-matched-pooled"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT (pooled, 7 devs)</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched control (pooled, 7 devs)</div>
+        </div>
+        <div class="chart-note">Same 7 matched pairs as "Evictions in Matched Control vs. PACT," but re-indexed so each pair shares one axis: offset 0 = the year that specific PACT development converted. The control's line is its own real eviction data — it never converts — relabeled onto its partner's conversion year purely so the two are comparable at the same relative time. Year 0 is a partial year for most pairs (conversion rarely falls Jan 1). Open circles = offset includes annualized year-to-date 2026 data. Hover for exact n (pairs) contributing at each offset — thinnest at the tails (n=2 at −3, n=5 at +2), full n=7 from −2 to +1. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
+      </div>
+
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-evictions" id="idx-matched-evictions">
+        <div class="chart-card-header">
+          <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL (2022+)</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">7 PACT developments (converting 2024–2025) vs. matched non-PACT NYCHA controls · per 1,000 units</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-matched-evictions"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT development</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched non-PACT control</div>
+        </div>
+        <div class="chart-note">Controls matched on pre-conversion REAC inspection score (±4 pts) then unit count. 2022 data floor avoids distortion from NYCHA's mass nonpayment case nullification. Dashed vertical = conversion year. Open circles = 2026 is annualized year-to-date, not a complete year. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
+      </div>
+
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="rate" id="idx-rate">
         <div class="chart-card-header">
           <div class="chart-title">EVICTION RATE PER 1,000 UNITS</div>
@@ -176,34 +204,6 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#cccccc;"></div>Individual development</div>
         </div>
         <div class="chart-note">Year 0 = conversion year (partial year for most developments). Use the dropdown in the chart header to highlight an individual development's trajectory. Pooled rate is unit-weighted; n varies as different developments contribute at each offset — extreme offsets reflect only the most recently converted sites. Open circles on development lines mark calendar years 2020–2021 (NYC COVID eviction moratorium); rates at those points are artificially suppressed — because each development converted in a different year, the moratorium falls at a different x-position on each line. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
-      </div>
-
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-evictions" id="idx-matched-evictions">
-        <div class="chart-card-header">
-          <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL (2022+)</div>
-          <div class="chart-expand-hint">Click to expand →</div>
-        </div>
-        <div class="chart-subtitle">7 PACT developments (converting 2024–2025) vs. matched non-PACT NYCHA controls · per 1,000 units</div>
-        <div class="chart-canvas-wrap"><canvas id="chart-matched-evictions"></canvas></div>
-        <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT development</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched non-PACT control</div>
-        </div>
-        <div class="chart-note">Controls matched on pre-conversion REAC inspection score (±4 pts) then unit count. 2022 data floor avoids distortion from NYCHA's mass nonpayment case nullification. Dashed vertical = conversion year. Open circles = 2026 is annualized year-to-date, not a complete year. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
-      </div>
-
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-pooled" id="idx-matched-pooled">
-        <div class="chart-card-header">
-          <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL — POOLED, BY YEAR RELATIVE TO CONVERSION</div>
-          <div class="chart-expand-hint">Click to expand →</div>
-        </div>
-        <div class="chart-subtitle">All 7 PACT developments and their matched controls, aligned to each pair's own conversion year (0) · per 1,000 units</div>
-        <div class="chart-canvas-wrap"><canvas id="chart-matched-pooled"></canvas></div>
-        <div class="chart-legend">
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT (pooled, 7 devs)</div>
-          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched control (pooled, 7 devs)</div>
-        </div>
-        <div class="chart-note">Same 7 matched pairs as "Evictions in Matched Control vs. PACT," but re-indexed so each pair shares one axis: offset 0 = the year that specific PACT development converted. The control's line is its own real eviction data — it never converts — relabeled onto its partner's conversion year purely so the two are comparable at the same relative time. Year 0 is a partial year for most pairs (conversion rarely falls Jan 1). Open circles = offset includes annualized year-to-date 2026 data. Hover for exact n (pairs) contributing at each offset — thinnest at the tails (n=2 at −3, n=5 at +2), full n=7 from −2 to +1. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy" id="idx-occupancy">
