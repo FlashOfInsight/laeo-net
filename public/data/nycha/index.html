@@ -189,7 +189,7 @@
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#8B3A3D;"></div>PACT development</div>
           <div class="chart-legend-item"><div class="chart-legend-line" style="background:#888888;border-top:2px dashed #888;height:0;margin-top:1px"></div>Matched non-PACT control</div>
         </div>
-        <div class="chart-note">Controls matched on pre-conversion REAC inspection score (±4 pts) then unit count. 2022 data floor avoids distortion from NYCHA's mass nonpayment case nullification. Dashed vertical = conversion year. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
+        <div class="chart-note">Controls matched on pre-conversion REAC inspection score (±4 pts) then unit count. 2022 data floor avoids distortion from NYCHA's mass nonpayment case nullification. Dashed vertical = conversion year. Open circles = 2026 is annualized year-to-date, not a complete year. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
 
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-pooled" id="idx-matched-pooled">
@@ -1113,6 +1113,20 @@ function ytdAnnualize(rates) {
   return rates.map((v, i) => i === rates.length - 1 && v != null ? +(v * factor).toFixed(2) : v);
 }
 
+// Calendar-based YTD annualization factor for the current partial year —
+// used where we only have annual (not monthly) data to work from, e.g. the
+// matched-pairs charts. daysInYear/daysElapsed rather than months, since we
+// know the exact "as of" date.
+function ytdAnnualizationFactor(year) {
+  const now = new Date();
+  if (year !== now.getFullYear()) return 1;
+  const startOfYear     = new Date(year, 0, 1);
+  const startOfNextYear = new Date(year + 1, 0, 1);
+  const daysInYear  = Math.round((startOfNextYear - startOfYear) / 86400000);
+  const daysElapsed = Math.round((now - startOfYear) / 86400000) + 1;
+  return daysElapsed > 0 ? daysInYear / daysElapsed : 1;
+}
+
 function buildCharts() {
   if (chartsDone) return;
   chartsDone = true;
@@ -1325,9 +1339,17 @@ function renderConvEvictionsChart(canvas) {
 
 function renderMatchedEvictionsChart(canvas, selectedIdx) {
   if (!canvas || !(matchedEvictions.pairs || []).length) return;
-  const pairs  = matchedEvictions.pairs;
-  const years  = pairs[0].annual.map(d => String(d.year));
-  const hasSel = selectedIdx != null;
+  const pairs   = matchedEvictions.pairs;
+  const years   = pairs[0].annual.map(d => String(d.year));
+  const hasSel  = selectedIdx != null;
+  const nowYear = new Date().getFullYear();
+  const ytdIdx  = years.indexOf(String(nowYear));
+  const ytdFactor = ytdAnnualizationFactor(nowYear);
+
+  // Open circles (transparent fill) at the current-year point signal it's
+  // annualized YTD, not a complete calendar year — everywhere else on the
+  // point-array, fall back to the flat dim/full color.
+  const pointColors = (flat) => years.map((_, i) => i === ytdIdx ? 'transparent' : flat);
 
   const datasets = [];
   pairs.forEach((p, i) => {
@@ -1336,20 +1358,23 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
     const ctrlColor = dim ? 'rgba(136,136,136,0.15)' : '#888888';
     const pactW = (!hasSel || i === selectedIdx) ? 2 : 1;
     const ctrlW = pactW;
+    const annualize = v => v == null ? v : +(v * ytdFactor).toFixed(2);
     datasets.push({
       label: p.pact_display,
-      data: p.annual.map(d => d.pact_rate_per_1k),
+      data: p.annual.map((d, di) => di === ytdIdx ? annualize(d.pact_rate_per_1k) : d.pact_rate_per_1k),
       borderColor: pactColor, backgroundColor: 'transparent',
       borderWidth: pactW, pointRadius: hasSel && i === selectedIdx ? 4 : 2,
-      pointBackgroundColor: pactColor, tension: 0.3, borderDash: [],
+      pointBackgroundColor: pointColors(pactColor), pointBorderColor: pactColor, pointBorderWidth: 2,
+      tension: 0.3, borderDash: [],
       _pairIdx: i, _side: 'pact',
     });
     datasets.push({
       label: p.ctrl_display,
-      data: p.annual.map(d => d.ctrl_rate_per_1k),
+      data: p.annual.map((d, di) => di === ytdIdx ? annualize(d.ctrl_rate_per_1k) : d.ctrl_rate_per_1k),
       borderColor: ctrlColor, backgroundColor: 'transparent',
       borderWidth: ctrlW, pointRadius: hasSel && i === selectedIdx ? 4 : 2,
-      pointBackgroundColor: ctrlColor, tension: 0.3, borderDash: [5, 4],
+      pointBackgroundColor: pointColors(ctrlColor), pointBorderColor: ctrlColor, pointBorderWidth: 2,
+      tension: 0.3, borderDash: [5, 4],
       _pairIdx: i, _side: 'ctrl',
     });
   });
@@ -1411,12 +1436,15 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
             label: c => {
               const ds = c.dataset;
               const p  = pairs[ds._pairIdx];
-              const units = ds._side === 'pact' ? p.pact_units : p.ctrl_units;
-              const n     = ds._side === 'pact'
+              const units  = ds._side === 'pact' ? p.pact_units : p.ctrl_units;
+              const isYtd  = c.dataIndex === ytdIdx;
+              const nRaw   = ds._side === 'pact'
                 ? p.annual[c.dataIndex]?.pact_executions
                 : p.annual[c.dataIndex]?.ctrl_executions;
-              const v = c.parsed.y;
-              return ` ${ds.label}: ${v != null ? v.toFixed(2) : '—'}/1k (${n} evictions · ${units.toLocaleString()} units)`;
+              const n      = isYtd ? nRaw * ytdFactor : nRaw;
+              const v      = c.parsed.y;
+              const ytdTag = isYtd ? ', annualized YTD' : '';
+              return ` ${ds.label}: ${v != null ? v.toFixed(2) : '—'}/1k (${n.toFixed(1)} evictions · ${units.toLocaleString()} units${ytdTag})`;
             }
           }
         }
@@ -1441,7 +1469,8 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
         : (isPact ? '#8B3A3D' : '#888888');
       ds.borderWidth  = (!hasSel2 || pi === idx) ? 2 : 1;
       ds.pointRadius  = (hasSel2 && pi === idx) ? 4 : 2;
-      ds.pointBackgroundColor = ds.borderColor;
+      ds.pointBorderColor = ds.borderColor;
+      ds.pointBackgroundColor = pointColors(ds.borderColor);
     });
     selectedIdx = idx;
     chart.update();
@@ -1457,11 +1486,7 @@ function renderMatchedPooledChart(canvas) {
 
   // Annualize the current (partial) year before pooling, so it doesn't read
   // as a real decline relative to complete prior years.
-  const startOfYear     = new Date(nowYear, 0, 1);
-  const startOfNextYear = new Date(nowYear + 1, 0, 1);
-  const daysInYear   = Math.round((startOfNextYear - startOfYear) / 86400000);
-  const daysElapsed  = Math.round((new Date() - startOfYear) / 86400000) + 1;
-  const ytdFactor    = daysElapsed > 0 ? daysInYear / daysElapsed : 1;
+  const ytdFactor = ytdAnnualizationFactor(nowYear);
 
   // Re-key every pair's annual rows by years_to_conv (each pair's own
   // conversion year = offset 0) instead of calendar year, so all 7 PACT
