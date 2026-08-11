@@ -153,6 +153,21 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="case-type">
+        <div class="chart-card-header">
+          <div class="chart-title">EXECUTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)</div>
+          <div class="chart-expand-hint">Click to expand →</div>
+        </div>
+        <div class="chart-subtitle">Share of matched executions by case type · OCA docket-number match</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-case-type"></canvas></div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#111111;"></div>Non-Payment</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#999999;"></div>Holdover</div>
+          <div class="chart-legend-item"><div class="chart-legend-line" style="background:#DDDDCC;"></div>Other</div>
+        </div>
+        <div class="chart-note">Data floor 2022 — OCA docket-level case classification has zero coverage before then. The classification lookup is also a static snapshot from 2026-05-01, so more recent executions are undercounted as unmatched until it's rebuilt: 74% of PACT and 87% of non-PACT 2022+ executions currently matched. Unmatched executions are excluded from the percentages shown. See Step 7 in Methodology. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> joined to HDC OCA housing court records.</div>
+      </div>
+
       <div class="chart-card chart-card-clickable chart-card-wide" data-chart="conv-evictions">
         <div class="chart-card-header">
           <div class="chart-title">EVICTION RATE BEFORE AND AFTER PACT CONVERSION</div>
@@ -703,10 +718,10 @@ if (initTab !== 'analysis') switchTab(initTab);
 
 
 // ── Data loading ───────────────────────────────────────────────────────────────
-let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], nypdAgg = [], nypdConv = [], nypdCohort = [], hudOccupancy = [], convEvictions = {}, matchedEvictions = {}, mapInitialised = false, chartsDone = false;
+let developments = [], aggregateRates = [], controlMonthly = {}, rodentAggregate = [], complaintsAgg = [], permitsAgg = [], nypdAgg = [], nypdConv = [], nypdCohort = [], hudOccupancy = [], convEvictions = {}, matchedEvictions = {}, caseTypeBreakdown = {}, mapInitialised = false, chartsDone = false;
 
 async function loadData() {
-  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, nypdRes, nypdConvRes, nypdCohortRes, occRes, convEvRes, matchedEvRes] = await Promise.all([
+  const [geoRes, ratesRes, ctrlRes, rodentRes, compRes, permitsRes, nypdRes, nypdConvRes, nypdCohortRes, occRes, convEvRes, matchedEvRes, caseTypeRes] = await Promise.all([
     fetch('data/developments.geojson'),
     fetch('data/aggregate_rates.json'),
     fetch('data/control_monthly.json'),
@@ -719,6 +734,7 @@ async function loadData() {
     fetch('data/hud_occupancy.json'),
     fetch('data/conv_evictions.json'),
     fetch('data/matched_evictions.json'),
+    fetch('data/case_type_breakdown.json'),
   ]);
   developments    = (await geoRes.json()).features;
   aggregateRates  = await ratesRes.json();
@@ -732,6 +748,7 @@ async function loadData() {
   hudOccupancy    = await occRes.json();
   convEvictions   = await convEvRes.json();
   matchedEvictions = await matchedEvRes.json();
+  caseTypeBreakdown = await caseTypeRes.json();
 }
 
 // ── Key stats ─────────────────────────────────────────────────────────────────
@@ -1100,6 +1117,7 @@ function buildCharts() {
   renderPermitsAggChart(document.getElementById('chart-permits'));
   renderNypdConvChart(document.getElementById('chart-nypd-conv'));
   renderNypdCohortChart(document.getElementById('chart-nypd-cohort'));
+  renderCaseTypeChart(document.getElementById('chart-case-type'));
 }
 
 function renderConvEvictionsChart(canvas) {
@@ -1410,6 +1428,40 @@ function renderOccupancyChart(canvas) {
         suggestedMin: 85,
         ticks: { ...CHART_OPTS.scales.y.ticks, callback: v => v + '%' },
       }}
+    }
+  });
+}
+
+function renderCaseTypeChart(canvas) {
+  if (!canvas || !caseTypeBreakdown.groups) return;
+  const g = caseTypeBreakdown.groups;
+  const labels = ['PACT', 'Non-PACT NYCHA'];
+  const nonpayVals   = [g.pact.non_payment_pct, g.non_pact.non_payment_pct];
+  const holdoverVals = [g.pact.holdover_pct, g.non_pact.holdover_pct];
+  const otherVals    = [g.pact.other_pct, g.non_pact.other_pct];
+  const matched      = [g.pact.matched, g.non_pact.matched];
+  const total        = [g.pact.total, g.non_pact.total];
+  return new Chart(canvas, {
+    type: 'bar',
+    data: { labels, datasets: [
+      { label: 'Non-Payment', data: nonpayVals,   backgroundColor: '#111111', borderWidth: 0, stack: 's' },
+      { label: 'Holdover',    data: holdoverVals, backgroundColor: '#999999', borderWidth: 0, stack: 's' },
+      { label: 'Other',       data: otherVals,    backgroundColor: '#DDDDCC', borderWidth: 0, stack: 's' },
+    ]},
+    options: {
+      ...CHART_OPTS,
+      indexAxis: 'y',
+      plugins: { ...CHART_OPTS.plugins, tooltip: { ...CHART_OPTS.plugins.tooltip,
+        callbacks: {
+          title: t => labels[t[0].dataIndex],
+          label: t => ` ${t.dataset.label}: ${t.parsed.x}%`,
+          afterLabel: t => ` ${matched[t.dataIndex]}/${total[t.dataIndex]} executions matched to an OCA case record`,
+        }
+      }},
+      scales: {
+        x: { ...CHART_OPTS.scales.x, stacked: true, max: 100, ticks: { ...CHART_OPTS.scales.x.ticks, callback: v => v + '%' } },
+        y: { ...CHART_OPTS.scales.y, stacked: true, beginAtZero: undefined },
+      }
     }
   });
 }
@@ -1802,7 +1854,7 @@ function renderExpandedChart(type, resolution) {
 function openChartOverlay(type) {
   _currentChartType = type;
   const resEl = document.getElementById('cfo-resolution');
-  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy' || type === 'conv-evictions' || type === 'matched-evictions') ? 'none' : '';
+  resEl.style.display = (type === 'rodent' || type === 'complaints' || type === 'permits' || type === 'nypd-conv' || type === 'nypd-cohort' || type === 'occupancy' || type === 'conv-evictions' || type === 'matched-evictions' || type === 'case-type') ? 'none' : '';
   const nypdTypeEl = document.getElementById('cfo-nypd-type');
   nypdTypeEl.style.display = (type === 'nypd-conv' || type === 'nypd-cohort') ? '' : 'none';
   const devSelEl = document.getElementById('cfo-dev-select');
@@ -1881,6 +1933,15 @@ function openChartOverlay(type) {
           : '7 PACT developments (converting 2024–2025) vs. matched non-PACT NYCHA controls · per 1,000 units';
       }
     };
+  } else if (type === 'case-type') {
+    document.getElementById('cfo-title').textContent    = 'EXECUTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)';
+    document.getElementById('cfo-subtitle').textContent = 'Share of matched executions by case type · OCA docket-number match';
+    document.getElementById('cfo-legend').innerHTML     = `
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#111111;"></div>Non-Payment</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#999999;"></div>Holdover</div>
+      <div class="cfo-legend-item"><div class="cfo-legend-line" style="background:#DDDDCC;"></div>Other</div>`;
+    if (expandedChart) { expandedChart.destroy(); expandedChart = null; }
+    expandedChart = renderCaseTypeChart(document.getElementById('cfo-canvas'));
   } else if (type === 'occupancy') {
     document.getElementById('cfo-title').textContent    = 'NYCHA OCCUPANCY RATE · 2015–2025';
     document.getElementById('cfo-subtitle').textContent = 'Unit-weighted average occupancy at publicly managed NYCHA developments · annual snapshot';

@@ -1,0 +1,30 @@
+{
+  "data_floor": 2022,
+  "scope_note": "Executions 2022+ only \u2014 the docket-to-OCA classification lookup has zero coverage before 2022. It is also a static snapshot built 2026-05-01 and has not been refreshed since, so executions after that date are undercounted as unmatched until it is rebuilt (see methodology.md Step 7). Unmatched executions are excluded from the percentages shown.",
+  "groups": {
+    "pact": {
+      "total": 361,
+      "matched": 267,
+      "unmatched": 94,
+      "match_rate": 0.74,
+      "holdover": 81,
+      "non_payment": 186,
+      "other": 0,
+      "holdover_pct": 30.3,
+      "non_payment_pct": 69.7,
+      "other_pct": 0.0
+    },
+    "non_pact": {
+      "total": 828,
+      "matched": 724,
+      "unmatched": 104,
+      "match_rate": 0.874,
+      "holdover": 270,
+      "non_payment": 452,
+      "other": 2,
+      "holdover_pct": 37.3,
+      "non_payment_pct": 62.4,
+      "other_pct": 0.3
+    }
+  }
+}
