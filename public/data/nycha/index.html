@@ -1441,10 +1441,11 @@ function renderMatchedEvictionsChart(canvas, selectedIdx) {
               const nRaw   = ds._side === 'pact'
                 ? p.annual[c.dataIndex]?.pact_executions
                 : p.annual[c.dataIndex]?.ctrl_executions;
-              const n      = isYtd ? nRaw * ytdFactor : nRaw;
               const v      = c.parsed.y;
-              const ytdTag = isYtd ? ', annualized YTD' : '';
-              return ` ${ds.label}: ${v != null ? v.toFixed(2) : '—'}/1k (${n.toFixed(1)} evictions · ${units.toLocaleString()} units${ytdTag})`;
+              const evText = isYtd
+                ? `${nRaw} actual → ${(nRaw * ytdFactor).toFixed(1)} annualized YTD`
+                : `${nRaw} evictions`;
+              return ` ${ds.label}: ${v != null ? v.toFixed(2) : '—'}/1k (${evText} · ${units.toLocaleString()} units)`;
             }
           }
         }
