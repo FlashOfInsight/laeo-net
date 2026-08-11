@@ -72,20 +72,16 @@
 
   <div class="key-stats">
     <div class="stat-item">
-      <span class="stat-value" id="stat-pact-rate">—</span>
-      <span class="stat-label">PACT eviction rate / 1k units (2025)</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-value" id="stat-ctrl-rate">—</span>
-      <span class="stat-label">Non-PACT eviction rate / 1k units (2025)</span>
-    </div>
-    <div class="stat-item">
       <span class="stat-value" id="stat-ratio">—</span>
       <span class="stat-label">PACT-to-non-PACT ratio (2025)</span>
     </div>
     <div class="stat-item">
-      <span class="stat-value">29</span>
+      <span class="stat-value" id="stat-pact-count">—</span>
       <span class="stat-label">Active PACT developments</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-total-count">—</span>
+      <span class="stat-label">Total NYCHA developments</span>
     </div>
   </div>
 
@@ -781,12 +777,14 @@ async function loadData() {
 // ── Key stats ─────────────────────────────────────────────────────────────────
 function populateStats() {
   const y = aggregateRates.find(r => String(r.Year).startsWith('2025'));
-  if (!y) return;
-  const pactRate = Number(y['PACT /1k units']);
-  const ctrlRate = Number(y['Non-PACT /1k units']);
-  document.getElementById('stat-pact-rate').textContent = pactRate.toFixed(2);
-  document.getElementById('stat-ctrl-rate').textContent = ctrlRate.toFixed(2);
-  document.getElementById('stat-ratio').textContent     = ctrlRate > 0 ? (pactRate / ctrlRate).toFixed(1) + '×' : '—';
+  if (y) {
+    const pactRate = Number(y['PACT /1k units']);
+    const ctrlRate = Number(y['Non-PACT /1k units']);
+    document.getElementById('stat-ratio').textContent = ctrlRate > 0 ? (pactRate / ctrlRate).toFixed(1) + '×' : '—';
+  }
+  const pactCount = developments.filter(f => f.properties.type === 'pact').length;
+  document.getElementById('stat-pact-count').textContent  = pactCount || '—';
+  document.getElementById('stat-total-count').textContent = developments.length || '—';
 }
 
 // ── Map ────────────────────────────────────────────────────────────────────────

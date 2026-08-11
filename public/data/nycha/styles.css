@@ -138,7 +138,7 @@ main {
 /* ── Key stats ──────────────────────────────────────────────────────────── */
 .key-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   border: 1px solid var(--border);
   margin-bottom: var(--space-lg);
 }
@@ -925,8 +925,9 @@ footer {
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 680px) {
-  .key-stats { grid-template-columns: 1fr 1fr; }
-  .key-stats .stat-item:nth-child(2) { border-right: none; }
+  .key-stats { grid-template-columns: 1fr; }
+  .stat-item { border-right: none !important; border-bottom: 1px solid var(--border-light); }
+  .stat-item:last-child { border-bottom: none; }
   .charts-grid { grid-template-columns: 1fr; }
   .map-wrap { height: 420px; }
   .detail-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); top: auto; bottom: 0; height: 60%; transform: translateY(100%); }
