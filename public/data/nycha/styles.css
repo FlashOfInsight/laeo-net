@@ -23,7 +23,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { font-size: 16px; }
+html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
@@ -113,6 +113,20 @@ main {
   margin-bottom: var(--space-xs);
 }
 .intro p:last-child { margin-bottom: 0; }
+.page-index {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 2;
+  color: var(--border-light);
+  margin-top: var(--space-sm);
+}
+.page-index-link {
+  color: var(--ink-mid);
+  text-decoration: underline;
+  text-decoration-color: var(--border-light);
+  text-underline-offset: 3px;
+}
+.page-index-link:hover { color: var(--ink); text-decoration-color: var(--ink); }
 
 /* ── Key stats ──────────────────────────────────────────────────────────── */
 .key-stats {
@@ -620,6 +634,7 @@ button.inline-tab-link:hover { text-decoration-color: var(--ink); }
   border: 1px solid var(--border-light);
   padding: var(--space-md);
   background: var(--bg);
+  scroll-margin-top: 110px; /* clears sticky header (49px) + page-nav */
 }
 .chart-card-clickable {
   cursor: pointer;

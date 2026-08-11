@@ -52,10 +52,22 @@
     <p>
       Since 2019, NYCHA has transferred dozens of public housing developments to private
       management through the federal RAD program, branded locally as PACT (Permanent
-      Affordability Commitment Together). This page tracks evictions, rodent inspections,
-      HPD 311 complaints, and other conditions at PACT-converted sites and compares them
-      to traditionally managed NYCHA developments.
+      Affordability Commitment Together). This page compares PACT-converted sites to
+      traditionally managed NYCHA developments across:
     </p>
+    <div class="page-index">
+      <a href="#idx-rate" class="page-index-link">Execution rate</a> ·
+      <a href="#idx-count" class="page-index-link">Total executions</a> ·
+      <a href="#idx-case-type" class="page-index-link">Execution type</a> ·
+      <a href="#idx-conv-evictions" class="page-index-link">Before/after conversion</a> ·
+      <a href="#idx-matched-evictions" class="page-index-link">vs. matched control</a> ·
+      <a href="#idx-occupancy" class="page-index-link">Occupancy rate</a> ·
+      <a href="#idx-rodent" class="page-index-link">Rodent inspections</a> ·
+      <a href="#idx-complaints" class="page-index-link">HPD 311 complaints</a> ·
+      <a href="#idx-permits" class="page-index-link">Renovation costs</a> ·
+      <a href="#idx-nypd-conv" class="page-index-link">NYPD incidents (before/after)</a> ·
+      <a href="#idx-nypd-cohort" class="page-index-link">NYPD incidents (cohort)</a>
+    </div>
   </section>
 
   <div class="key-stats">
@@ -127,7 +139,7 @@
   <section class="charts-section">
     <div class="section-label">EVICTION TRENDS · 2017–2026</div>
     <div class="charts-grid">
-      <div class="chart-card chart-card-clickable" data-chart="rate">
+      <div class="chart-card chart-card-clickable" data-chart="rate" id="idx-rate">
         <div class="chart-card-header">
           <div class="chart-title">EXECUTION RATE PER 1,000 UNITS</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -140,7 +152,7 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (numerator); NYC MapPLUTO + NYCHA Development Data Book (denominator).</div>
       </div>
-      <div class="chart-card chart-card-clickable" data-chart="count">
+      <div class="chart-card chart-card-clickable" data-chart="count" id="idx-count">
         <div class="chart-card-header">
           <div class="chart-title">TOTAL EXECUTIONS</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -153,7 +165,7 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="case-type">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="case-type" id="idx-case-type">
         <div class="chart-card-header">
           <div class="chart-title">EXECUTION TYPE: HOLDOVER VS. NON-PAYMENT (2022+)</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -168,7 +180,7 @@
         <div class="chart-note">Data floor 2022 — OCA docket-level case classification has zero coverage before then. The classification lookup is also a static snapshot from 2026-05-01, so more recent executions are undercounted as unmatched until it's rebuilt: 74% of PACT and 87% of non-PACT 2022+ executions currently matched. Unmatched executions are excluded from the percentages shown. See Step 7 in Methodology. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> joined to HDC OCA housing court records.</div>
       </div>
 
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="conv-evictions">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="conv-evictions" id="idx-conv-evictions">
         <div class="chart-card-header">
           <div class="chart-title">EVICTION RATE BEFORE AND AFTER PACT CONVERSION</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -182,7 +194,7 @@
         <div class="chart-note">Year 0 = conversion year (partial year for most developments). Use the dropdown in the chart header to highlight an individual development's trajectory. Pooled rate is unit-weighted; n varies as different developments contribute at each offset — extreme offsets reflect only the most recently converted sites. Open circles on development lines mark calendar years 2020–2021 (NYC COVID eviction moratorium); rates at those points are artificially suppressed — because each development converted in a different year, the moratorium falls at a different x-position on each line. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a> (2017–present).</div>
       </div>
 
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-evictions">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="matched-evictions" id="idx-matched-evictions">
         <div class="chart-card-header">
           <div class="chart-title">EVICTION RATES: PACT VS. MATCHED CONTROL (2022+)</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -196,7 +208,7 @@
         <div class="chart-note">Controls matched on pre-conversion REAC inspection score (±4 pts) then unit count. 2022 data floor avoids distortion from NYCHA's mass nonpayment case nullification. Dashed vertical = conversion year. Source: <a href="https://data.cityofnewyork.us/d/6z8x-wfk4" target="_blank" rel="noopener">NYC Marshal Evictions</a>.</div>
       </div>
 
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="occupancy" id="idx-occupancy">
         <div class="chart-card-header">
           <div class="chart-title">NYCHA OCCUPANCY RATE · 2015–2025</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -209,7 +221,7 @@
         <div class="chart-note">Source: <a href="https://www.huduser.gov/portal/datasets/assthsg.html#data_2009-2025" target="_blank" rel="noopener">HUD Picture of Subsidized Households</a>, 2015–2025. Unit-weighted average occupancy across all NYC public housing projects. PACT-converted buildings leave HUD public housing records upon RAD transfer, so later years reflect an increasingly smaller non-PACT universe. N = 130–160 developments per year.</div>
       </div>
 
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="rodent">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="rodent" id="idx-rodent">
         <div class="chart-card-header">
           <div class="chart-title">RODENT INSPECTION FAILURE RATE</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -222,7 +234,7 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/p937-wjvj" target="_blank" rel="noopener">DOHMH Rodent Inspection</a> (NYC Open Data).</div>
       </div>
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="complaints">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="complaints" id="idx-complaints">
         <div class="chart-card-header">
           <div class="chart-title">HPD 311 COMPLAINTS SINCE PACT CONVERSION</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -234,7 +246,7 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/erm2-nwe9" target="_blank" rel="noopener">NYC 311 Service Requests</a> (HPD agency only, 2020–present). Year 0 = conversion year; n in parentheses = developments contributing to each point.</div>
       </div>
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="permits">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="permits" id="idx-permits">
         <div class="chart-card-header">
           <div class="chart-title">DECLARED RENOVATION COSTS AT PACT DEVELOPMENTS</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -246,7 +258,7 @@
         </div>
         <div class="chart-note">Source: <a href="https://data.cityofnewyork.us/d/w9ak-ipjd" target="_blank" rel="noopener">NYC DOB Job Application Filings</a>. Declared costs are owner-estimated construction value filed with DOB; actual expenditures may differ. Year 0 = conversion year; n = developments contributing.</div>
       </div>
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="nypd-conv">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="nypd-conv" id="idx-nypd-conv">
         <div class="chart-card-header">
           <div class="chart-title">NYPD INCIDENTS — BEFORE AND AFTER CONVERSION</div>
           <div style="display:flex;align-items:center;gap:8px;">
@@ -268,7 +280,7 @@
         <div class="chart-note">Error bars: Poisson 95% CI (±1.96√n / units × 1,000). Pre-conversion data covers 5 years before each development's PACT transfer date. Source: <a href="https://data.cityofnewyork.us/d/qgea-i56i" target="_blank" rel="noopener">NYPD Complaint Data Historic</a> + <a href="https://data.cityofnewyork.us/d/5uac-w243" target="_blank" rel="noopener">Current YTD</a>.</div>
       </div>
 
-      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="nypd-cohort">
+      <div class="chart-card chart-card-clickable chart-card-wide" data-chart="nypd-cohort" id="idx-nypd-cohort">
         <div class="chart-card-header">
           <div class="chart-title">NYPD INCIDENTS — PACT COHORT VS. NON-PACT</div>
           <div class="chart-expand-hint">Click to expand →</div>
@@ -709,6 +721,20 @@ document.querySelectorAll('.page-nav-tab').forEach(btn => {
 document.addEventListener('click', e => {
   if (e.target.classList.contains('inline-tab-link')) {
     switchTab(e.target.dataset.tab);
+  }
+});
+
+// Page index links — scroll to the chart card, explicitly (native #hash
+// scroll silently fails to fire when scroll-behavior:smooth is set)
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('page-index-link')) {
+    e.preventDefault();
+    const id = e.target.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.pushState(null, '', '#' + id);
+    }
   }
 });
 
